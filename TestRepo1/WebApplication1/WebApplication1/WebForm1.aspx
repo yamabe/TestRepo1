@@ -16,6 +16,19 @@
         <yuc:YTextBox runat="server" ID="test" IsRequired="true"/>
         <yuc:YTextBox runat="server" ID="YTextBox1" IsRequired="false"  />
 
+        <br />
+        <br />
+        <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="false">
+        <Columns>
+        <asp:CommandField ShowEditButton="true" ShowDeleteButton="true" />
+        <asp:BoundField DataField="data1" DataFormatString="{0:y}" ApplyFormatInEditMode="true"   />
+        <asp:BoundField DataField="data2"  DataFormatString="{0:d}" />
+        <yuc:YBoundField DataField="data1" Editable="true" DataFormatString="{0:d}" />
+        <yuc:YBoundField DataField="data2" Editable="false" DataFormatString="{0:d}" />
+        </Columns>
+        </asp:GridView>
+        <br />
+
         <asp:DetailsView runat="server" AlternatingRowStyle-BackColor="Blue">
         
         <Fields>
