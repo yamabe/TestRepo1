@@ -12,6 +12,29 @@ namespace yuc
     public class YBoundField : DataControlField
     {
 
+
+        public bool IsRequired
+        {
+            get
+            {
+                object value = base.ViewState["IsRequired"];
+                if (value != null)
+                {
+                    return Convert.ToBoolean(value);
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            set
+            {
+                base.ViewState["IsRequired"] = value;
+                this.OnFieldChanged();
+            }
+        }
+
+
         public bool Editable
         {
             get
@@ -29,6 +52,27 @@ namespace yuc
             set
             {
                 base.ViewState["Editable"] = value;
+                this.OnFieldChanged();
+            }
+        }
+
+        public bool ReadOnly
+        {
+            get
+            {
+                object value = base.ViewState["ReadOnly"];
+                if (value != null)
+                {
+                    return Convert.ToBoolean(value);
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            set
+            {
+                base.ViewState["ReadOnly"] = value;
                 this.OnFieldChanged();
             }
         }
@@ -99,12 +143,13 @@ namespace yuc
         protected void InitializeDataCell(DataControlFieldCell cell, DataControlRowState rowState)
         {
             //Check to see if the column is a editable and does not show the checkboxes.
-            if (Editable)
-            {
-                string ID = Guid.NewGuid().ToString();
-                TextBox txtBox = new TextBox();
+            if ((rowState & DataControlRowState.Edit) != 0 ||
+              (rowState & DataControlRowState.Insert) != 0) {
+                YTextBox txtBox = new YTextBox();
                 txtBox.Columns = 5;
-                txtBox.ID = ID;
+                txtBox.ID = DataField;
+                txtBox.IsRequired = this.IsRequired;
+
                 txtBox.DataBinding += new EventHandler(txtBox_DataBinding);
 
                 cell.Controls.Add(txtBox);
@@ -117,6 +162,25 @@ namespace yuc
             }
         }
 
+        public override void ExtractValuesFromCell(System.Collections.Specialized.IOrderedDictionary dictionary, DataControlFieldCell cell, DataControlRowState rowState, bool includeReadOnly)
+        {
+            base.ExtractValuesFromCell(dictionary, cell, rowState, includeReadOnly);
+            string value = null;
+
+            if (cell.Controls.Count > 0)
+            {
+                Control control = cell.Controls[0];
+                if (control == null)
+                    throw new InvalidOperationException("The control cannot be extracted");
+                value = ((TextBox)control).Text;
+            }
+
+            if (dictionary.Contains(this.DataField))
+                dictionary[this.DataField] = value;
+            else
+                dictionary.Add(this.DataField, value);
+        }
+
         void txtBox_DataBinding(object sender, EventArgs e)
         {
             // get a reference to the control that raised the event
@@ -125,6 +189,11 @@ namespace yuc
 
             // get a reference to the row object
             object dataItem = DataBinder.GetDataItem(container);
+
+            if (dataItem == null)
+            {
+                return;
+            }
 
             // get the row's value for the named data field only use Eval when it is neccessary
             // to access child object values, otherwise use GetPropertyValue. GetPropertyValue
@@ -143,7 +212,14 @@ namespace yuc
             // set the table cell's text. check for null values to prevent ToString errors
             if (dataFieldValue != null)
             {
-                target.Text = String.Format(DataFormatString, dataFieldValue);
+                if (String.IsNullOrEmpty(DataFormatString))
+                {
+                    target.Text = dataFieldValue.ToString();
+                }
+                else
+                {
+                    target.Text = String.Format(DataFormatString, dataFieldValue);
+                }
             }
         }
 
@@ -156,6 +232,11 @@ namespace yuc
             // get a reference to the row object
             object dataItem = DataBinder.GetDataItem(container);
 
+            if (dataItem == null)
+            {
+                return;
+            }
+
             // get the row's value for the named data field only use Eval when it is neccessary
             // to access child object values, otherwise use GetPropertyValue. GetPropertyValue
             // is faster because it does not use reflection
@@ -173,7 +254,14 @@ namespace yuc
             // set the table cell's text. check for null values to prevent ToString errors
             if (dataFieldValue != null)
             {
-                target.Text = String.Format(DataFormatString, dataFieldValue);
+                if (String.IsNullOrEmpty(DataFormatString))
+                {
+                    target.Text = dataFieldValue.ToString();
+                }
+                else
+                {
+                    target.Text = String.Format(DataFormatString, dataFieldValue);
+                }
             }
         }
     

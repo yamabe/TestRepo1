@@ -35,7 +35,7 @@ namespace yuc
             if (_isRequired)
             {
                 nameValidator = new RequiredFieldValidator();
-                nameValidator.ID = "validator1";
+                //nameValidator.ID = "validator1";
                 nameValidator.ControlToValidate = this.ID;
                 nameValidator.Text = "Failed validation.";
                 nameValidator.ErrorMessage = "入力エラー";
