@@ -35,6 +35,50 @@ namespace yuc
         }
 
 
+        public bool IsInteger
+        {
+            get
+            {
+                object value = base.ViewState["IsInteger"];
+                if (value != null)
+                {
+                    return Convert.ToBoolean(value);
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            set
+            {
+                base.ViewState["IsInteger"] = value;
+                this.OnFieldChanged();
+            }
+        }
+
+        public bool IsDate
+        {
+            get
+            {
+                object value = base.ViewState["IsDate"];
+                if (value != null)
+                {
+                    return Convert.ToBoolean(value);
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            set
+            {
+                base.ViewState["IsDate"] = value;
+                this.OnFieldChanged();
+            }
+        }
+
+
+
         public bool Editable
         {
             get
@@ -123,7 +167,7 @@ namespace yuc
 
         protected override DataControlField CreateField()
         {
-            
+
             return new YBoundField();
         }
 
@@ -144,7 +188,8 @@ namespace yuc
         {
             //Check to see if the column is a editable and does not show the checkboxes.
             if ((rowState & DataControlRowState.Edit) != 0 ||
-              (rowState & DataControlRowState.Insert) != 0) {
+              (rowState & DataControlRowState.Insert) != 0)
+            {
                 YTextBox txtBox = new YTextBox();
                 txtBox.Columns = 5;
                 txtBox.ID = DataField;
@@ -156,9 +201,10 @@ namespace yuc
             }
             else
             {
-                    Label lblText = new Label();
-                    lblText.DataBinding += new EventHandler(lblText_DataBinding);
-                    cell.Controls.Add(lblText);
+                Label lblText = new Label();
+                lblText.ID = DataField;
+                lblText.DataBinding += new EventHandler(lblText_DataBinding);
+                cell.Controls.Add(lblText);
             }
         }
 
@@ -264,6 +310,6 @@ namespace yuc
                 }
             }
         }
-    
+
     }
 }

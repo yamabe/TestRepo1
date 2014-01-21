@@ -67,8 +67,10 @@
     </Content>
     <Content Include="WebForm1.aspx" />
     <Content Include="WebUserControl1.ascx" />
+    <Content Include="WebForm2.aspx" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataGridRow.cs" />
     <Compile Include="mock\SampleDataGroup.cs" />
     <Compile Include="mock\SampleDataItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -101,6 +103,13 @@
     </Compile>
     <Compile Include="WebUserControl1.ascx.designer.cs">
       <DependentUpon>WebUserControl1.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="WebForm2.aspx.cs">
+      <DependentUpon>WebForm2.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="WebForm2.aspx.designer.cs">
+      <DependentUpon>WebForm2.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
