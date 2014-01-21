@@ -5,18 +5,21 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title></title>
+
+
 </head>
 <body>
     <form id="form1" runat="server">
     <div>
         <br />
         <br />
-        <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" DataKeyNames="材料ID"
+        <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" DataKeyNames="材料ID,最終更新日時"
             DataSourceID="SqlDataSource1" OnRowEditing="GridView1_RowEditing" onrowcommand="GridView1_RowCommand"
             >
             <Columns>
-                <asp:CommandField ShowEditButton="true" />
+                <asp:CommandField ShowEditButton="true" ShowDeleteButton="true"/>
                 <asp:ButtonField ButtonType="Link" CommandName="Copy" Text="Copy" />
+ <yuc:YBoundField HeaderText="削除フラグ" IsBoolean="true" IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="false" runat="server" DataField="削除フラグ" ReadOnly="FALSE"  ControlStyle-Width="40"  ItemStyle-Width="40"  ItemStyle-Wrap="false"   />
  <yuc:YBoundField HeaderText="材料ID"  IsRequired="true" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" DataField="材料ID" ReadOnly="TRUE"  ControlStyle-Width="70"  ItemStyle-Width="70"  ItemStyle-Wrap="false"   />
  <yuc:YBoundField HeaderText="材料名称"  IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="false" runat="server" DataField="材料名称" ReadOnly="FALSE"  ControlStyle-Width="100"  ItemStyle-Width="100"  ItemStyle-Wrap="false"   />
  <yuc:YBoundField HeaderText="材質"  IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="false" runat="server" DataField="材質" ReadOnly="FALSE"  ControlStyle-Width="100"  ItemStyle-Width="100"  ItemStyle-Wrap="false"   />
@@ -176,10 +179,11 @@
             </EmptyDataTemplate>
         </asp:FormView>
         <asp:SqlDataSource ID="SqlDataSource1" runat="server" ConflictDetection="CompareAllValues"
-            ConnectionString="<%$ ConnectionStrings:ConnectionString %>" DeleteCommand="DELETE FROM [T単価] WHERE [材料ID] = @original_材料ID AND (([材料名称] = @original_材料名称) OR ([材料名称] IS NULL AND @original_材料名称 IS NULL)) AND (([材質] = @original_材質) OR ([材質] IS NULL AND @original_材質 IS NULL)) AND (([定尺寸法縦] = @original_定尺寸法縦) OR ([定尺寸法縦] IS NULL AND @original_定尺寸法縦 IS NULL)) AND (([定尺寸法横] = @original_定尺寸法横) OR ([定尺寸法横] IS NULL AND @original_定尺寸法横 IS NULL)) AND (([厚み] = @original_厚み) OR ([厚み] IS NULL AND @original_厚み IS NULL)) AND (([定尺仕入金額] = @original_定尺仕入金額) OR ([定尺仕入金額] IS NULL AND @original_定尺仕入金額 IS NULL)) AND (([定尺売り金額] = @original_定尺売り金額) OR ([定尺売り金額] IS NULL AND @original_定尺売り金額 IS NULL)) AND (([作成ユーザー名] = @original_作成ユーザー名) OR ([作成ユーザー名] IS NULL AND @original_作成ユーザー名 IS NULL)) AND (([最終更新ユーザー名] = @original_最終更新ユーザー名) OR ([最終更新ユーザー名] IS NULL AND @original_最終更新ユーザー名 IS NULL)) AND [作成日時] = @original_作成日時 AND [最終更新日時] = @original_最終更新日時"
+            ConnectionString="<%$ ConnectionStrings:ConnectionString %>" 
+            DeleteCommand="DELETE FROM [T単価] WHERE [材料ID] = @original_材料ID AND [最終更新日時] = @original_最終更新日時"
             InsertCommand="INSERT INTO [T単価] ([材料名称], [材質], [定尺寸法縦], [定尺寸法横], [厚み], [定尺仕入金額], [定尺売り金額], [作成ユーザー名], [最終更新ユーザー名], [作成日時], [最終更新日時]) VALUES ( @材料名称, @材質, @定尺寸法縦, @定尺寸法横, @厚み, @定尺仕入金額, @定尺売り金額, @作成ユーザー名, @最終更新ユーザー名, current_timestamp, current_timestamp)"
             OldValuesParameterFormatString="original_{0}" SelectCommand="SELECT * FROM [T単価]"
-            UpdateCommand="UPDATE [T単価] SET [材料名称] = @材料名称, [材質] = @材質, [定尺寸法縦] = @定尺寸法縦, [定尺寸法横] = @定尺寸法横, [厚み] = @厚み, [定尺仕入金額] = @定尺仕入金額, [定尺売り金額] = @定尺売り金額, [作成ユーザー名] = @作成ユーザー名, [最終更新ユーザー名] = @最終更新ユーザー名, [作成日時] = @作成日時, [最終更新日時] = @最終更新日時 WHERE [材料ID] = @original_材料ID AND (([材料名称] = @original_材料名称) OR ([材料名称] IS NULL AND @original_材料名称 IS NULL)) AND (([材質] = @original_材質) OR ([材質] IS NULL AND @original_材質 IS NULL)) AND (([定尺寸法縦] = @original_定尺寸法縦) OR ([定尺寸法縦] IS NULL AND @original_定尺寸法縦 IS NULL)) AND (([定尺寸法横] = @original_定尺寸法横) OR ([定尺寸法横] IS NULL AND @original_定尺寸法横 IS NULL)) AND (([厚み] = @original_厚み) OR ([厚み] IS NULL AND @original_厚み IS NULL)) AND (([定尺仕入金額] = @original_定尺仕入金額) OR ([定尺仕入金額] IS NULL AND @original_定尺仕入金額 IS NULL)) AND (([定尺売り金額] = @original_定尺売り金額) OR ([定尺売り金額] IS NULL AND @original_定尺売り金額 IS NULL)) AND (([作成ユーザー名] = @original_作成ユーザー名) OR ([作成ユーザー名] IS NULL AND @original_作成ユーザー名 IS NULL)) AND (([最終更新ユーザー名] = @original_最終更新ユーザー名) OR ([最終更新ユーザー名] IS NULL AND @original_最終更新ユーザー名 IS NULL)) AND [作成日時] = @original_作成日時 AND [最終更新日時] = @original_最終更新日時">
+            UpdateCommand="UPDATE [T単価] SET 削除フラグ= @削除フラグ, [材料名称] = @材料名称, [材質] = @材質, [定尺寸法縦] = @定尺寸法縦, [定尺寸法横] = @定尺寸法横, [厚み] = @厚み, [定尺仕入金額] = @定尺仕入金額, [定尺売り金額] = @定尺売り金額, [最終更新ユーザー名] = @最終更新ユーザー名,  [最終更新日時] = @最終更新日時 WHERE [材料ID] = @original_材料ID AND [最終更新日時] = @original_最終更新日時">
             <DeleteParameters>
                 <asp:Parameter Name="original_材料ID" Type="Int32" />
                 <asp:Parameter Name="original_材料名称" Type="String" />
@@ -209,16 +213,17 @@
                 <asp:Parameter Name="最終更新日時" Type="DateTime" />
             </InsertParameters>
             <UpdateParameters>
-                <asp:Parameter Name="材料名称" Type="String" />
-                <asp:Parameter Name="材質" Type="String" />
-                <asp:Parameter Name="定尺寸法縦" Type="Int32" />
-                <asp:Parameter Name="定尺寸法横" Type="Int32" />
-                <asp:Parameter Name="厚み" Type="Int32" />
-                <asp:Parameter Name="定尺仕入金額" Type="Decimal" />
-                <asp:Parameter Name="定尺売り金額" Type="Decimal" />
+                <asp:FormParameter Name="材料名称" Type="String" />
+                <asp:FormParameter Name="材質" Type="String" />
+                <asp:FormParameter Name="定尺寸法縦" Type="Int32" />
+                <asp:FormParameter Name="定尺寸法横" Type="Int32" />
+                <asp:FormParameter Name="厚み" Type="Int32" />
+                <asp:FormParameter Name="定尺仕入金額" Type="Decimal" />
+                <asp:FormParameter Name="定尺売り金額" Type="Decimal" />
+                <asp:FormParameter Name="削除フラグ" Type="String" />
                 <asp:Parameter Name="作成ユーザー名" Type="String" />
-                <asp:Parameter Name="最終更新ユーザー名" Type="String" />
-                <asp:Parameter Name="作成日時" Type="DateTime" />
+                <asp:FormParameter Name="最終更新ユーザー名" Type="String" />
+                <asp:FormParameter Name="作成日時" Type="DateTime" />
                 <asp:Parameter Name="最終更新日時" Type="DateTime" />
                 <asp:Parameter Name="original_材料ID" Type="Int32" />
                 <asp:Parameter Name="original_材料名称" Type="String" />
@@ -232,6 +237,71 @@
                 <asp:Parameter Name="original_最終更新ユーザー名" Type="String" />
                 <asp:Parameter Name="original_作成日時" Type="DateTime" />
                 <asp:Parameter Name="original_最終更新日時" Type="DateTime" />
+            </UpdateParameters>
+        </asp:SqlDataSource>
+
+        <asp:SqlDataSource runat="server" ConflictDetection="CompareAllValues" 
+            ConnectionString="<%$ ConnectionStrings:ConnectionString %>" 
+            DeleteCommand="DELETE FROM [T単価] WHERE [材料ID] = @original_材料ID AND (([材料名称] = @original_材料名称) OR ([材料名称] IS NULL AND @original_材料名称 IS NULL)) AND (([材質] = @original_材質) OR ([材質] IS NULL AND @original_材質 IS NULL)) AND (([定尺寸法縦] = @original_定尺寸法縦) OR ([定尺寸法縦] IS NULL AND @original_定尺寸法縦 IS NULL)) AND (([定尺寸法横] = @original_定尺寸法横) OR ([定尺寸法横] IS NULL AND @original_定尺寸法横 IS NULL)) AND (([厚み] = @original_厚み) OR ([厚み] IS NULL AND @original_厚み IS NULL)) AND (([定尺仕入金額] = @original_定尺仕入金額) OR ([定尺仕入金額] IS NULL AND @original_定尺仕入金額 IS NULL)) AND (([定尺売り金額] = @original_定尺売り金額) OR ([定尺売り金額] IS NULL AND @original_定尺売り金額 IS NULL)) AND (([作成ユーザー名] = @original_作成ユーザー名) OR ([作成ユーザー名] IS NULL AND @original_作成ユーザー名 IS NULL)) AND (([最終更新ユーザー名] = @original_最終更新ユーザー名) OR ([最終更新ユーザー名] IS NULL AND @original_最終更新ユーザー名 IS NULL)) AND [作成日時] = @original_作成日時 AND [最終更新日時] = @original_最終更新日時 AND [削除フラグ] = @original_削除フラグ" 
+            InsertCommand="INSERT INTO [T単価] ([材料名称], [材質], [定尺寸法縦], [定尺寸法横], [厚み], [定尺仕入金額], [定尺売り金額], [作成ユーザー名], [最終更新ユーザー名], [作成日時], [最終更新日時], [削除フラグ]) VALUES (@材料名称, @材質, @定尺寸法縦, @定尺寸法横, @厚み, @定尺仕入金額, @定尺売り金額, @作成ユーザー名, @最終更新ユーザー名, @作成日時, @最終更新日時, @削除フラグ)" 
+            OldValuesParameterFormatString="original_{0}" 
+            SelectCommand="SELECT * FROM [T単価]" 
+            UpdateCommand="UPDATE [T単価] SET [材料名称] = @材料名称, [材質] = @材質, [定尺寸法縦] = @定尺寸法縦, [定尺寸法横] = @定尺寸法横, [厚み] = @厚み, [定尺仕入金額] = @定尺仕入金額, [定尺売り金額] = @定尺売り金額, [作成ユーザー名] = @作成ユーザー名, [最終更新ユーザー名] = @最終更新ユーザー名, [作成日時] = @作成日時, [最終更新日時] = @最終更新日時, [削除フラグ] = @削除フラグ WHERE [材料ID] = @original_材料ID AND (([材料名称] = @original_材料名称) OR ([材料名称] IS NULL AND @original_材料名称 IS NULL)) AND (([材質] = @original_材質) OR ([材質] IS NULL AND @original_材質 IS NULL)) AND (([定尺寸法縦] = @original_定尺寸法縦) OR ([定尺寸法縦] IS NULL AND @original_定尺寸法縦 IS NULL)) AND (([定尺寸法横] = @original_定尺寸法横) OR ([定尺寸法横] IS NULL AND @original_定尺寸法横 IS NULL)) AND (([厚み] = @original_厚み) OR ([厚み] IS NULL AND @original_厚み IS NULL)) AND (([定尺仕入金額] = @original_定尺仕入金額) OR ([定尺仕入金額] IS NULL AND @original_定尺仕入金額 IS NULL)) AND (([定尺売り金額] = @original_定尺売り金額) OR ([定尺売り金額] IS NULL AND @original_定尺売り金額 IS NULL)) AND (([作成ユーザー名] = @original_作成ユーザー名) OR ([作成ユーザー名] IS NULL AND @original_作成ユーザー名 IS NULL)) AND (([最終更新ユーザー名] = @original_最終更新ユーザー名) OR ([最終更新ユーザー名] IS NULL AND @original_最終更新ユーザー名 IS NULL)) AND [作成日時] = @original_作成日時 AND [最終更新日時] = @original_最終更新日時 AND [削除フラグ] = @original_削除フラグ" >
+            <DeleteParameters>
+                <asp:Parameter Name="original_材料ID" Type="Int32" />
+                <asp:Parameter Name="original_材料名称" Type="String" />
+                <asp:Parameter Name="original_材質" Type="String" />
+                <asp:Parameter Name="original_定尺寸法縦" Type="Int32" />
+                <asp:Parameter Name="original_定尺寸法横" Type="Int32" />
+                <asp:Parameter Name="original_厚み" Type="Int32" />
+                <asp:Parameter Name="original_定尺仕入金額" Type="Int32" />
+                <asp:Parameter Name="original_定尺売り金額" Type="Int32" />
+                <asp:Parameter Name="original_作成ユーザー名" Type="String" />
+                <asp:Parameter Name="original_最終更新ユーザー名" Type="String" />
+                <asp:Parameter Name="original_作成日時" Type="DateTime" />
+                <asp:Parameter Name="original_最終更新日時" Type="DateTime" />
+                <asp:Parameter Name="original_削除フラグ" Type="Boolean" />
+            </DeleteParameters>
+            <InsertParameters>
+                <asp:Parameter Name="材料名称" Type="String" />
+                <asp:Parameter Name="材質" Type="String" />
+                <asp:Parameter Name="定尺寸法縦" Type="Int32" />
+                <asp:Parameter Name="定尺寸法横" Type="Int32" />
+                <asp:Parameter Name="厚み" Type="Int32" />
+                <asp:Parameter Name="定尺仕入金額" Type="Int32" />
+                <asp:Parameter Name="定尺売り金額" Type="Int32" />
+                <asp:Parameter Name="作成ユーザー名" Type="String" />
+                <asp:Parameter Name="最終更新ユーザー名" Type="String" />
+                <asp:Parameter Name="作成日時" Type="DateTime" />
+                <asp:Parameter Name="最終更新日時" Type="DateTime" />
+                <asp:Parameter Name="削除フラグ" Type="Boolean" />
+            </InsertParameters>
+            <UpdateParameters>
+                <asp:Parameter Name="材料名称" Type="String" />
+                <asp:Parameter Name="材質" Type="String" />
+                <asp:Parameter Name="定尺寸法縦" Type="Int32" />
+                <asp:Parameter Name="定尺寸法横" Type="Int32" />
+                <asp:Parameter Name="厚み" Type="Int32" />
+                <asp:Parameter Name="定尺仕入金額" Type="Int32" />
+                <asp:Parameter Name="定尺売り金額" Type="Int32" />
+                <asp:Parameter Name="作成ユーザー名" Type="String" />
+                <asp:Parameter Name="最終更新ユーザー名" Type="String" />
+                <asp:Parameter Name="作成日時" Type="DateTime" />
+                <asp:Parameter Name="最終更新日時" Type="DateTime" />
+                <asp:Parameter Name="削除フラグ" Type="Boolean" />
+                <asp:Parameter Name="original_材料ID" Type="Int32" />
+                <asp:Parameter Name="original_材料名称" Type="String" />
+                <asp:Parameter Name="original_材質" Type="String" />
+                <asp:Parameter Name="original_定尺寸法縦" Type="Int32" />
+                <asp:Parameter Name="original_定尺寸法横" Type="Int32" />
+                <asp:Parameter Name="original_厚み" Type="Int32" />
+                <asp:Parameter Name="original_定尺仕入金額" Type="Int32" />
+                <asp:Parameter Name="original_定尺売り金額" Type="Int32" />
+                <asp:Parameter Name="original_作成ユーザー名" Type="String" />
+                <asp:Parameter Name="original_最終更新ユーザー名" Type="String" />
+                <asp:Parameter Name="original_作成日時" Type="DateTime" />
+                <asp:Parameter Name="original_最終更新日時" Type="DateTime" />
+                <asp:Parameter Name="original_削除フラグ" Type="Boolean" />
             </UpdateParameters>
         </asp:SqlDataSource>
     </div>

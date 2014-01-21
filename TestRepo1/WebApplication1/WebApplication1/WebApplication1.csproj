@@ -70,7 +70,6 @@
     <Content Include="WebForm2.aspx" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataGridRow.cs" />
     <Compile Include="mock\SampleDataGroup.cs" />
     <Compile Include="mock\SampleDataItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

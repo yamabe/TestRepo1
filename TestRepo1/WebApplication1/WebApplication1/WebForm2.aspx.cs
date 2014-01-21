@@ -72,6 +72,7 @@ namespace WebApplication1
                 object o = row.DataItem;
                 foreach (Parameter p in SqlDataSource1.InsertParameters)
                 {
+
                     Control c = row.FindControl(p.Name);
 
                     object value = String.Empty;
