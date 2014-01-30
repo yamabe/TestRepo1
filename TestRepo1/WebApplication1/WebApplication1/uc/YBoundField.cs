@@ -1,57 +1,166 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web;
-using System.Web.UI.WebControls;
 using System.Web.UI;
-using System.ComponentModel;
-using System.Drawing;
-
-namespace yuc
+using System.Web.UI.WebControls;
+namespace uc
 {
+    /// <summary>
+    /// YBoundField の概要の説明です
+    /// </summary>
     public class YBoundField : DataControlField
     {
+        private bool _insertMode = false;
+
+        public string DataField
+        {
+            get
+            {
+                object o = ViewState["DataField"];
+                return (o == null) ? string.Empty : o.ToString();
+            }
+            set { ViewState["DataField"] = value; }
+        }
+
+
+        public string DataFormatStringEditing
+        {
+            get
+            {
+                object o = ViewState["DataFormatStringEditing"];
+                return (o == null) ? string.Empty : o.ToString();
+            }
+            set { ViewState["DataFormatStringEditing"] = value; }
+        }
+
+
+        public string DataSourceID
+        {
+            get
+            {
+                object o = ViewState["DataSourceID"];
+                return (o == null) ? string.Empty : o.ToString();
+            }
+            set { ViewState["DataSourceID"] = value; }
+        }
+
+
+        public string DataTextField
+        {
+            get
+            {
+                object o = ViewState["DataTextField"];
+                return (o == null) ? string.Empty : o.ToString();
+            }
+            set { ViewState["DataTextField"] = value; }
+        }
+
+
+        public string DataValueField
+        {
+            get
+            {
+                object o = ViewState["DataValueField"];
+                return (o == null) ? string.Empty : o.ToString();
+            }
+            set { ViewState["DataValueField"] = value; }
+        }
+
+        public string DataFormatString
+        {
+            get
+            {
+                object o = ViewState["DataFormatString"];
+                return (o == null) ? string.Empty : o.ToString();
+            }
+            set { ViewState["DataFormatString"] = value; }
+        }
+
+
+        protected bool InsertMode
+        {
+            get { return _insertMode; }
+        }
 
         public bool IsDropDownList
         {
             get
             {
-                object value = base.ViewState["IsDropDownList"];
-                if (value != null)
-                {
-                    return Convert.ToBoolean(value);
-                }
-                else
-                {
-                    return false;
-                }
+                object o = ViewState["IsDropDownList"];
+                return (o == null) ? false : (bool)o;
             }
-            set
-            {
-                base.ViewState["IsDropDownList"] = value;
-                this.OnFieldChanged();
-            }
+            set { ViewState["IsDropDownList"] = value; }
         }
 
         public bool IsBoolean
         {
             get
             {
-                object value = base.ViewState["IsBoolean"];
-                if (value != null)
-                {
-                    return Convert.ToBoolean(value);
-                }
-                else
-                {
-                    return false;
-                }
+                object o = ViewState["IsBoolean"];
+                return (o == null) ? false : (bool)o;
             }
-            set
+            set { ViewState["IsBoolean"] = value; }
+        }
+
+        public bool AppendDataBoundItems
+        {
+            get
             {
-                base.ViewState["IsBoolean"] = value;
-                this.OnFieldChanged();
+                object o = ViewState["AppendDataBoundItems"];
+                return (o == null) ? false : (bool)o;
             }
+            set { ViewState["AppendDataBoundItems"] = value; }
+        }
+
+
+        public bool ReadOnly
+        {
+            get
+            {
+                object o = ViewState["ReadOnly"];
+                return (o == null) ? false : (bool)o;
+            }
+            set { ViewState["ReadOnly"] = value; }
+        }
+
+        public int Columns
+        {
+            get
+            {
+                object o = ViewState["Columns"];
+                return (o == null) ? 0 : (int)o;
+            }
+            set { ViewState["Columns"] = value; }
+        }
+
+        public int MaximumLength
+        {
+            get
+            {
+                object o = ViewState["MaximumLength"];
+                return (o == null) ? 0 : (int)o;
+            }
+            set { ViewState["MaximumLength"] = value; }
+        }
+
+        public int Rows
+        {
+            get
+            {
+                object o = ViewState["Rows"];
+                return (o == null) ? 0 : (int)o;
+            }
+            set { ViewState["Rows"] = value; }
+        }
+
+        public TextBoxMode TextMode
+        {
+            get
+            {
+                object o = ViewState["TextMode"];
+                return (o == null) ? TextBoxMode.SingleLine : (TextBoxMode)o;
+            }
+            set { ViewState["TextMode"] = value; }
         }
 
 
@@ -59,263 +168,44 @@ namespace yuc
         {
             get
             {
-                object value = base.ViewState["IsRequired"];
-                if (value != null)
-                {
-                    return Convert.ToBoolean(value);
-                }
-                else
-                {
-                    return true;
-                }
+                object o = ViewState["IsRequired"];
+                return (o == null) ? false : (bool)o;
             }
-            set
-            {
-                base.ViewState["IsRequired"] = value;
-                this.OnFieldChanged();
-            }
+            set { ViewState["IsRequired"] = value; }
         }
-
-
-        public bool IsInteger
-        {
-            get
-            {
-                object value = base.ViewState["IsInteger"];
-                if (value != null)
-                {
-                    return Convert.ToBoolean(value);
-                }
-                else
-                {
-                    return true;
-                }
-            }
-            set
-            {
-                base.ViewState["IsInteger"] = value;
-                this.OnFieldChanged();
-            }
-        }
-
         public bool IsDate
         {
             get
             {
-                object value = base.ViewState["IsDate"];
-                if (value != null)
-                {
-                    return Convert.ToBoolean(value);
-                }
-                else
-                {
-                    return true;
-                }
+                object o = ViewState["IsDate"];
+                return (o == null) ? false : (bool)o;
             }
-            set
+            set { ViewState["IsDate"] = value; }
+        }
+        public bool IsInteger
+        {
+            get
             {
-                base.ViewState["IsDate"] = value;
-                this.OnFieldChanged();
+                object o = ViewState["IsInteger"];
+                return (o == null) ? false : (bool)o;
             }
+            set { ViewState["IsInteger"] = value; }
         }
 
 
 
-        public bool Editable
+        public YBoundField()
         {
-            get
-            {
-                object value = base.ViewState["Editable"];
-                if (value != null)
-                {
-                    return Convert.ToBoolean(value);
-                }
-                else
-                {
-                    return true;
-                }
-            }
-            set
-            {
-                base.ViewState["Editable"] = value;
-                this.OnFieldChanged();
-            }
-        }
-
-        public bool ReadOnly
-        {
-            get
-            {
-                object value = base.ViewState["ReadOnly"];
-                if (value != null)
-                {
-                    return Convert.ToBoolean(value);
-                }
-                else
-                {
-                    return true;
-                }
-            }
-            set
-            {
-                base.ViewState["ReadOnly"] = value;
-                this.OnFieldChanged();
-            }
-        }
-
-        public string DataField
-        {
-            get
-            {
-                object value = base.ViewState["DataField"];
-                if (value != null)
-                {
-                    return value.ToString();
-                }
-                else
-                {
-                    return string.Empty;
-                }
-            }
-            set
-            {
-                base.ViewState["DataField"] = value;
-                this.OnFieldChanged();
-            }
-        }
-
-        public string DataFormatString
-        {
-            get
-            {
-                object value = base.ViewState["DataFormatString"];
-                if (value != null)
-                {
-                    return value.ToString();
-                }
-                else
-                {
-                    return string.Empty;
-                }
-            }
-            set
-            {
-                base.ViewState["DataFormatString"] = value;
-                this.OnFieldChanged();
-            }
+            //
+            // TODO: コンストラクター ロジックをここに追加します
+            //
         }
 
 
 
         protected override DataControlField CreateField()
         {
-
             return new YBoundField();
-        }
-
-        public override void InitializeCell(DataControlFieldCell cell, DataControlCellType cellType, DataControlRowState rowState, int rowIndex)
-        {
-            //Call the base method.
-            base.InitializeCell(cell, cellType, rowState, rowIndex);
-
-            switch (cellType)
-            {
-                case DataControlCellType.DataCell:
-                    this.InitializeDataCell(cell, rowState);
-                    break;
-            }
-        }
-
-        protected void InitializeDataCell(DataControlFieldCell cell, DataControlRowState rowState)
-        {
-            //Check to see if the column is a editable and does not show the checkboxes.
-            if ((rowState & DataControlRowState.Edit) != 0 ||
-              (rowState & DataControlRowState.Insert) != 0)
-            {
-                if (IsBoolean)
-                {
-                    CheckBox chk = new CheckBox();
-                    chk.ID = DataField;
-                    chk.DataBinding += new EventHandler(chk_DataBinding);
-                    cell.Controls.Add(chk);
-                }
-                else if (IsDropDownList)
-                {
-                    DropDownList ddl = new DropDownList();
-                    ddl.ID = DataField;
-                    
-                }
-                else
-                {
-                    YTextBox txtBox = new YTextBox();
-                    txtBox.Columns = 5;
-                    txtBox.ID = DataField;
-                    txtBox.IsRequired = this.IsRequired;
-
-                    txtBox.DataBinding += new EventHandler(txtBox_DataBinding);
-
-                    cell.Controls.Add(txtBox);
-                }
-            }
-            else
-            {
-                if (IsBoolean)
-                {
-                    CheckBox chk = new CheckBox();
-                    chk.ID = DataField;
-                    chk.Enabled = false;
-                    chk.DataBinding += new EventHandler(chk_DataBinding);
-                    cell.Controls.Add(chk);
-                }
-                else
-                {
-                    Label lblText = new Label();
-                    lblText.ID = DataField;
-                    lblText.DataBinding += new EventHandler(lblText_DataBinding);
-                    cell.Controls.Add(lblText);
-                }
-            }
-        }
-
-        void chk_DataBinding(object sender, EventArgs e)
-        {
-            // get a reference to the control that raised the event
-            CheckBox target = (CheckBox)sender;
-            Control container = target.NamingContainer;
-
-            // get a reference to the row object
-            object dataItem = DataBinder.GetDataItem(container);
-
-            if (dataItem == null)
-            {
-                return;
-            }
-
-            // get the row's value for the named data field only use Eval when it is neccessary
-            // to access child object values, otherwise use GetPropertyValue. GetPropertyValue
-            // is faster because it does not use reflection
-            object dataFieldValue = null;
-
-            if (this.DataField.Contains("."))
-            {
-                dataFieldValue = DataBinder.Eval(dataItem, this.DataField);
-            }
-            else
-            {
-                dataFieldValue = DataBinder.GetPropertyValue(dataItem, this.DataField);
-            }
-
-            // set the table cell's text. check for null values to prevent ToString errors
-            if (dataFieldValue != null)
-            {
-                Boolean value = false;
-
-                if (Boolean.TryParse(dataFieldValue.ToString(), out value))
-                {
-                    target.Checked = value;
-                }
-
-            }
         }
 
         public override void ExtractValuesFromCell(System.Collections.Specialized.IOrderedDictionary dictionary, DataControlFieldCell cell, DataControlRowState rowState, bool includeReadOnly)
@@ -325,9 +215,11 @@ namespace yuc
 
             if (cell.Controls.Count > 0)
             {
-                Control control = cell.Controls[0];
+                System.Web.UI.Control control = cell.Controls[0];
+                //If the control is null, throw an error
                 if (control == null)
                     throw new InvalidOperationException("The control cannot be extracted");
+
 
                 if (control is TextBox)
                 {
@@ -341,97 +233,163 @@ namespace yuc
                 {
                     value = ((Label)control).Text;
                 }
+                else if (control is YDropDownList)
+                {
+                    value = ((YDropDownList)control).GetInternalValue();
+                }
+
             }
 
+            //If the key exists, update the value
             if (dictionary.Contains(this.DataField))
                 dictionary[this.DataField] = value;
+            //Add a new entry to the dictionary
             else
                 dictionary.Add(this.DataField, value);
         }
 
-        void txtBox_DataBinding(object sender, EventArgs e)
+        public override void InitializeCell(DataControlFieldCell cell, DataControlCellType cellType, DataControlRowState rowState, int rowIndex)
         {
-            // get a reference to the control that raised the event
-            TextBox target = (TextBox)sender;
-            Control container = target.NamingContainer;
+            base.InitializeCell(cell, cellType, rowState, rowIndex);
+            System.Web.UI.Control control = null;
 
-            // get a reference to the row object
-            object dataItem = DataBinder.GetDataItem(container);
-
-            if (dataItem == null)
+            if (cellType == DataControlCellType.DataCell)
             {
-                return;
-            }
-
-            // get the row's value for the named data field only use Eval when it is neccessary
-            // to access child object values, otherwise use GetPropertyValue. GetPropertyValue
-            // is faster because it does not use reflection
-            object dataFieldValue = null;
-
-            if (this.DataField.Contains("."))
-            {
-                dataFieldValue = DataBinder.Eval(dataItem, this.DataField);
-            }
-            else
-            {
-                dataFieldValue = DataBinder.GetPropertyValue(dataItem, this.DataField);
-            }
-
-            // set the table cell's text. check for null values to prevent ToString errors
-            if (dataFieldValue != null)
-            {
-                if (String.IsNullOrEmpty(DataFormatString))
+                if (this.IsReadMode(rowState))
                 {
-                    target.Text = dataFieldValue.ToString();
+                    control = cell;
+                    control.ID = DataField;
                 }
                 else
                 {
-                    target.Text = String.Format(DataFormatString, dataFieldValue);
+                    if (IsBoolean)
+                    {
+                        YCheckBox chk = new YCheckBox();
+                        chk.ID = DataField;
+                        cell.Controls.Add(chk);
+
+                        //If we have a data field, bind to the data binding event later
+                        if (!string.IsNullOrEmpty(this.DataField))
+                            control = cell;
+                    }
+                    else if (IsDropDownList)
+                    {
+                        DropDownList ddl = new DropDownList();
+                        ddl.ID = DataField;
+
+                        //If we have a data field, bind to the data binding event later
+                        if (!string.IsNullOrEmpty(this.DataField))
+                            control = ddl;
+                    }
+                    else
+                    {
+                        YTextBox box = new YTextBox();
+                        box.IsGrid = true;
+                        // TODO ReadOnlyの判定はチェックが必要
+                        box.ReadOnly = this.ReadOnly;
+
+                        box.TextMode = this.TextMode;
+                        box.Rows = this.Rows;
+                        box.Columns = this.Columns;
+                        box.MaxLength = this.MaximumLength;
+                        box.ToolTip = this.HeaderText;
+                        //box.ID = Guid.NewGuid().ToString();
+                        box.ID = this.DataField;
+                        box.IsRequired = this.IsRequired;
+                        box.IsDate = this.IsDate;
+                        box.IsInteger = this.IsInteger;
+                        //box.ValidationGroup = "Update";
+
+                        cell.Controls.Add(box);
+
+                        //If we have a data field, bind to the data binding event later
+                        if (!string.IsNullOrEmpty(this.DataField))
+                            control = box;
+                    }
                 }
+            }
+
+            //Capture the data binding event when data binding
+            if (control != null && this.Visible)
+                control.DataBinding += new EventHandler(control_DataBinding);
+        }
+
+        protected bool IsReadMode(DataControlRowState rowState)
+        {
+            return (rowState == DataControlRowState.Normal || rowState == DataControlRowState.Alternate || rowState == DataControlRowState.Selected);
+        }
+
+        void control_DataBinding(object sender, EventArgs e)
+        {
+            Control ctl = sender as Control;
+
+            object dataItem = DataBinder.GetDataItem(ctl.NamingContainer);
+            String propertyValue = GetPropertyValue(dataItem, DataFormatString, DataField);
+
+
+            if (sender is TableCell)
+            {
+                TableCell cell = sender as TableCell;
+                cell.Text = propertyValue;
+            }
+            else if (sender is YTextBox)
+            {
+                YTextBox box = sender as YTextBox;
+                //If in insert mode, no text should appear
+                if (!this.InsertMode)
+                {
+                    box.Text = propertyValue;
+                }
+            }
+            else if (sender is YCheckBox)
+            {
+                YCheckBox target = sender as YCheckBox;
+
+                Boolean value = false;
+
+                if (Boolean.TryParse(propertyValue, out value))
+                {
+                    target.Checked = value;
+                }
+            }
+            else if (sender is YDropDownList)
+            {
             }
         }
 
-        void lblText_DataBinding(object sender, EventArgs e)
+        private String GetPropertyValue(object dataItem, string format, string dataField)
         {
-            // get a reference to the control that raised the event
-            Label target = (Label)sender;
-            Control container = target.NamingContainer;
+            String ret = String.Empty;
 
-            // get a reference to the row object
-            object dataItem = DataBinder.GetDataItem(container);
+            if (dataItem == null) return string.Empty;
 
-            if (dataItem == null)
+            if (String.IsNullOrEmpty(format))
             {
-                return;
-            }
-
-            // get the row's value for the named data field only use Eval when it is neccessary
-            // to access child object values, otherwise use GetPropertyValue. GetPropertyValue
-            // is faster because it does not use reflection
-            object dataFieldValue = null;
-
-            if (this.DataField.Contains("."))
-            {
-                dataFieldValue = DataBinder.Eval(dataItem, this.DataField);
+                return DataBinder.GetPropertyValue(dataItem, dataField, null);
             }
             else
             {
-                dataFieldValue = DataBinder.GetPropertyValue(dataItem, this.DataField);
-            }
+                object objVal = DataBinder.GetPropertyValue(dataItem, dataField);
+                if (objVal == null) return string.Empty;
 
-            // set the table cell's text. check for null values to prevent ToString errors
-            if (dataFieldValue != null)
-            {
-                if (String.IsNullOrEmpty(DataFormatString))
+                if (IsDate)
                 {
-                    target.Text = dataFieldValue.ToString();
+                    if (objVal is DateTime)
+                    {
+                        DateTime dt = (DateTime)objVal;
+
+                        ret = dt.ToString(format);
+                    }
+
+                    return ret;
                 }
                 else
                 {
-                    target.Text = String.Format(DataFormatString, dataFieldValue);
+                    ret = String.Format(format, objVal);
+
+                    return ret;
                 }
             }
         }
-
     }
 }

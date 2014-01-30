@@ -55,7 +55,7 @@
     <Content Include="App_Data\Database1_log.ldf">
       <DependentUpon>Database1.mdf</DependentUpon>
     </Content>
-    <Content Include="uc\YUCTextBox.ascx" />
+    <Content Include="jquery-1.11.0.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -80,15 +80,10 @@
     <Compile Include="Site1.Master.designer.cs">
       <DependentUpon>Site1.Master</DependentUpon>
     </Compile>
-    <Compile Include="uc\YUCTextBox.ascx.cs">
-      <DependentUpon>YUCTextBox.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="uc\YUCTextBox.ascx.designer.cs">
-      <DependentUpon>YUCTextBox.ascx</DependentUpon>
-    </Compile>
+    <Compile Include="uc\YCheckBox.cs" />
     <Compile Include="uc\YTextBox.cs" />
     <Compile Include="uc\YBoundField.cs" />
+    <Compile Include="uc\YDropDownList.cs" />
     <Compile Include="WebForm1.aspx.cs">
       <DependentUpon>WebForm1.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

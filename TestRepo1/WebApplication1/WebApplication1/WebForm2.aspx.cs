@@ -116,5 +116,10 @@ namespace WebApplication1
                 SqlDataSource1.Insert();
             }
         }
+
+        public Boolean ConvertToBoolean(object s)
+        {
+            return true;
+        }
     }
 }
