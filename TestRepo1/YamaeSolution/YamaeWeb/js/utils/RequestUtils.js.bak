@@ -1,0 +1,19 @@
+
+function RequestUtils() {
+};
+
+
+RequestUtils.buildUrlWithQueryString = function (url, param) {
+
+	return url + "?" + RequestUtils.buildQueryString(param);
+};
+
+RequestUtils.buildQueryString = function (param) {
+	var a = [];
+
+	for (k in param) {
+		a.push(k + '=' + escape(param[k]));
+	}
+
+	return a.join('&');
+};

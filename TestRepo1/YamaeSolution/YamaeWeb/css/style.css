@@ -8,6 +8,34 @@
 
 
 input[readonly] {color:#363636;background-color:#cccccc}
+input.Input {
+    color: black;
+}
+input.Auto {
+    color: blue;
+    background-color:#ddd;
+}
+
+td.Input {
+    color: brown;
+    vertical-align:middle;
+}
+td.Auto {
+    color: gray;
+    vertical-align:middle;
+}
+
+.blankrow {
+    height:27px;
+}
+
+.DetailRow {
+   height:27px;
+}
+
+.titleRow {
+   height:27px;
+}
 
 .GridView { background:#D3E4E5;
  border:1px solid gray;

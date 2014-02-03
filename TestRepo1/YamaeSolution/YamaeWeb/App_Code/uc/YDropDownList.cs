@@ -152,15 +152,19 @@ namespace uc
             }
             else
             {
+                writer.AddAttribute(HtmlTextWriterAttribute.Class, "DetailRow");
                 writer.RenderBeginTag(HtmlTextWriterTag.Tr);
 
                 if (_label != null)
                 {
+                    writer.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClass);
+                    writer.AddAttribute(HtmlTextWriterAttribute.Nowrap, "nowrap");
                     writer.RenderBeginTag(HtmlTextWriterTag.Td);
                     _label.RenderControl(writer);
                     writer.RenderEndTag();
                 }
 
+                writer.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClass);
                 writer.RenderBeginTag(HtmlTextWriterTag.Td);
 
                 base.Render(writer);

@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="MTankaMitsumori.aspx.cs" Inherits="MTankaMitsumori" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="~/Default2.aspx.cs" Inherits="_Default" %>
 
 <%@ Register TagPrefix="y" Namespace="uc" %>
 <!DOCTYPE html>
@@ -71,7 +71,7 @@
         var m2あたりの取数たて = $('#<%=  mainFormView.FindControl("m2あたりの取数たて").ClientID%>');
         var m2あたりの取数よこ = $('#<%=  mainFormView.FindControl("m2あたりの取数よこ").ClientID%>');
         var m2あたりの取数 = $('#<%=  mainFormView.FindControl("m2あたりの取数").ClientID%>');
-        var 単価チェック = $('#<%=  mainFormView.FindControl("単価チェック").ClientID%>');
+        //var 単価チェック = $('#<%=  mainFormView.FindControl("単価チェック").ClientID%>');
         var 見積_材料費 = $('#<%=  mainFormView.FindControl("見積_材料費").ClientID%>');
         var 見積_材料費比 = $('#<%=  mainFormView.FindControl("見積_材料費比").ClientID%>');
         var 見積_加工費小計 = $('#<%=  mainFormView.FindControl("見積_加工費小計").ClientID%>');
@@ -168,4 +168,9 @@
 
     </script>
 </head>
+    <body>
+
+        <asp:GridView ID="mainFormView" runat="server"/>
+
+    </body>
 </html>

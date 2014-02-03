@@ -13,6 +13,18 @@ namespace uc
     {
         private bool _insertMode = false;
 
+        public string CssClass
+        {
+            get
+            {
+                object o = ViewState["CssClass"];
+                return (o == null) ? string.Empty : o.ToString();
+            }
+            set { ViewState["CssClass"] = value; 
+            }
+        }
+
+
         public string DataField
         {
             get
@@ -259,6 +271,8 @@ namespace uc
                         chk.Enabled = false;
                         chk.ID = DataField;
                         control = chk;
+                        chk.CssClass = this.CssClass;
+
                         cell.Controls.Add(chk);
 
                     }
@@ -272,6 +286,7 @@ namespace uc
                         ddl.DataSourceID = DataSourceID;
                         ddl.DataValueField = DataValueField;
                         ddl.DataTextField = DataTextField;
+                        ddl.CssClass = this.CssClass;
                         cell.Controls.Add(ddl);
 
                         //If we have a data field, bind to the data binding event later
@@ -281,6 +296,7 @@ namespace uc
                     else
                     {
                         cell.PreRender += cell_PreRender;
+                        cell.CssClass = this.CssClass;
                         control = cell;
                         control.ID = DataField;
                     }
@@ -292,6 +308,7 @@ namespace uc
                         YCheckBox chk = new YCheckBox();
                         chk.IsGrid = true;
                         chk.ID = DataField;
+                        chk.CssClass = CssClass;
                         cell.Controls.Add(chk);
 
                         //If we have a data field, bind to the data binding event later
@@ -307,6 +324,7 @@ namespace uc
                         ddl.DataSourceID = DataSourceID;
                         ddl.DataValueField = DataValueField;
                         ddl.DataTextField = DataTextField;
+                        ddl.CssClass = this.CssClass;
                         //if (this.IsInteger)
                         //{
                         //    ddl.DefaultValue = "0";
@@ -336,6 +354,7 @@ namespace uc
                         box.IsRequired = this.IsRequired;
                         box.IsDate = this.IsDate;
                         box.IsInteger = this.IsInteger;
+                        box.CssClass = CssClass;
 
                         if (Rows >= 2)
                         {
