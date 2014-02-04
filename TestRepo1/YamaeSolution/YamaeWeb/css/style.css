@@ -23,11 +23,13 @@ input.Auto {
 
 td.Input {
     font-size:13px;
+    font-weight:normal;
     color: brown;
     vertical-align:middle;
 }
 td.Auto {
     font-size:13px;
+    font-weight:normal;
     color: gray;
     vertical-align:middle;
 }
@@ -42,7 +44,13 @@ td.Auto {
 
 .titleRow {
    height:27px;
+   border-bottom:2px solid brown;
+   color:#5C443A;
 }
+.titleRow td {
+   border-top:2px solid brown;
+}
+
 
 .GridView { background:#D3E4E5;
  border:1px solid gray;
@@ -52,7 +60,7 @@ td.Auto {
 }
 caption { border:1px solid #5C443A;
  color:#5C443A;
- font-weight:bold;
+ /*font-weight:bold; */
  letter-spacing:20px;
  padding:6px 4px 8px 0px;
  text-align:center;
