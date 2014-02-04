@@ -1,7 +1,9 @@
-
+﻿
 
 function V(ele) {
-    return eval(ele.val());
+    var val = ele.val();
+    val = StringUtils.replaceAll(val, '¥', "");
+    return eval(val);
 }
 
 
@@ -18,8 +20,4 @@ function Floor(value, keta) {
 
 function BindEvent(ele, func) {
     return JQueryUtils.bindEvent(ele, func);
-}
-
-function V(ele) {
-    return eval(ele.val());
 }

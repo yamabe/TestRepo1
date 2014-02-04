@@ -11,16 +11,23 @@ input[readonly] {color:#363636;background-color:#cccccc}
 input.Input {
     color: black;
 }
+
+td.numeric input {
+    text-align:right;
+}
+
 input.Auto {
     color: blue;
     background-color:#ddd;
 }
 
 td.Input {
+    font-size:13px;
     color: brown;
     vertical-align:middle;
 }
 td.Auto {
+    font-size:13px;
     color: gray;
     vertical-align:middle;
 }

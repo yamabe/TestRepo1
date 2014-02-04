@@ -73,9 +73,7 @@ public partial class MZairyoKikaku : BaseForm
         else
         {
             command.Append(" where ");
-
             command.Append(StringUtils.Join(where, " and "));
-
         }
 
         this.mainDataSource.SelectCommand = command.ToString();

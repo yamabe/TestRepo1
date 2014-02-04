@@ -1,8 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Express 2012 for Web
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "YamaeWeb", "YamaeWeb\", "{B281E022-40C4-4F6C-A998-F121DD92D44D}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "YamaeWeb", "http://localhost:50467", "{B281E022-40C4-4F6C-A998-F121DD92D44D}"
 	ProjectSection(WebsiteProperties) = preProject
+		UseIISExpress = "true"
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv2.0"
 		Debug.AspNetCompiler.VirtualPath = "/YamaeWeb"
 		Debug.AspNetCompiler.PhysicalPath = "YamaeWeb\"
@@ -18,7 +19,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "YamaeWeb", "YamaeWeb\", "{B
 		Release.AspNetCompiler.ForceOverwrite = "true"
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
-		VWDPort = "50467"
+		SlnRelativePath = "YamaeWeb\"
 		DefaultWebSiteLanguage = "Visual C#"
 	EndProjectSection
 EndProject

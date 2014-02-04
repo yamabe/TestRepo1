@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -14,7 +15,6 @@ namespace uc
     /// </summary>
     public class YTextBox : TextBox
     {
-
         private bool _isRequired;
         private bool _isDate;
         private bool _isGrid;
@@ -57,7 +57,11 @@ namespace uc
 
         public string Label
         {
-            set { this._labelText = value; }
+            set {
+
+                this._labelText = value; 
+            
+            }
             get { return this._labelText; }
         }
 
@@ -74,9 +78,6 @@ namespace uc
 
         protected override void CreateChildControls()
         {
-
-            
-
             if (String.IsNullOrEmpty(this._labelText))
             {
                 this._innerLabelText = this.ID;
@@ -119,7 +120,10 @@ namespace uc
                     _numericUpDown.Step = 1;
                     _numericUpDown.Minimum = 0;
                     _numericUpDown.Maximum = 9999999;
-                    _numericUpDown.Width = 60;
+                    _numericUpDown.Width = (int)this.Width.Value + 25;
+//                    _numericUpDown.Width = 60;
+                    
+                    this.Style.Add(HtmlTextWriterStyle.TextAlign, "Right");
 
                     base.Controls.Add(_numericUpDown);
                 }
@@ -141,6 +145,14 @@ namespace uc
 
                 base.Controls.Add(_label);
             }
+
+
+            //string[] splits = { "【", "】" };
+            //string[] ret = this.Label.Split(splits, StringSplitOptions.None);
+
+            //string unit = ret[ret.Length - 1];
+
+
         }
 
         protected override void Render(System.Web.UI.HtmlTextWriter writer)
@@ -179,7 +191,15 @@ namespace uc
                     writer.RenderEndTag();
                 }
 
-                writer.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClass);
+                StringBuilder sb = new StringBuilder();
+                sb.Append(this.CssClass);
+                if (IsInteger)
+                {
+                    sb.Append(" numeric");
+                }
+
+                writer.AddAttribute(HtmlTextWriterAttribute.Class, sb.ToString());
+                
                 writer.RenderBeginTag(HtmlTextWriterTag.Td);
 
                 base.Render(writer);
