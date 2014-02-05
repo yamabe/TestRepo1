@@ -47,10 +47,14 @@
                 DataSourceID="mainDataSource"
                 DataKeyNames="材料規格ID,最終更新日時" AutoGenerateColumns="false"
                 AllowPaging="true"
-                PageSize="12">
+                PageSize="12"
+                AllowSorting="true"
+                PagerStyle-CssClass="grid_pager"
+
+                >
+
                 <Columns>
                     <asp:CommandField ShowEditButton="true" ControlStyle-Width="25" ItemStyle-Width="25"></asp:CommandField>
-                    <asp:CommandField ShowDeleteButton="True" ControlStyle-Width="25" ItemStyle-Width="25"></asp:CommandField>
                     <asp:ButtonField CommandName="ShowDetailUpdate" Text="詳細編集" ControlStyle-Width="50" />
 
                     <asp:ButtonField ButtonType="Link" CommandName="Copy" Text="Copy" />
@@ -175,7 +179,7 @@
                         </tr>
                     </table>
                     <asp:LinkButton ID="EditButton" runat="server" CausesValidation="False"
-                        CommandName="Edit" Text="編集" />
+                        CommandName="Edit" Text="編集"  />
                     &nbsp;<asp:LinkButton ID="DeleteButton" runat="server" CausesValidation="False"
                         CommandName="Delete" Text="削除" />
                     &nbsp;<asp:LinkButton ID="NewButton" runat="server" CausesValidation="False"
@@ -193,7 +197,7 @@
                 SelectCommand="select * from M材料規格番号"
                 UpdateCommand=" update M材料規格番号 set ステータス = @ステータス,得意先 = @得意先,規格番号 = @規格番号,No = @No,山恵フラグ = @山恵フラグ,仕入れ先 = @仕入れ先,材料メーカー = @材料メーカー,材料名 = @材料名,材質 = @材質,M材料_材料ID = @M材料_材料ID,削除フラグ = @削除フラグ,作成ユーザー = @作成ユーザー,最終更新ユーザー = @最終更新ユーザー,作成日時 = @作成日時,最終更新日時 = @最終更新日時 where 材料規格ID = @original_材料規格ID and 最終更新日時 = @original_最終更新日時"
                 InsertCommand=" insert into M材料規格番号 (材料規格ID,ステータス,得意先,規格番号,No,山恵フラグ,仕入れ先,材料メーカー,材料名,材質,M材料_材料ID,削除フラグ,作成ユーザー,最終更新ユーザー,作成日時,最終更新日時) values (@材料規格ID,@ステータス,@得意先,@規格番号,@No,@山恵フラグ,@仕入れ先,@材料メーカー,@材料名,@材質,@M材料_材料ID,@削除フラグ,@作成ユーザー,@最終更新ユーザー,@作成日時,@最終更新日時); SET @NewParameter=LAST_INSERT_ID(); "
-                DeleteCommand="delete from M材料規格番号  where 材料規格ID = @original_材料規格ID  and 最終更新日時 = @original_最終更新日時"
+                DeleteCommand="update M材料規格番号 set 削除フラグ = 'True' where 材料規格ID = @original_材料規格ID  and 最終更新日時 = @original_最終更新日時"
                 ConflictDetection="CompareAllValues"
                 OldValuesParameterFormatString="original_{0}"
                 ConnectionString="<%$ ConnectionStrings:mysqlConLocal %>"

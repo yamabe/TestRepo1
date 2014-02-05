@@ -7,110 +7,158 @@
 */
 
 
-input[readonly] {color:#363636;background-color:#cccccc}
+input[readonly] {
+    color: #363636;
+    background-color: #cccccc;
+}
+
 input.Input {
     color: black;
 }
 
 td.numeric input {
-    text-align:right;
+    text-align: right;
 }
 
 input.Auto {
     color: blue;
-    background-color:#ddd;
+    background-color: #ddd;
 }
 
 td.Input {
-    font-size:13px;
-    font-weight:normal;
+    font-size: 13px;
+    font-weight: normal;
     color: brown;
-    vertical-align:middle;
+    vertical-align: middle;
 }
+
 td.Auto {
-    font-size:13px;
-    font-weight:normal;
+    font-size: 13px;
+    font-weight: normal;
     color: gray;
-    vertical-align:middle;
+    vertical-align: middle;
 }
 
 .blankrow {
-    height:27px;
+    height: 27px;
 }
 
 .DetailRow {
-   height:27px;
+    height: 27px;
 }
 
 .titleRow {
-   height:27px;
-   border-bottom:2px solid brown;
-   color:#5C443A;
-}
-.titleRow td {
-   border-top:2px solid brown;
+    height: 27px;
+    border-bottom: 2px solid brown;
+    color: #5C443A;
 }
 
+    .titleRow td {
+        border-top: 2px solid brown;
+    }
 
-.GridView { background:#D3E4E5;
- border:1px solid gray;
- border-collapse:collapse;
- color:#fff;
- font:normal 12px verdana, arial, helvetica, sans-serif;
+
+.GridView {
+    background: #D3E4E5;
+    border: 1px solid gray;
+    border-collapse: collapse;
+    color: #fff;
+    font: normal 12px verdana, arial, helvetica, sans-serif;
 }
-caption { border:1px solid #5C443A;
- color:#5C443A;
- /*font-weight:bold; */
- letter-spacing:20px;
- padding:6px 4px 8px 0px;
- text-align:center;
- text-transform:uppercase;
+
+caption {
+    border: 1px solid #5C443A;
+    color: #5C443A;
+    /*font-weight:bold; */
+    letter-spacing: 20px;
+    padding: 6px 4px 8px 0px;
+    text-align: center;
+    text-transform: uppercase;
 }
-.GridView td, th { color:#363636;
- padding:.4em;
+
+.GridView td, th {
+    color: #363636;
+    padding: .4em;
 }
-tr { border:1px dotted gray;
+
+tr {
+    border: 1px dotted gray;
 }
-.GridView thead th, tfoot th { background:#5C443A;
- color:#FFFFFF;
- padding:3px 10px 3px 10px;
- text-align:left;
- text-transform:uppercase;
+
+.GridView thead th, tfoot th {
+    /* background: #5C443A; */
+    background: red;
+    color: #FFFFFF;
+    padding: 3px 10px 3px 10px;
+    text-align: left;
+    text-transform: uppercase;
 }
-.GridView tbody td a { color:#363636;
- text-decoration:none;
+
+.GridView tbody th, tfoot th {
+    background: #b4d9db;
+    color: #FFFFFF;
+    padding: 3px 10px 3px 10px;
+    text-align: left;
+    text-transform: uppercase;
 }
-.GridView tbody td a:visited { color:gray;
- text-decoration:line-through;
+
+.GridView tbody td a {
+    color: #363636;
+    text-decoration: none;
 }
-.GridView tbody td a:hover { text-decoration:underline;
+
+    .GridView tbody td a:visited {
+        color: gray;
+        text-decoration: line-through;
+    }
+
+    .GridView tbody td a:hover {
+        text-decoration: underline;
+    }
+
+.GridView .grid_pager td a {
+    text-decoration: underline;
 }
-.GridView tbody th a { color:#363636;
- font-weight:normal;
- text-decoration:none;
+
+.GridView tbody th a {
+    color: #363636;
+    font-weight: normal;
+    text-decoration: none;
 }
-.GridView tbody th a:hover { color:#363636;
+
+    .GridView tbody th a:hover {
+        color: #363636;
+    }
+
+.GridView tbody td + td + td + td a {
+    background-position: left center;
+    background-repeat: no-repeat;
+    color: #03476F;
+    padding-left: 15px;
 }
-.GridView tbody td+td+td+td a { 
- background-position:left center;
- background-repeat:no-repeat;
- color:#03476F;
- padding-left:15px;
+
+    .GridView tbody td + td + td + td a:visited {
+        background-position: left center;
+        background-repeat: no-repeat;
+    }
+
+.GridView tbody th, tbody td {
+    text-align: left;
+    vertical-align: top;
 }
-.GridView tbody td+td+td+td a:visited { 
- background-position:left center;
- background-repeat:no-repeat;
+
+.GridView tfoot td {
+    background: #5C443A;
+    color: #FFFFFF;
+    padding-top: 3px;
 }
-.GridView tbody th, tbody td { text-align:left;
- vertical-align:top;
+
+.odd {
+    background: #fff;
 }
-.GridView tfoot td { background:#5C443A;
- color:#FFFFFF;
- padding-top:3px;
-}
-.odd { background:#fff;
-}
-.GridView tbody tr:hover { background:#99BCBF;
- border:1px solid #03476F;
- color:#000000;
+
+.GridView tbody tr:hover {
+    background: #99BCBF;
+    border: 1px solid #03476F;
+    color: #000000;
 }

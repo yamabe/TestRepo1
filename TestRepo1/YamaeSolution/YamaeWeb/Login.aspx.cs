@@ -22,4 +22,16 @@ public partial class Login : BaseForm
 
         Response.Redirect("~/Menu.aspx"); 
     }
+
+    
+    protected override void Search()
+    {
+      
+
+
+    }
+
+    protected override void ConditionClear()
+    {
+    }
 }

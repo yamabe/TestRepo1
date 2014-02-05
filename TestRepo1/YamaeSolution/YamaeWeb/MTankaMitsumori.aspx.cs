@@ -38,38 +38,20 @@ public partial class MTankaMitsumori : BaseForm
     }
     protected void 検索_Click(object sender, EventArgs e)
     {
-        StringBuilder command = new StringBuilder(_originalSelectCommand);
-        this.mainDataSource.SelectParameters.Clear();
-
-        List<String> where = new List<String>();
-
-        this.mainDataSource.AddSelectParameterLike(where, "部品コード", 検索部品コード.Text);
-        this.mainDataSource.AddSelectParameterLike(where, "部品名称", 検索部品名称.Text);
-
-        if (this.mainDataSource.SelectParameters.Count <= 0)
-        {
-
-        }
-        else
-        {
-            command.Append(" where ");
-
-            command.Append(StringUtils.Join(where, " and "));
-        }
-
-        this.mainDataSource.SelectCommand = command.ToString();
-
-        DataSourceSelectArguments arg = new DataSourceSelectArguments();
-        this.mainDataSource.Select(arg);
+        Search();
     }
     protected void Clear_Click(object sender, EventArgs e)
     {
+        ConditionClear();
+        Search();
+
+        this.mainGridView.PageIndex = 0;
 
     }
     protected void 材料ID_SelectedIndexChanged(object sender, EventArgs e)
     {
         YDropDownList ddl = (YDropDownList)sender;
-       
+
 
         String 材料ID = ddl.GetInternalValue();
 
@@ -99,7 +81,7 @@ public partial class MTankaMitsumori : BaseForm
         ((YTextBox)mainFormView.FindControl("厚み")).Text = row["厚み"].ToString();
         ((YTextBox)mainFormView.FindControl("定尺仕入金額")).Text = row["定尺仕入金額"].ToString();
         ((YTextBox)mainFormView.FindControl("定尺売り金額")).Text = row["定尺売り金額"].ToString();
-        
+
         材料DataSource.SelectCommand = SelectCommand;
         材料DataSource.SelectParameters.Clear();
         this.材料DataSource.Select(arg);
@@ -108,5 +90,55 @@ public partial class MTankaMitsumori : BaseForm
     protected void 材料ID_TextChanged(object sender, EventArgs e)
     {
         String s = string.Empty;
+    }
+
+    protected override void Search()
+    {
+
+        StringBuilder command = new StringBuilder(_originalSelectCommand);
+        this.mainDataSource.SelectParameters.Clear();
+
+        List<String> where = new List<String>();
+
+        this.mainDataSource.AddSelectParameterLike(where, "部品コード", 検索部品コード.Text);
+        this.mainDataSource.AddSelectParameterLike(where, "部品名称", 検索部品名称.Text);
+
+        if (this.mainDataSource.SelectParameters.Count <= 0)
+        {
+
+        }
+        else
+        {
+            command.Append(" where ");
+
+            command.Append(StringUtils.Join(where, " and "));
+        }
+
+        this.mainDataSource.SelectCommand = command.ToString();
+
+        DataSourceSelectArguments arg = new DataSourceSelectArguments();
+        this.mainDataSource.Select(arg);
+
+
+    }
+
+    protected override void ConditionClear()
+    {
+        検索部品コード.Text = string.Empty;
+        検索部品名称.Text = string.Empty;
+
+        //検索ステータス.Text = String.Empty;
+        //検索得意先.SelectedIndex = 0;
+        //検索規格番号.Text = String.Empty;
+        //検索材料名.Text = String.Empty;
+        //検索No.Text = String.Empty;
+        //検索山恵フラグ.Checked = false;
+        //検索仕入れ先.SelectedIndex = 0;
+        //検索材料メーカー.SelectedIndex = 0;
+        //検索材質.SelectedIndex = 0;
+        //検索M材料_材料ID.SelectedIndex = 0;
+        //検索削除フラグ.Checked = false;
+        //検索作成ユーザー.SelectedIndex = 0;
+        //検索最終更新ユーザー.SelectedIndex = 0;
     }
 }

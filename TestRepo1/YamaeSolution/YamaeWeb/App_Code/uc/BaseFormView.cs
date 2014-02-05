@@ -32,6 +32,12 @@ namespace uc
             base.OnItemUpdating(e);
         }
 
+        protected override void OnItemUpdated(FormViewUpdatedEventArgs e)
+        {
+            base.OnItemUpdated(e);
+            e.KeepInEditMode = true;
+        }
+
         protected override void OnItemInserting(FormViewInsertEventArgs e)
         {
             ConvertCheckBoxValue(e.Values);

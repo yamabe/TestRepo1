@@ -25,7 +25,7 @@ namespace uc
             Updated += BaseSqlDataSource_Updated;
 
             Deleted += BaseSqlDataSource_Deleted;
-            
+
         }
 
         public void AddSelectParameter(List<String> where, String name, String value)
@@ -33,7 +33,7 @@ namespace uc
             if (!String.IsNullOrEmpty(value))
             {
                 StringBuilder sb = new StringBuilder();
- 
+
                 sb.Append(" ");
                 sb.Append(name);
                 sb.Append(" = ");
@@ -43,7 +43,29 @@ namespace uc
 
                 where.Add(sb.ToString());
 
-                this.SelectParameters.Add(name, value );
+                this.SelectParameters.Add(name, value);
+            }
+        }
+
+        public void AddSelectParameter(List<String> where, String name, String value, String ope)
+        {
+            if (!String.IsNullOrEmpty(value))
+            {
+                StringBuilder sb = new StringBuilder();
+
+                sb.Append(" ");
+                sb.Append(name);
+                sb.Append(" ");
+                sb.Append(ope);
+                sb.Append(" ");
+
+                sb.Append("@");
+                sb.Append(name);
+                sb.Append(" ");
+
+                where.Add(sb.ToString());
+
+                this.SelectParameters.Add(name, value);
             }
         }
 
@@ -67,16 +89,19 @@ namespace uc
 
         void BaseSqlDataSource_Deleted(object sender, SqlDataSourceStatusEventArgs e)
         {
-            if (this.BaseForm.MainBaseGridView.Rows.Count  <= 0) {
+            if (this.BaseForm.MainBaseGridView.Rows.Count <= 0)
+            {
                 this.BaseForm.MainBaseFormView.PageIndex = -1;
-            } else {
+            }
+            else
+            {
                 this.BaseForm.MainBaseFormView.PageIndex = 0;
             }
         }
 
         void BaseSqlDataSource_Updated(object sender, SqlDataSourceStatusEventArgs e)
         {
-            
+
             //throw new NotImplementedException();
         }
 
@@ -97,7 +122,7 @@ namespace uc
 
         void BaseSqlDataSource_Updating(object sender, SqlDataSourceCommandEventArgs e)
         {
-            
+
             e.Command.Parameters["最終更新ユーザー"].Value = BaseForm.UserId;
             e.Command.Parameters["最終更新日時"].Value = DateTime.Now;
         }

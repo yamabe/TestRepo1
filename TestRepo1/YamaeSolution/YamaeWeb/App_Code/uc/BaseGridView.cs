@@ -11,6 +11,18 @@ namespace uc
     /// </summary>
     public class BaseGridView : GridView
     {
+        public bool AllowRowClick
+        {
+            get
+            {
+                object o = ViewState["AllowRowClick"];
+                return (o == null) ? true : (bool)o;
+            }
+            set { ViewState["AllowRowClick"] = value; }
+        }
+
+
+
         public BaseForm BaseForm
         {
             get { return (BaseForm)this.Page; }
@@ -18,55 +30,49 @@ namespace uc
 
         public BaseGridView()
         {
+            AllowRowClick = true;
             //
             // TODO: コンストラクター ロジックをここに追加します
             //
+
+
+        }
+
+        protected override void CreateChildControls()
+        {
+            base.CreateChildControls();
         }
 
         protected override void OnRowDataBound(GridViewRowEventArgs e)
         {
             base.OnRowDataBound(e);
 
-            if (this.EditIndex == e.Row.RowIndex)
+            if (AllowRowClick)
             {
-
+                e.Row.Attributes.Add("onclick", "(__doPostBack('mainGridView','ShowDetailUpdate$" + e.Row.RowIndex + "'))");
             }
-
-            //if (e.Row.RowType == DataControlRowType.DataRow)
-            //{
-            //    GridView grid = this;
-            //    grid.SelectedIndex = e.Row.RowIndex;
-
-            //    if (!string.IsNullOrEmpty(grid.SelectedDataKey["PCT"].ToString()))
-            //    {
-            //        if (e.Row.Cells[0].Controls[1] is DropDownList)
-            //        {
-            //            DropDownList ddl = (DropDownList)e.Row.Cells[0].Controls[1];
-            //            ddl.SelectedIndex = Int32.Parse(grid.SelectedDataKey["PCT"].ToString()) - 1;
-            //        }
-            //    }
-            //    grid.SelectedIndex = -1;
-
-            //}
         }
 
         protected override void OnRowCommand(GridViewCommandEventArgs e)
         {
             base.OnRowCommand(e);
+            
+            int rowIndex = -1;
+            if (Int32.TryParse((String)e.CommandArgument, out rowIndex))
+            {
+                if (rowIndex < 0)
+                {
+                    return;
+                }
 
-            int rowIndex = Int32.Parse((String)e.CommandArgument);
-            if (rowIndex < 0)
-            {
-                return;
-            }
-
-            if (e.CommandName == "ShowDetailUpdate")
-            {
-                BaseForm.MainBaseFormView.ChangeModeToEdit(rowIndex);
-            }
-            else if (e.CommandName == "Copy")
-            {
-                CopyRow(rowIndex, BaseForm.MainBaseSqlDataSource, BaseForm.MainBaseFormView);
+                if (e.CommandName == "ShowDetailUpdate")
+                {
+                    BaseForm.MainBaseFormView.ChangeModeToEdit(rowIndex);
+                }
+                else if (e.CommandName == "Copy")
+                {
+                    CopyRow(rowIndex, BaseForm.MainBaseSqlDataSource, BaseForm.MainBaseFormView);
+                }
             }
         }
 

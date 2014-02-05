@@ -32,7 +32,9 @@ namespace uc
                 object o = ViewState["DataField"];
                 return (o == null) ? string.Empty : o.ToString();
             }
-            set { ViewState["DataField"] = value; }
+            set { ViewState["DataField"] = value;
+            this.SortExpression = value;
+            }
         }
 
         public string DataFormatString

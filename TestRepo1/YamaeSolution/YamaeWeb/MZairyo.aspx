@@ -25,10 +25,12 @@
             <y:BaseGridView CssClass="GridView" ID="mainGridView" runat="server"
                 DataSourceID="mainDataSource"
                 DataKeyNames="材料ID,最終更新日時" AutoGenerateColumns="false"
-                AllowSorting="true"
                 AllowPaging="true"
                 
-                PageSize="10"
+                PageSize="12"
+
+                 AllowSorting="true"
+                PagerStyle-CssClass="grid_pager"
 
                 >
                 <Columns>
@@ -168,7 +170,7 @@
                 SelectCommand="select * from M材料"
                 UpdateCommand=" update M材料 set 材料名称 = @材料名称, 材質大分類 = @材質大分類, 材質 = @材質, 定尺寸法縦 = @定尺寸法縦, 定尺寸法横 = @定尺寸法横, 厚み = @厚み, 定尺仕入金額 = @定尺仕入金額, 定尺売り金額 = @定尺売り金額, 削除フラグ = @削除フラグ, 最終更新ユーザー = @最終更新ユーザー, 最終更新日時 = @最終更新日時 where 材料ID = @original_材料ID and 最終更新日時 = @original_最終更新日時"
                 InsertCommand=" insert into M材料 (材料ID, 材料名称, 材質大分類, 材質, 定尺寸法縦, 定尺寸法横, 厚み, 定尺仕入金額, 定尺売り金額, 削除フラグ, 作成ユーザー, 最終更新ユーザー, 作成日時, 最終更新日時) values (@材料ID, @材料名称, @材質大分類, @材質, @定尺寸法縦, @定尺寸法横, @厚み, @定尺仕入金額, @定尺売り金額, @削除フラグ, @作成ユーザー, @最終更新ユーザー, @作成日時, @最終更新日時); SET @NewParameter=LAST_INSERT_ID(); "
-                DeleteCommand="delete from M材料  where 材料ID = @original_材料ID  and 最終更新日時 = @original_最終更新日時"
+                DeleteCommand="update M材料  set 削除フラグ = 'True' where 材料ID = @original_材料ID  and 最終更新日時 = @original_最終更新日時"
                 ConflictDetection="CompareAllValues"
                 OldValuesParameterFormatString="original_{0}"
                 ConnectionString="<%$ ConnectionStrings:mysqlConLocal %>"

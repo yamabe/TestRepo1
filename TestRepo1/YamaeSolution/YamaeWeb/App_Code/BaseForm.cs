@@ -6,7 +6,7 @@ using uc;
 /// <summary>
 /// BaseForm の概要の説明です
 /// </summary>
-public class BaseForm : System.Web.UI.Page
+public abstract class BaseForm : System.Web.UI.Page
 {
     public BaseForm()
     {
@@ -108,4 +108,14 @@ public class BaseForm : System.Web.UI.Page
 
         return ret;
     }
+
+    protected override void OnLoad(EventArgs e)
+    {
+        base.OnLoad(e);
+
+        Search();
+    }
+
+    protected abstract void Search();
+    protected abstract void ConditionClear();
 }

@@ -22,9 +22,12 @@
 
 
             <y:BaseGridView CssClass="GridView" ID="mainGridView" runat="server"
-                
                 DataSourceID="mainDataSource"
-                DataKeyNames="会社ID,最終更新日時" AutoGenerateColumns="false">
+                DataKeyNames="会社ID,最終更新日時" AutoGenerateColumns="false"
+                AllowPaging="true"
+                PageSize="12"
+                AllowSorting="true"
+                PagerStyle-CssClass="grid_pager">
                 <Columns>
                     <asp:CommandField ShowEditButton="true" ControlStyle-Width="25" ItemStyle-Width="25"></asp:CommandField>
                     <asp:CommandField ShowDeleteButton="True" ControlStyle-Width="25" ItemStyle-Width="25"></asp:CommandField>
@@ -151,7 +154,7 @@
                 SelectCommand="select 会社ID,会社名称,削除フラグ,得意先,仕入れ先,材料メーカー,取引有無,作成ユーザー,最終更新ユーザー,作成日時,最終更新日時 from M会社"
                 UpdateCommand=" update M会社 set 会社名称 = @会社名称,得意先=@得意先,仕入れ先=@仕入れ先,材料メーカー=@材料メーカー,取引有無=@取引有無,削除フラグ = @削除フラグ,最終更新ユーザー = @最終更新ユーザー, 最終更新日時 = @最終更新日時 where 会社ID = @original_会社ID and 最終更新日時 = @original_最終更新日時"
                 InsertCommand=" insert into M会社 (会社ID,会社名称,得意先,仕入れ先,材料メーカー,取引有無,削除フラグ,作成ユーザー,最終更新ユーザー,作成日時,最終更新日時) values (@会社ID,@会社名称,@得意先,@仕入れ先,@材料メーカー,@取引有無,@削除フラグ,@作成ユーザー,@最終更新ユーザー,@作成日時,@最終更新日時); SET @NewParameter=LAST_INSERT_ID(); "
-                DeleteCommand="delete from M会社  where 会社ID = @original_会社ID  and 最終更新日時 = @original_最終更新日時"
+                DeleteCommand="update M会社     set 削除フラグ = 'True'  where 会社ID = @original_会社ID  and 最終更新日時 = @original_最終更新日時"
                 ConflictDetection="CompareAllValues"
                 OldValuesParameterFormatString="original_{0}"
                 ConnectionString="<%$ ConnectionStrings:mysqlConLocal %>"

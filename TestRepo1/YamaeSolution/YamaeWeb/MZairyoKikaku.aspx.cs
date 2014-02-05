@@ -13,12 +13,18 @@ public partial class MZairyoKikaku : BaseForm
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        if (!IsPostBack)
+        {
+            検索山恵フラグ.Checked = true;
+        }
+
         this.MainBaseFormView = mainFormView;
         this.MainBaseGridView = mainGridView;
         this.MainBaseSqlDataSource = mainDataSource;
 
         _originalSelectCommand = this.MainBaseSqlDataSource.SelectCommand;
         _selectCollection = this.MainBaseSqlDataSource.SelectParameters;
+
     }
 
     protected void mainDataSource_Updating(object sender, SqlDataSourceCommandEventArgs e)
@@ -35,12 +41,25 @@ public partial class MZairyoKikaku : BaseForm
 
     protected void 検索_Click(object sender, EventArgs e)
     {
+        Search();
+    }
+
+
+    protected void Clear_Click(object sender, EventArgs e)
+    {
+        ConditionClear();
+        Search();
+
+        this.mainGridView.PageIndex = 0;
+    }
+
+    protected override void Search()
+    {
         DataSourceSelectArguments arg = new DataSourceSelectArguments();
         StringBuilder command = new StringBuilder(_originalSelectCommand);
         this.mainDataSource.SelectParameters.Clear();
 
         List<String> where = new List<String>();
-
 
         this.mainDataSource.AddSelectParameterLike(where, "ステータス", 検索ステータス.Text);
         this.mainDataSource.AddSelectParameterLike(where, "得意先", 検索得意先.Text);
@@ -59,12 +78,13 @@ public partial class MZairyoKikaku : BaseForm
         {
             this.mainDataSource.AddSelectParameter(where, "削除フラグ", StringUtils.TrueString);
         }
+        else
+        {
+            this.mainDataSource.AddSelectParameter(where, "削除フラグ", StringUtils.TrueString, "!=");
+        }
+
         this.mainDataSource.AddSelectParameter(where, "作成ユーザー", 検索作成ユーザー.GetInternalValue());
         this.mainDataSource.AddSelectParameter(where, "最終更新ユーザー", 検索最終更新ユーザー.GetInternalValue());
-
-
-
-      
 
         if (this.mainDataSource.SelectParameters.Count <= 0)
         {
@@ -78,8 +98,12 @@ public partial class MZairyoKikaku : BaseForm
 
         this.mainDataSource.SelectCommand = command.ToString();
         this.mainDataSource.Select(arg);
+        this.mainDataSource.DataBind();
+
+
     }
-    protected void Clear_Click(object sender, EventArgs e)
+
+    protected override void ConditionClear()
     {
         検索ステータス.Text = String.Empty;
         検索得意先.SelectedIndex = 0;
@@ -94,6 +118,6 @@ public partial class MZairyoKikaku : BaseForm
         検索削除フラグ.Checked = false;
         検索作成ユーザー.SelectedIndex = 0;
         検索最終更新ユーザー.SelectedIndex = 0;
-
     }
+
 }
