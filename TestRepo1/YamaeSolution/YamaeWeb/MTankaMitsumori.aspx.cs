@@ -21,7 +21,54 @@ public partial class MTankaMitsumori : BaseForm
 
         _originalSelectCommand = this.MainBaseSqlDataSource.SelectCommand;
         _selectCollection = this.MainBaseSqlDataSource.SelectParameters;
+
+
     }
+
+    //protected override void CreateChildControls()
+    //{
+    //    base.CreateChildControls();
+        
+
+    //}
+
+    //protected override void OnPreRenderComplete(EventArgs e)
+    //{
+    //    base.OnPreRenderComplete(e);
+
+    //    YTextBox ctrl = (YTextBox)mainFormView.FindControl("定尺寸法縦_original");
+    //    if (ctrl != null && !String.IsNullOrEmpty(ctrl.Text))
+    //    {
+    //        YDropDownList ddl = (YDropDownList)mainFormView.FindControl("材料ID");
+
+    //        Set定尺情報(ddl, false);
+    //    }
+    //}
+    //protected override void OnPreRender(EventArgs e)
+    //{
+    //    base.OnPreRender(e);
+
+    //    YTextBox ctrl = (YTextBox)mainFormView.FindControl("定尺寸法縦_original");
+    //    if (ctrl != null && !String.IsNullOrEmpty(ctrl.Text))
+    //    {
+    //        YDropDownList ddl = (YDropDownList)mainFormView.FindControl("材料ID");
+
+    //        Set定尺情報(ddl, false);
+    //    }
+    //}
+
+    //protected override void OnDataBinding(EventArgs e)
+    //{
+    //    base.OnDataBinding(e);
+
+    //    YTextBox ctrl = (YTextBox)mainFormView.FindControl("定尺寸法縦_original");
+    //    if (ctrl != null && !String.IsNullOrEmpty(ctrl.Text))
+    //    {
+    //        YDropDownList ddl = (YDropDownList)mainFormView.FindControl("材料ID");
+
+    //        Set定尺情報(ddl, false);
+    //    }
+    //}
 
     protected void mainDataSource_Updating(object sender, SqlDataSourceCommandEventArgs e)
     {
@@ -52,40 +99,7 @@ public partial class MTankaMitsumori : BaseForm
     {
         YDropDownList ddl = (YDropDownList)sender;
 
-
-        String 材料ID = ddl.GetInternalValue();
-
-        String SelectCommand = 材料DataSource.SelectCommand;
-        ParameterCollection SelectCollection = 材料DataSource.SelectParameters;
-
-        List<String> where = new List<String>();
-        where.Add(SelectCommand);
-        材料DataSource.AddSelectParameterLike(where, "t1.材料ID", 材料ID);
-
-        StringBuilder command = new StringBuilder();
-        command.Append(StringUtils.Join(where, " and "));
-
-        this.材料DataSource.SelectCommand = command.ToString();
-
-        DataSourceSelectArguments arg = new DataSourceSelectArguments();
-        DataView view = (DataView)this.材料DataSource.Select(arg);
-        DataTable table = view.ToTable();
-
-        DataRow row = table.Rows[0];
-
-        ((YTextBox)mainFormView.FindControl("材料名称")).Text = row["材料名称"].ToString();
-        ((YTextBox)mainFormView.FindControl("材質大分類")).Text = row["材質大分類"].ToString();
-        ((YTextBox)mainFormView.FindControl("材質")).Text = row["材質"].ToString();
-        ((YTextBox)mainFormView.FindControl("定尺寸法縦")).Text = row["定尺寸法縦"].ToString();
-        ((YTextBox)mainFormView.FindControl("定尺寸法横")).Text = row["定尺寸法横"].ToString();
-        ((YTextBox)mainFormView.FindControl("厚み")).Text = row["厚み"].ToString();
-        ((YTextBox)mainFormView.FindControl("定尺仕入金額")).Text = row["定尺仕入金額"].ToString();
-        ((YTextBox)mainFormView.FindControl("定尺売り金額")).Text = row["定尺売り金額"].ToString();
-
-        材料DataSource.SelectCommand = SelectCommand;
-        材料DataSource.SelectParameters.Clear();
-        this.材料DataSource.Select(arg);
-
+        Set定尺情報(ddl, false);
     }
     protected void 材料ID_TextChanged(object sender, EventArgs e)
     {
@@ -141,4 +155,84 @@ public partial class MTankaMitsumori : BaseForm
         //検索作成ユーザー.SelectedIndex = 0;
         //検索最終更新ユーザー.SelectedIndex = 0;
     }
+    protected void 定尺情報設定_Click(object sender, EventArgs e)
+    {
+        YDropDownList ddl =  (YDropDownList)mainFormView.FindControl("材料ID");
+       
+        Set定尺情報(ddl, true);
+
+    }
+
+    private void Set定尺情報(YDropDownList ddl, bool isSetAllValue)
+    {
+        String 材料ID = ddl.GetInternalValue();
+
+        String SelectCommand = 材料DataSource.SelectCommand;
+        ParameterCollection SelectCollection = 材料DataSource.SelectParameters;
+
+        List<String> where = new List<String>();
+        where.Add(SelectCommand);
+        材料DataSource.AddSelectParameterLike(where, "t1.材料ID", 材料ID);
+
+        StringBuilder command = new StringBuilder();
+        command.Append(StringUtils.Join(where, " and "));
+
+        this.材料DataSource.SelectCommand = command.ToString();
+
+        DataSourceSelectArguments arg = new DataSourceSelectArguments();
+        DataView view = (DataView)this.材料DataSource.Select(arg);
+        DataTable table = view.ToTable();
+
+        DataRow row = table.Rows[0];
+
+        ((YTextBox)mainFormView.FindControl("材料名称")).Text = row["材料名称"].ToString();
+        ((YTextBox)mainFormView.FindControl("材質大分類")).Text = row["材質大分類"].ToString();
+        ((YTextBox)mainFormView.FindControl("材質")).Text = row["材質"].ToString();
+        if (mainFormView.FindControl("定尺寸法縦_original") != null)
+        {
+            ((YTextBox)mainFormView.FindControl("定尺寸法縦_original")).Text = row["定尺寸法縦"].ToString();
+            ((YTextBox)mainFormView.FindControl("定尺寸法横_original")).Text = row["定尺寸法横"].ToString();
+            ((YTextBox)mainFormView.FindControl("定尺仕入金額_original")).Text = row["定尺仕入金額"].ToString();
+
+        }
+        if (isSetAllValue)
+        {
+            ((YTextBox)mainFormView.FindControl("定尺寸法縦")).Text = row["定尺寸法縦"].ToString();
+            ((YTextBox)mainFormView.FindControl("定尺寸法横")).Text = row["定尺寸法横"].ToString();
+            ((YTextBox)mainFormView.FindControl("厚み")).Text = row["厚み"].ToString();
+            ((YTextBox)mainFormView.FindControl("定尺仕入金額")).Text = row["定尺仕入金額"].ToString();
+            ((YTextBox)mainFormView.FindControl("定尺売り金額")).Text = row["定尺売り金額"].ToString();
+        }
+        else
+        {
+            YTextBox t = (YTextBox)mainFormView.FindControl("定尺寸法縦");
+            YTextBox t2 = (YTextBox)mainFormView.FindControl("定尺寸法横");
+            if (StringUtils.IsEmptyOrZero(t.Text) && StringUtils.IsEmptyOrZero(t2.Text))
+            {
+                t.Text = row["定尺寸法縦"].ToString();
+                t.Text = row["定尺寸法横"].ToString();
+            }
+
+            t = (YTextBox)mainFormView.FindControl("厚み");
+            if (StringUtils.IsEmptyOrZero(t.Text))
+            {
+                t.Text = row["厚み"].ToString();
+            }
+            t = (YTextBox)mainFormView.FindControl("定尺仕入金額");
+            if (StringUtils.IsEmptyOrZero(t.Text))
+            {
+                t.Text = row["定尺仕入金額"].ToString();
+            }
+            t = (YTextBox)mainFormView.FindControl("定尺売り金額");
+            if (StringUtils.IsEmptyOrZero(t.Text))
+            {
+                t.Text = row["定尺売り金額"].ToString();
+            }
+        }
+
+        材料DataSource.SelectCommand = SelectCommand;
+        材料DataSource.SelectParameters.Clear();
+        this.材料DataSource.Select(arg);
+    }
+
 }

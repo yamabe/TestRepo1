@@ -39,4 +39,24 @@ public class StringUtils
         return sb.ToString();
 
     }
+
+
+    public static bool IsEmptyOrZero(String value)
+    {
+        if (String.IsNullOrEmpty(value))
+        {
+            return true;
+        }
+
+        decimal iValue = 0;
+
+        if (Decimal.TryParse(value, out iValue))
+        {
+            if (iValue == 0)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 }
