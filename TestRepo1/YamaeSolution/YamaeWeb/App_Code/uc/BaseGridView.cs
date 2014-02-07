@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Globalization;
 using System.Web;
 using System.Web.UI;
@@ -40,6 +41,8 @@ namespace uc
 
         protected override void CreateChildControls()
         {
+            AllowSorting = false;
+
             base.CreateChildControls();
         }
 
@@ -67,7 +70,18 @@ namespace uc
 
                 if (e.CommandName == "ShowDetailUpdate")
                 {
-                    BaseForm.MainBaseFormView.ChangeModeToEdit(rowIndex);
+                    if (this.PageIndex == 0)
+                    {
+                        GridViewRow row = this.Rows[rowIndex];
+
+                        BaseForm.MainBaseFormView.ChangeModeToEdit(row.DataItemIndex);
+                    }
+                    else
+                    {
+                        GridViewRow row = this.Rows[rowIndex];
+
+                        BaseForm.MainBaseFormView.ChangeModeToEdit(row.DataItemIndex);
+                    }
                 }
                 else if (e.CommandName == "Copy")
                 {
@@ -76,6 +90,20 @@ namespace uc
             }
         }
 
+        protected override void OnSorting(GridViewSortEventArgs e)
+        {
+            base.OnSorting(e);
+        }
+
+        protected override void OnSorted(EventArgs e)
+        {
+            base.OnSorted(e);
+
+            //BaseForm.MainBaseSqlDataSource.DataBind();
+            //BaseForm.MainBaseFormView.DataBind();
+           
+
+        }
         protected override void OnRowEditing(GridViewEditEventArgs e)
         {
             base.OnRowEditing(e);
@@ -147,7 +175,8 @@ namespace uc
             if (ret >= 0)
             {
                 // TODO これでは、同時処理時に正しく処理されないよ。
-                mainFormView.PageIndex = Rows.Count;
+
+                mainFormView.PageIndex = mainFormView.PageCount;
                 mainFormView.ChangeMode(FormViewMode.Edit);
             }
         }

@@ -121,7 +121,6 @@ namespace uc
                     _numericUpDown.Minimum = 0;
                     _numericUpDown.Maximum = 9999999;
                     _numericUpDown.Width = (int)this.Width.Value + 25;
-//                    _numericUpDown.Width = 60;
                     
                     this.Style.Add(HtmlTextWriterStyle.TextAlign, "Right");
 

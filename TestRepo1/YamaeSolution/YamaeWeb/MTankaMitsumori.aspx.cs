@@ -117,6 +117,9 @@ public partial class MTankaMitsumori : BaseForm
         this.mainDataSource.AddSelectParameterLike(where, "部品コード", 検索部品コード.Text);
         this.mainDataSource.AddSelectParameterLike(where, "部品名称", 検索部品名称.Text);
 
+        this.mainDataSource.AddSelectParameter(where, "作成日時", "作成日時開始", "作成日時終了", 検索作成日時開始.Text, 検索作成日時終了.Text);
+
+
         if (this.mainDataSource.SelectParameters.Count <= 0)
         {
 
@@ -140,6 +143,8 @@ public partial class MTankaMitsumori : BaseForm
     {
         検索部品コード.Text = string.Empty;
         検索部品名称.Text = string.Empty;
+        検索作成日時開始.Text = string.Empty;
+        検索作成日時終了.Text = string.Empty;
 
         //検索ステータス.Text = String.Empty;
         //検索得意先.SelectedIndex = 0;

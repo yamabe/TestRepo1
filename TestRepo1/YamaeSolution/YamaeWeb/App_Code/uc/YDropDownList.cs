@@ -131,15 +131,11 @@ namespace uc
                 //}
             }
 
-
             try
             {
-
                 base.DataBind();
-            }
-            catch
-            {
-                String s = string.Empty;
+            }catch {
+
             }
         }
 

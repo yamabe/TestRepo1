@@ -15,7 +15,11 @@
 
         <br />
         <br />
-        <asp:LinkButton ID="LinkButton1" runat="server" PostBackUrl="~/MZairyo.aspx" Text="材料マスタメンテナンス" />
+        <asp:LinkButton ID="LinkButton1" runat="server" PostBackUrl="~/MZairyoKakaku.aspx" Text="材料価格メンテナンス" />
+        <br />
+        <br />
+        <asp:LinkButton ID="LinkButton7" runat="server" PostBackUrl="~/MZairyoZokusei.aspx" Text="材料属性メンテナンス" />
+    
     
 
         <br />

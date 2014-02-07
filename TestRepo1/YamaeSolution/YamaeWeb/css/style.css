@@ -20,6 +20,10 @@ td.numeric input {
     text-align: right;
 }
 
+td.numeric {
+    text-align: right;
+}
+
 input.Auto {
     color: blue;
     background-color: #ddd;

@@ -69,7 +69,7 @@
  <y:YBoundField HeaderText="仕入れ先" DataFormatStringEditing="" DataField="仕入れ先" ReadOnly="FALSE"  IsBoolean="FALSE"  ControlStyle-Width="100"  ItemStyle-Width="100"  ItemStyle-Wrap="false"      IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server"  DataSourceID="仕入れ先DataSource" DataTextField="会社名称" DataValueField="会社ID"   AppendDataBoundItems="true"   IsDropDownList="true"  />
  <y:YBoundField HeaderText="材料メーカー" DataFormatStringEditing="" DataField="材料メーカー" ReadOnly="FALSE"  IsBoolean="FALSE"  ControlStyle-Width="100"  ItemStyle-Width="100"  ItemStyle-Wrap="false"      IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server"  DataSourceID="材料メーカーDataSource" DataTextField="会社名称" DataValueField="会社ID"   AppendDataBoundItems="true"   IsDropDownList="true"  />
  <y:YBoundField HeaderText="材質" DataFormatStringEditing="" DataField="材質" ReadOnly="FALSE"  IsBoolean="FALSE"  ControlStyle-Width="100"  ItemStyle-Width="100"  ItemStyle-Wrap="false"      IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server"  DataSourceID="M材質DataSource" DataTextField="名称" DataValueField="コードID"   AppendDataBoundItems="true"   IsDropDownList="true"  />
- <y:YBoundField HeaderText="M材料_材料ID" DataFormatStringEditing="" DataField="M材料_材料ID" ReadOnly="FALSE"  IsBoolean="FALSE"  ControlStyle-Width="100"  ItemStyle-Width="100"  ItemStyle-Wrap="false"      IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server"  DataSourceID="M材料_材料IDDataSource" DataTextField="材料名称" DataValueField="材料ID"   AppendDataBoundItems="true"   IsDropDownList="true"  />
+ <y:YBoundField HeaderText="M材料_材料ID" DataFormatStringEditing="" DataField="M材料_材料ID" ReadOnly="FALSE"  IsBoolean="FALSE"  ControlStyle-Width="100"  ItemStyle-Width="100"  ItemStyle-Wrap="false"      IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server"  DataSourceID="M材料_材料IDDataSource" DataTextField="材料名称" DataValueField="材料属性ID"   AppendDataBoundItems="true"   IsDropDownList="true"  />
  <y:YBoundField HeaderText="削除フラグ" DataFormatStringEditing="" DataField="削除フラグ" ReadOnly="FALSE"  IsBoolean="TRUE"  ControlStyle-Width="40"  ItemStyle-Width="40"  ItemStyle-Wrap="false"      IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="false" runat="server"   />
  <y:YBoundField HeaderText="作成ユーザー" DataFormatStringEditing="" DataField="作成ユーザー" ReadOnly="TRUE"  IsBoolean="FALSE"  ControlStyle-Width="100"  ItemStyle-Width="100"  ItemStyle-Wrap="false"      IsRequired="FALSE" IsDate="false"  DataFormatString="" IsInteger="true" runat="server"  DataSourceID="ユーザーDataSource" DataTextField="ユーザー名" DataValueField="ユーザーId"   AppendDataBoundItems="true"   IsDropDownList="true"  />
  <y:YBoundField HeaderText="最終更新ユーザー" DataFormatStringEditing="" DataField="最終更新ユーザー" ReadOnly="TRUE"  IsBoolean="FALSE"  ControlStyle-Width="100"  ItemStyle-Width="100"  ItemStyle-Wrap="false"      IsRequired="FALSE" IsDate="false"  DataFormatString="" IsInteger="true" runat="server"  DataSourceID="ユーザーDataSource" DataTextField="ユーザー名" DataValueField="ユーザーId"   AppendDataBoundItems="true"   IsDropDownList="true"  />
@@ -101,7 +101,7 @@
 <y:YDropDownList   id="仕入れ先"  Label="仕入れ先"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" SelectedValue='<%# Bind("仕入れ先") %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server"  DataSourceID="仕入れ先DataSource" DataTextField="会社名称" DataValueField="会社ID"   AppendDataBoundItems="true"  />
 <y:YDropDownList   id="材料メーカー"  Label="材料メーカー"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" SelectedValue='<%# Bind("材料メーカー") %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server"  DataSourceID="材料メーカーDataSource" DataTextField="会社名称" DataValueField="会社ID"   AppendDataBoundItems="true"  />
 <y:YDropDownList   id="材質"  Label="材質"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" SelectedValue='<%# Bind("材質") %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server"  DataSourceID="M材質DataSource" DataTextField="名称" DataValueField="コードID"   AppendDataBoundItems="true"  />
-<y:YDropDownList   id="M材料_材料ID"  Label="M材料_材料ID"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" SelectedValue='<%# Bind("M材料_材料ID") %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server"  DataSourceID="M材料_材料IDDataSource" DataTextField="材料名称" DataValueField="材料ID"   AppendDataBoundItems="true"  />
+<y:YDropDownList   id="M材料_材料ID"  Label="M材料_材料ID"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" SelectedValue='<%# Bind("M材料_材料ID") %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server"  DataSourceID="M材料_材料IDDataSource" DataTextField="材料名称" DataValueField="材料属性ID"   AppendDataBoundItems="true"  />
 <y:YCheckBox   id="削除フラグ"  Label="削除フラグ"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Checked='<%# ConvertToBoolean(Eval("削除フラグ")) %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="false" runat="server"  />
 <y:YDropDownList   id="作成ユーザー"  Label="作成ユーザー"   IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" SelectedValue='<%# Bind("作成ユーザー") %>'    IsRequired="FALSE" IsDate="false"  DataFormatString="" IsInteger="true" runat="server"  DataSourceID="ユーザーDataSource" DataTextField="ユーザー名" DataValueField="ユーザーId"   AppendDataBoundItems="true"  />
 <y:YDropDownList   id="最終更新ユーザー"  Label="最終更新ユーザー"   IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" SelectedValue='<%# Bind("最終更新ユーザー") %>'    IsRequired="FALSE" IsDate="false"  DataFormatString="" IsInteger="true" runat="server"  DataSourceID="ユーザーDataSource" DataTextField="ユーザー名" DataValueField="ユーザーId"   AppendDataBoundItems="true"  />
@@ -135,7 +135,7 @@
 <y:YDropDownList   id="仕入れ先" DefaultValue=""  Label="仕入れ先"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" SelectedValue='<%# Bind("仕入れ先") %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server"  DataSourceID="仕入れ先DataSource" DataTextField="会社名称" DataValueField="会社ID"   AppendDataBoundItems="true"   />
 <y:YDropDownList   id="材料メーカー" DefaultValue=""  Label="材料メーカー"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" SelectedValue='<%# Bind("材料メーカー") %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server"  DataSourceID="材料メーカーDataSource" DataTextField="会社名称" DataValueField="会社ID"   AppendDataBoundItems="true"   />
 <y:YDropDownList   id="材質" DefaultValue=""  Label="材質"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" SelectedValue='<%# Bind("材質") %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server"  DataSourceID="M材質DataSource" DataTextField="名称" DataValueField="コードID"   AppendDataBoundItems="true"   />
-<y:YDropDownList   id="M材料_材料ID" DefaultValue=""  Label="M材料_材料ID"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" SelectedValue='<%# Bind("M材料_材料ID") %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server"  DataSourceID="M材料_材料IDDataSource" DataTextField="材料名称" DataValueField="材料ID"   AppendDataBoundItems="true"   />
+<y:YDropDownList   id="M材料_材料ID" DefaultValue=""  Label="M材料_材料ID"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" SelectedValue='<%# Bind("M材料_材料ID") %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server"  DataSourceID="M材料_材料IDDataSource" DataTextField="材料名称" DataValueField="材料属性ID"   AppendDataBoundItems="true"   />
 <y:YCheckBox   id="削除フラグ" DefaultValue=""  Label="削除フラグ"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Checked='<%# ConvertToBoolean(Eval("削除フラグ")) %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="false" runat="server"   />
 <y:YDropDownList   id="作成ユーザー" DefaultValue=""  Label="作成ユーザー"  IsGrid="false"  ReadOnly="TRUE"  ValidationGroup="DetailInsert" SelectedValue='<%# Bind("作成ユーザー") %>'    IsRequired="FALSE" IsDate="false"  DataFormatString="" IsInteger="true" runat="server"  DataSourceID="ユーザーDataSource" DataTextField="ユーザー名" DataValueField="ユーザーId"   AppendDataBoundItems="true"   />
 <y:YDropDownList   id="最終更新ユーザー" DefaultValue=""  Label="最終更新ユーザー"  IsGrid="false"  ReadOnly="TRUE"  ValidationGroup="DetailInsert" SelectedValue='<%# Bind("最終更新ユーザー") %>'    IsRequired="FALSE" IsDate="false"  DataFormatString="" IsInteger="true" runat="server"  DataSourceID="ユーザーDataSource" DataTextField="ユーザー名" DataValueField="ユーザーId"   AppendDataBoundItems="true"   />
@@ -167,7 +167,7 @@
 <y:YDropDownList   id="仕入れ先"  Label="仕入れ先"  IsGrid="false"  ReadOnly="TRUE" SelectedValue='<%# Bind("仕入れ先") %>'   IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server"  DataSourceID="仕入れ先DataSource" DataTextField="会社名称" DataValueField="会社ID"   AppendDataBoundItems="true"  />
 <y:YDropDownList   id="材料メーカー"  Label="材料メーカー"  IsGrid="false"  ReadOnly="TRUE" SelectedValue='<%# Bind("材料メーカー") %>'   IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server"  DataSourceID="材料メーカーDataSource" DataTextField="会社名称" DataValueField="会社ID"   AppendDataBoundItems="true"  />
 <y:YDropDownList   id="材質"  Label="材質"  IsGrid="false"  ReadOnly="TRUE" SelectedValue='<%# Bind("材質") %>'   IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server"  DataSourceID="M材質DataSource" DataTextField="名称" DataValueField="コードID"   AppendDataBoundItems="true"  />
-<y:YDropDownList   id="M材料_材料ID"  Label="M材料_材料ID"  IsGrid="false"  ReadOnly="TRUE" SelectedValue='<%# Bind("M材料_材料ID") %>'   IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server"  DataSourceID="M材料_材料IDDataSource" DataTextField="材料名称" DataValueField="材料ID"   AppendDataBoundItems="true"  />
+<y:YDropDownList   id="M材料_材料ID"  Label="M材料_材料ID"  IsGrid="false"  ReadOnly="TRUE" SelectedValue='<%# Bind("M材料_材料ID") %>'   IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server"  DataSourceID="M材料_材料IDDataSource" DataTextField="材料名称" DataValueField="材料属性ID"   AppendDataBoundItems="true"  />
 <y:YCheckBox   id="削除フラグ"  Label="削除フラグ"  IsGrid="false"  ReadOnly="TRUE" Checked='<%# ConvertToBoolean(Eval("削除フラグ")) %>'   IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="false" runat="server"  />
 <y:YDropDownList   id="作成ユーザー"  Label="作成ユーザー"  IsGrid="false"  ReadOnly="TRUE" SelectedValue='<%# Bind("作成ユーザー") %>'   IsRequired="FALSE" IsDate="false"  DataFormatString="" IsInteger="true" runat="server"  DataSourceID="ユーザーDataSource" DataTextField="ユーザー名" DataValueField="ユーザーId"   AppendDataBoundItems="true"  />
 <y:YDropDownList   id="最終更新ユーザー"  Label="最終更新ユーザー"  IsGrid="false"  ReadOnly="TRUE" SelectedValue='<%# Bind("最終更新ユーザー") %>'   IsRequired="FALSE" IsDate="false"  DataFormatString="" IsInteger="true" runat="server"  DataSourceID="ユーザーDataSource" DataTextField="ユーザー名" DataValueField="ユーザーId"   AppendDataBoundItems="true"  />
@@ -256,7 +256,6 @@
                 SelectCommand="SELECT  `会社ID` ,  `会社名称`  
                     FROM  `M会社` 
                     WHERE  (`得意先` =  'True')
-                    AND (`削除フラグ` is null or `削除フラグ` !=  'True')
                     ">
             </y:BaseSqlDataSource>
 
@@ -266,7 +265,6 @@
                 SelectCommand="SELECT  `会社ID` ,  `会社名称`  
                     FROM  `M会社` 
                     WHERE  (`仕入れ先` =  'True')
-                    AND (`削除フラグ` is null or `削除フラグ` !=  'True')
                     ">
             </y:BaseSqlDataSource>
 
@@ -276,7 +274,6 @@
                 SelectCommand="SELECT  `会社ID` ,  `会社名称`  
                     FROM  `M会社` 
                     WHERE  (`材料メーカー` =  'True')
-                    AND (`削除フラグ` is null or `削除フラグ` !=  'True')
                     ">
             </y:BaseSqlDataSource>
 
@@ -284,9 +281,8 @@
             <y:BaseSqlDataSource runat="server" ID="M材料_材料IDDataSource"
                 ConnectionString="<%$ ConnectionStrings:mysqlConLocal %>"
                 ProviderName="<%$ ConnectionStrings:mysqlConLocal.ProviderName %>"
-                SelectCommand="SELECT  `材料ID` ,  `材料名称`  
-                    FROM  `M材料` 
-                    WHERE (`削除フラグ` is null or `削除フラグ` !=  'True')
+                SelectCommand="SELECT  `材料属性ID` ,  `材料名称`  
+                    FROM  `M材料属性` 
                     ">
             </y:BaseSqlDataSource>
 
@@ -296,7 +292,6 @@
                 SelectCommand="SELECT  `コードID` ,  `名称`  
                     FROM  `Mコード` 
                     WHERE  `グループ` =  '規格番号向け材質'
-                    AND (`削除フラグ` is null or `削除フラグ` !=  'True')
                     ">
             </y:BaseSqlDataSource>
 
@@ -304,7 +299,7 @@
             <y:BaseSqlDataSource runat="server" ID="ユーザーDataSource"
                 ConnectionString="<%$ ConnectionStrings:mysqlConLocal %>"
                 ProviderName="<%$ ConnectionStrings:mysqlConLocal.ProviderName %>"
-                SelectCommand="SELECT ユーザーId, ユーザー名 FROM `Mユーザー` WHERE (`削除フラグ` is null or `削除フラグ` !=  'True')">
+                SelectCommand="SELECT ユーザーId, ユーザー名 FROM `Mユーザー` ">
             </y:BaseSqlDataSource>
 
         </div>

@@ -22,12 +22,10 @@ namespace uc
             //
             // TODO: コンストラクター ロジックをここに追加します
             //
-
         }
 
         protected override void OnItemUpdating(FormViewUpdateEventArgs e)
         {
-
             ConvertCheckBoxValue(e.NewValues);
             base.OnItemUpdating(e);
         }
@@ -47,6 +45,12 @@ namespace uc
         public void ChangeModeToEdit(int rowIndex)
         {
             this.PageIndex = rowIndex;
+            this.ChangeMode(FormViewMode.Edit);
+        }
+
+        public void ChangeModeToEdit(object data)
+        {
+            //this.
             this.ChangeMode(FormViewMode.Edit);
         }
 
