@@ -143,6 +143,17 @@ namespace uc
                     value = ((DataControlFieldCell)c).Text;
 
                 }
+                else if (c is YDropDownList)
+                {
+                    YDropDownList ddl = c as YDropDownList;
+                    value = ddl.GetInternalValue();
+                }
+                else if (c is YCheckBox)
+                {
+                    YCheckBox check = c as YCheckBox;
+
+                    value = check.Checked.ToString();
+                }
 
                 if (p.Type == TypeCode.Int32)
                 {

@@ -15,7 +15,7 @@
     <div>
         <table>
             
-        <y:YDropDownList ID="ユーザーID" runat="server" DataSourceID="mainDataSource" Label="ユーザー" DataTextField="ユーザー名" DataValueField="ユーザーID"></y:YDropDownList>
+        <y:YList ID="ユーザーID" Rows="11" Width="170" runat="server" DataSourceID="mainDataSource" Label="ユーザー" DataTextField="ユーザー名" DataValueField="ユーザーID"></y:YList>
 
         <y:YTextBox id="パスワード" runat="server" TextMode="Password" Label="パスワード" />
         </table>

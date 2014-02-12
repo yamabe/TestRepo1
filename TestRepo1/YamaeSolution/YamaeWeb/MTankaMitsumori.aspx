@@ -1304,6 +1304,7 @@
             <y:YTextBox   id="検索作成日時開始" DefaultValue=""  Label="作成日時"  IsGrid="false"    ValidationGroup="Search"    runat="server"  IsDate="true" />
             ～<y:YTextBox   id="検索作成日時終了" DefaultValue=""  Label="作成日時"  IsGrid="true"    ValidationGroup="Search"    runat="server"  IsDate="true" />
 
+            <y:YCheckBox   id="検索削除フラグ" DefaultValue=""  Label="削除フラグ"  IsGrid="false"    ValidationGroup="Search"    runat="server" />
 
             <br />
 

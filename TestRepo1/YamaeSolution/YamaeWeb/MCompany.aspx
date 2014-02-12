@@ -19,6 +19,12 @@
             <ajaxToolkit:ToolkitScriptManager runat="Server" EnableScriptGlobalization="true"
                 EnableScriptLocalization="true" ID="mainScriptManager" />
 
+            
+            <y:YCheckBox   id="検索削除フラグ" DefaultValue=""  Label="削除フラグ"  IsGrid="false"    ValidationGroup="Search"    runat="server" />
+
+            
+            <asp:Button runat="server" ID="検索" Text="検索" OnClick="検索_Click" /> 
+            <asp:Button runat="server" ID="Clear" Text="クリア" OnClick="Clear_Click" /> 
 
 
             <y:BaseGridView CssClass="GridView" ID="mainGridView" runat="server"

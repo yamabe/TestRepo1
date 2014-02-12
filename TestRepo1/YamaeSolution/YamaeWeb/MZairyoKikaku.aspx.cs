@@ -15,7 +15,7 @@ public partial class MZairyoKikaku : BaseForm
     {
         if (!IsPostBack)
         {
-            検索山恵フラグ.Checked = true;
+            //検索山恵フラグ.Checked = true;
         }
 
         this.MainBaseFormView = mainFormView;

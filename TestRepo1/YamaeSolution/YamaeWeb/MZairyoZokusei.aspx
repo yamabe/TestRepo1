@@ -26,7 +26,6 @@
                { %>
 
 
-            var 材料属性ID = $('#<%=  mainFormView.FindControl("材料属性ID").ClientID%>'); 材料属性ID.css({ 'text-align': 'right', 'margin-right': '25px' }); 材料属性ID.next().css({ 'left': '72px' }); 材料属性ID.next().next().css({ 'left': '72px' });
             var 材料名称 = $('#<%=  mainFormView.FindControl("材料名称").ClientID%>'); 材料名称.css({ 'text-align': 'right', 'margin-right': '25px' }); 材料名称.next().css({ 'left': '72px' }); 材料名称.next().next().css({ 'left': '72px' });
             var 材料メーカー = $('#<%=  mainFormView.FindControl("材料メーカー").ClientID%>'); 材料メーカー.css({ 'text-align': 'right', 'margin-right': '25px' }); 材料メーカー.next().css({ 'left': '72px' }); 材料メーカー.next().next().css({ 'left': '72px' });
             var 材質大分類 = $('#<%=  mainFormView.FindControl("材質大分類").ClientID%>'); 材質大分類.css({ 'text-align': 'right', 'margin-right': '25px' }); 材質大分類.next().css({ 'left': '72px' }); 材質大分類.next().next().css({ 'left': '72px' });
@@ -87,9 +86,10 @@
                 EnableScriptLocalization="true" ID="mainScriptManager" />
 
         
-            　　　<asp:Button runat="server" ID="検索" Text="検索" OnClick="検索_Click" /> 
-            <asp:Button runat="server" ID="Clear" Text="クリア" OnClick="Clear_Click" /> 
+            <y:YCheckBox   id="検索削除フラグ" DefaultValue=""  Label="削除フラグ"  IsGrid="false"    ValidationGroup="Search"    runat="server" />
 
+            <asp:Button runat="server" ID="検索" Text="検索" OnClick="検索_Click" /> 
+            <asp:Button runat="server" ID="Clear" Text="クリア" OnClick="Clear_Click" /> 
 
             <y:BaseGridView CssClass="GridView" ID="mainGridView" runat="server"
                 DataSourceID="mainDataSource"
@@ -164,7 +164,6 @@
                         <tr>
                             <td>
                                 <table>
-<y:YTextBox   id="材料属性ID" DefaultValue=""  Label="材料属性ID"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("材料属性ID", "") %>'     IsRequired="true" IsDate="false"  DataFormatString="" IsInteger="false" runat="server" CssClass="Input"   Width="70" />
 <y:YTextBox   id="材料名称" DefaultValue=""  Label="材料名称"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("材料名称", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="false" runat="server" CssClass="Input"  DataSourceID="材料DataSource" DataTextField="会社名称" DataValueField="会社ID"   AppendDataBoundItems="true"   Width="100" />
 <y:YDropDownList   id="材料メーカー" DefaultValue=""  Label="材料メーカー"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" SelectedValue='<%# Bind("材料メーカー") %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"  DataSourceID="材料メーカーDataSource" DataTextField="会社名称" DataValueField="会社ID"   AppendDataBoundItems="true"   Width="100" />
 <y:YDropDownList   id="材質大分類" DefaultValue=""  Label="材質大分類"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" SelectedValue='<%# Bind("材質大分類") %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="false" runat="server" CssClass="Input"  DataSourceID="材質大分類DataSource" DataTextField="名称" DataValueField="コードID"   AppendDataBoundItems="true"   Width="100" />

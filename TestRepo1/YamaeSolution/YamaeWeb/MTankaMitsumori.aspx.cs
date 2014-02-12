@@ -118,7 +118,15 @@ public partial class MTankaMitsumori : BaseForm
         this.mainDataSource.AddSelectParameterLike(where, "部品名称", 検索部品名称.Text);
 
         this.mainDataSource.AddSelectParameter(where, "作成日時", "作成日時開始", "作成日時終了", 検索作成日時開始.Text, 検索作成日時終了.Text);
-
+       
+        if (検索削除フラグ.Checked)
+        {
+            this.mainDataSource.AddSelectParameter(where, "削除フラグ", StringUtils.TrueString);
+        }
+        else
+        {
+            this.mainDataSource.AddSelectParameter(where, "削除フラグ", StringUtils.TrueString, "!=");
+        }
 
         if (this.mainDataSource.SelectParameters.Count <= 0)
         {
@@ -156,7 +164,7 @@ public partial class MTankaMitsumori : BaseForm
         //検索材料メーカー.SelectedIndex = 0;
         //検索材質.SelectedIndex = 0;
         //検索M材料_材料ID.SelectedIndex = 0;
-        //検索削除フラグ.Checked = false;
+        検索削除フラグ.Checked = false;
         //検索作成ユーザー.SelectedIndex = 0;
         //検索最終更新ユーザー.SelectedIndex = 0;
     }

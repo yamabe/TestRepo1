@@ -18,7 +18,13 @@
             <asp:LinkButton ID="LinkButton2" runat="server" PostBackUrl="~/Menu.aspx" Text="メニュー画面へ" />
             <br />
 
+            <y:YDropDownList   id="検索グループ" DefaultValue=""  Label="グループ"  IsGrid="false"    ValidationGroup="Search"    runat="server" DataSourceID="グループDataSource" DataTextField="グループ" DataValueField="グループ"   AddEmptyItem="true"   AppendDataBoundItems="true"/>
 
+            <y:YCheckBox   id="検索削除フラグ" DefaultValue=""  Label="削除フラグ"  IsGrid="false"    ValidationGroup="Search"    runat="server" />
+
+            
+            <asp:Button runat="server" ID="検索" Text="検索" OnClick="検索_Click" /> 
+            <asp:Button runat="server" ID="Clear" Text="クリア" OnClick="Clear_Click" /> 
 
             <y:BaseGridView CssClass="GridView" ID="mainGridView" runat="server"
                 DataSourceID="mainDataSource"
@@ -108,7 +114,6 @@
                         <tr>
                             <td>
                                 <table>
-                                    <y:YTextBox IsRequired="true" IsDate="false" DataFormatString="" IsInteger="false" runat="server" ID="コードID" Label="コードID" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("コードID", "") %>' />
                                     <y:YTextBox IsRequired="false" IsDate="false" DataFormatString="" IsInteger="false" runat="server" ID="グループ" Label="グループ" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("グループ", "") %>' />
                                     <y:YTextBox IsRequired="false" IsDate="false" DataFormatString="" IsInteger="false" runat="server" ID="名称" Label="名称" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("名称", "") %>' />
                                     <y:YCheckBox IsRequired="false" IsDate="false" DataFormatString="" IsInteger="false" runat="server" ID="削除フラグ" Label="削除フラグ" IsGrid="false" ReadOnly="TRUE" Checked='<%# ConvertToBoolean(Eval("削除フラグ")) %>' />
@@ -182,9 +187,22 @@
             <y:BaseSqlDataSource runat="server" ID="ユーザーDataSource"
                 ConnectionString="<%$ ConnectionStrings:mysqlConLocal %>"
                 ProviderName="<%$ ConnectionStrings:mysqlConLocal.ProviderName %>"
-                SelectCommand="SELECT ユーザーId, ユーザー名 FROM `Mユーザー` WHERE (`削除フラグ` is null or `削除フラグ` !=  'true')">
+                SelectCommand="SELECT ユーザーId, ユーザー名 FROM `Mユーザー`">
             </y:BaseSqlDataSource>
 
+               <y:BaseSqlDataSource runat="server" ID="グループDataSource"
+                ConnectionString="<%$ ConnectionStrings:mysqlConLocal %>"
+                ProviderName="<%$ ConnectionStrings:mysqlConLocal.ProviderName %>"
+                SelectCommand="
+                   SELECT DISTINCT (
+グループ
+) AS グループ
+FROM Mコード">
+            </y:BaseSqlDataSource>
+
+
+
+            
 
         </div>
     </form>

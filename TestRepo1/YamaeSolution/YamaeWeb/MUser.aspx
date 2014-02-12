@@ -18,7 +18,12 @@
             <ajaxToolkit:ToolkitScriptManager runat="Server" EnableScriptGlobalization="true"
                 EnableScriptLocalization="true" ID="mainScriptManager" />
 
+            
+            <y:YCheckBox   id="検索削除フラグ" DefaultValue=""  Label="削除フラグ"  IsGrid="false"    ValidationGroup="Search"    runat="server" />
 
+            
+            <asp:Button runat="server" ID="検索" Text="検索" OnClick="検索_Click" /> 
+            <asp:Button runat="server" ID="Clear" Text="クリア" OnClick="Clear_Click" /> 
 
             <y:BaseGridView CssClass="GridView" ID="mainGridView" runat="server"
                 DataSourceID="mainDataSource"
@@ -135,8 +140,8 @@
             </y:BaseFormView>
 
             <y:BaseSqlDataSource ID="mainDataSource" runat="server"
-                SelectCommand="select * from Mユーザー"
-                UpdateCommand=" update Mユーザー set ユーザーID = @ユーザーID, ユーザー名 = @ユーザー名, パスワード = @パスワード, 削除フラグ = @削除フラグ, 最終更新ユーザー = @最終更新ユーザー, 最終更新日時 = @最終更新日時  where ユーザーID = @original_ユーザーID and 最終更新日時 = @original_最終更新日時"
+                SelectCommand="select * from Mユーザー "
+                UpdateCommand=" update Mユーザー set ユーザー名 = @ユーザー名, パスワード = @パスワード, 削除フラグ = @削除フラグ, 最終更新ユーザー = @最終更新ユーザー, 最終更新日時 = @最終更新日時  where ユーザーID = @original_ユーザーID and 最終更新日時 = @original_最終更新日時"
                 InsertCommand=" insert into Mユーザー (ユーザーID, ユーザー名, パスワード, 削除フラグ, 作成ユーザー, 最終更新ユーザー, 作成日時, 最終更新日時) values (@ユーザーID, @ユーザー名, @パスワード, @削除フラグ, @作成ユーザー, @最終更新ユーザー,  current_timestamp, current_timestamp); SET @NewParameter=LAST_INSERT_ID(); "
                 DeleteCommand="update Mユーザー    set 削除フラグ = 'True' where ユーザーID = @original_ユーザーID  and 最終更新日時 = @original_最終更新日時"
                 ConflictDetection="CompareAllValues"

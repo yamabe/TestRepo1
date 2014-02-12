@@ -26,14 +26,14 @@
                { %>
 
 
-               var 材料ID = $('#<%=  mainFormView.FindControl("材料ID").ClientID%>'); 材料ID.css({ 'text-align': 'right', 'margin-right': '25px' }); 材料ID.next().css({ 'left': '72px' }); 材料ID.next().next().css({ 'left': '72px' });
                var 材料名称 = $('#<%=  mainFormView.FindControl("材料名称").ClientID%>');
                var 材質大分類 = $('#<%=  mainFormView.FindControl("材質大分類").ClientID%>');
                var 材質 = $('#<%=  mainFormView.FindControl("材質").ClientID%>');
                var 定尺寸法縦 = $('#<%=  mainFormView.FindControl("定尺寸法縦").ClientID%>'); 定尺寸法縦.css({ 'text-align': 'right', 'margin-right': '25px' }); 定尺寸法縦.next().css({ 'left': '72px' }); 定尺寸法縦.next().next().css({ 'left': '72px' });
                var 定尺寸法横 = $('#<%=  mainFormView.FindControl("定尺寸法横").ClientID%>'); 定尺寸法横.css({ 'text-align': 'right', 'margin-right': '25px' }); 定尺寸法横.next().css({ 'left': '72px' }); 定尺寸法横.next().next().css({ 'left': '72px' });
                var 厚み = $('#<%=  mainFormView.FindControl("厚み").ClientID%>'); 厚み.css({ 'text-align': 'right', 'margin-right': '25px' }); 厚み.next().css({ 'left': '72px' }); 厚み.next().next().css({ 'left': '72px' });
-               var 定尺仕入金額 = $('#<%=  mainFormView.FindControl("定尺仕入金額").ClientID%>'); 定尺仕入金額.css({ 'text-align': 'right', 'margin-right': '25px' }); 定尺仕入金額.next().css({ 'left': '72px' }); 定尺仕入金額.next().next().css({ 'left': '72px' });
+            var 密度 = $('#<%=  mainFormView.FindControl("密度").ClientID%>'); 密度.css({ 'text-align': 'right', 'margin-right': '25px' }); 密度.next().css({ 'left': '72px' }); 密度.next().next().css({ 'left': '72px' });
+            var 定尺仕入金額 = $('#<%=  mainFormView.FindControl("定尺仕入金額").ClientID%>'); 定尺仕入金額.css({ 'text-align': 'right', 'margin-right': '25px' }); 定尺仕入金額.next().css({ 'left': '72px' }); 定尺仕入金額.next().next().css({ 'left': '72px' });
                var m2あたり材料費 = $('#<%=  mainFormView.FindControl("m2あたり材料費").ClientID%>'); m2あたり材料費.css({ 'text-align': 'right', 'margin-right': '25px' }); m2あたり材料費.next().css({ 'left': '72px' }); m2あたり材料費.next().next().css({ 'left': '72px' });
                var 定尺売り金額 = $('#<%=  mainFormView.FindControl("定尺売り金額").ClientID%>'); 定尺売り金額.css({ 'text-align': 'right', 'margin-right': '25px' }); 定尺売り金額.next().css({ 'left': '72px' }); 定尺売り金額.next().next().css({ 'left': '72px' });
                var 利益率 = $('#<%=  mainFormView.FindControl("利益率").ClientID%>'); 利益率.css({ 'text-align': 'right', 'margin-right': '25px' }); 利益率.next().css({ 'left': '72px' }); 利益率.next().next().css({ 'left': '72px' });
@@ -261,7 +261,6 @@
                         <tr>
                             <td>
                                 <table>
-<y:YTextBox   id="材料ID" DefaultValue=""  Label="材料ID"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("材料ID", "") %>'     IsRequired="true" IsDate="false"  DataFormatString="" IsInteger="false" runat="server" CssClass="Input"   Width="70" />
 <y:YDropDownList   id="材料属性ID" DefaultValue=""  Label="材料属性ID"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" SelectedValue='<%# Bind("材料属性ID") %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"  DataSourceID="材料属性DataSource" DataTextField="材料名称" DataValueField="材料属性ID"   AppendDataBoundItems="true"   Width="70" />
 <y:YTextBox   id="材料名称" DefaultValue=""  Label="材料名称"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("材料名称", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="false" runat="server" CssClass="Input"   Width="100" />
 <y:YDropDownList   id="材料メーカー" DefaultValue=""  Label="材料メーカー"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" SelectedValue='<%# Bind("材料メーカー") %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"  DataSourceID="材料メーカーDataSource" DataTextField="会社名称" DataValueField="会社ID"   AppendDataBoundItems="true"   Width="100" />

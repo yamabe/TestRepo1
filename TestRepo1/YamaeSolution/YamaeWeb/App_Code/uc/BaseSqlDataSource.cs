@@ -210,10 +210,21 @@ namespace uc
 
         void BaseSqlDataSource_Inserting(object sender, SqlDataSourceCommandEventArgs e)
         {
-            e.Command.Parameters["削除フラグ"].Value = Boolean.FalseString;
-            e.Command.Parameters["作成ユーザー"].Value = BaseForm.UserId;
+            if (e.Command.Parameters["削除フラグ"].Value != null && String.IsNullOrEmpty(e.Command.Parameters["削除フラグ"].Value.ToString()))
+            {
+                e.Command.Parameters["削除フラグ"].Value = Boolean.FalseString;
+            }
+            if (e.Command.Parameters["作成ユーザー"].Value != null && String.IsNullOrEmpty(e.Command.Parameters["作成ユーザー"].Value.ToString()))
+            {
+                e.Command.Parameters["作成ユーザー"].Value = BaseForm.UserId;
+            }
+            //
             e.Command.Parameters["作成日時"].Value = DateTime.Now;
-            e.Command.Parameters["最終更新ユーザー"].Value = BaseForm.UserId;
+
+            if (e.Command.Parameters["最終更新ユーザー"].Value != null && String.IsNullOrEmpty(e.Command.Parameters["最終更新ユーザー"].Value.ToString()))
+            {
+                e.Command.Parameters["最終更新ユーザー"].Value = BaseForm.UserId;
+            }
             e.Command.Parameters["最終更新日時"].Value = DateTime.Now;
         }
 
