@@ -7,8 +7,6 @@ using System.Web.UI.WebControls;
 
 public partial class MCompany : BaseForm
 {
-    private String _originalSelectCommand = string.Empty;
-    private ParameterCollection _selectCollection;
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -33,21 +31,6 @@ public partial class MCompany : BaseForm
         //Parameter status = this.mainDataSource.UpdateParameters["ステータス"];
         //e.Command.Parameters["ステータス"].Value = new RyousanSireiStatusChecker().Get(e);
 
-    }
-
-
-    protected void 検索_Click(object sender, EventArgs e)
-    {
-        Search();
-    }
-
-
-    protected void Clear_Click(object sender, EventArgs e)
-    {
-        ConditionClear();
-        Search();
-
-        this.mainGridView.PageIndex = 0;
     }
 
     protected override void Search()

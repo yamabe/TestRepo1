@@ -6,8 +6,6 @@ using System.Web.UI.WebControls;
 
 public partial class MZairyoZokusei : BaseForm
 {
-    private String _originalSelectCommand = string.Empty;
-    private ParameterCollection _selectCollection;
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -98,18 +96,4 @@ public partial class MZairyoZokusei : BaseForm
         //検索作成ユーザー.SelectedIndex = 0;
         //検索最終更新ユーザー.SelectedIndex = 0;
     }
-    protected void 検索_Click(object sender, EventArgs e)
-    {
-        Search();
-    }
-
-
-    protected void Clear_Click(object sender, EventArgs e)
-    {
-        ConditionClear();
-        Search();
-
-        this.mainGridView.PageIndex = 0;
-    }
-
 }

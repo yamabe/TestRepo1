@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web;
+using System.Web.UI.WebControls;
 using uc;
 
 /// <summary>
@@ -8,12 +9,8 @@ using uc;
 /// </summary>
 public abstract class BaseForm : System.Web.UI.Page
 {
-    public BaseForm()
-    {
-        //
-        // TODO: コンストラクター ロジックをここに追加します
-        //
-    }
+    protected String _originalSelectCommand = string.Empty;
+    protected ParameterCollection _selectCollection;
 
     public int UserId
     {
@@ -89,6 +86,85 @@ public abstract class BaseForm : System.Web.UI.Page
             return _mainBaseFormView;
         }
     }
+
+
+
+    public BaseForm()
+    {
+        //
+        // TODO: コンストラクター ロジックをここに追加します
+        //
+
+        MaintainScrollPositionOnPostBack = true;
+        
+        
+    }
+
+   
+  
+
+    protected override void OnLoadComplete(EventArgs e)
+    {
+        YDropDownList pageSize = this.FindControl("ページサイズ") as YDropDownList;
+
+
+        if (pageSize != null)
+        {
+            if (!IsPostBack)
+            {
+                pageSize.Items.Add("12");
+                pageSize.Items.Add("30");
+                pageSize.Items.Add("60");
+                pageSize.Items.Add("すべて");
+                pageSize.Items[0].Selected = true;
+
+                MainBaseGridView.PageSize = 12;
+
+                pageSize.AutoPostBack = true;
+                pageSize.SelectedIndexChanged += pageSize_SelectedIndexChanged;
+            }
+
+        }
+
+        base.OnLoadComplete(e);
+    }
+
+    protected void pageSize_SelectedIndexChanged(object sender, EventArgs e)
+    {
+
+        YDropDownList pageSize = (YDropDownList)sender;
+
+        String value = pageSize.SelectedValue;
+
+        int iPageSize = 0;
+
+        if (int.TryParse(value, out iPageSize))
+        {
+            MainBaseGridView.AllowPaging = true;
+            MainBaseGridView.PageSize = iPageSize;
+        }
+        else
+        {
+            MainBaseGridView.AllowPaging = false;
+        }
+
+    }
+
+    protected void 検索_Click(object sender, EventArgs e)
+    {
+        Search();
+    }
+
+
+    protected void Clear_Click(object sender, EventArgs e)
+    {
+        ConditionClear();
+        Search();
+
+        this.MainBaseGridView.PageIndex = 0;
+    }
+
+
 
 
 

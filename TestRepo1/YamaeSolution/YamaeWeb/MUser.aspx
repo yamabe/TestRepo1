@@ -24,6 +24,7 @@
             
             <asp:Button runat="server" ID="検索" Text="検索" OnClick="検索_Click" /> 
             <asp:Button runat="server" ID="Clear" Text="クリア" OnClick="Clear_Click" /> 
+                        <y:YDropDownList runat="server" ID="ページサイズ"  OnSelectedIndexChanged="pageSize_SelectedIndexChanged"/>
 
             <y:BaseGridView CssClass="GridView" ID="mainGridView" runat="server"
                 DataSourceID="mainDataSource"

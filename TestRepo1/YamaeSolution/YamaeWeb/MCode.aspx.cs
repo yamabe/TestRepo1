@@ -8,8 +8,6 @@ using System.Web.UI.WebControls;
 public partial class MCode : BaseForm
 {
 
-    private String _originalSelectCommand = string.Empty;
-    private ParameterCollection _selectCollection;
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -19,7 +17,6 @@ public partial class MCode : BaseForm
 
         _originalSelectCommand = this.MainBaseSqlDataSource.SelectCommand;
         _selectCollection = this.MainBaseSqlDataSource.SelectParameters;
-
     }
     protected void mainDataSource_Updating(object sender, SqlDataSourceCommandEventArgs e)
     {
@@ -34,20 +31,6 @@ public partial class MCode : BaseForm
         //e.Command.Parameters["ステータス"].Value = new RyousanSireiStatusChecker().Get(e);
 
     }
-    protected void 検索_Click(object sender, EventArgs e)
-    {
-        Search();
-    }
-
-
-    protected void Clear_Click(object sender, EventArgs e)
-    {
-        ConditionClear();
-        Search();
-
-        this.mainGridView.PageIndex = 0;
-    }
-
     protected override void Search()
     {
         DataSourceSelectArguments arg = new DataSourceSelectArguments();

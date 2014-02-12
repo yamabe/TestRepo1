@@ -8,9 +8,6 @@ using uc;
 
 public partial class MUser : BaseForm
 {
-    private String _originalSelectCommand = string.Empty;
-    private ParameterCollection _selectCollection;
-
     protected void Page_Load(object sender, EventArgs e)
     {
         this.MainBaseFormView = mainFormView;
@@ -97,21 +94,6 @@ public partial class MUser : BaseForm
         検索削除フラグ.Checked = false;
     //    検索作成ユーザー.SelectedIndex = 0;
     //    検索最終更新ユーザー.SelectedIndex = 0;
-    }
-
-
-    protected void 検索_Click(object sender, EventArgs e)
-    {
-        Search();
-    }
-
-
-    protected void Clear_Click(object sender, EventArgs e)
-    {
-        ConditionClear();
-        Search();
-
-        this.mainGridView.PageIndex = 0;
     }
 
 }

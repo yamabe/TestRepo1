@@ -159,15 +159,16 @@
 
             <y:YTextBox   id="検索材料名称" DefaultValue=""  Label="材料名称"  IsGrid="false"    ValidationGroup="Search"    runat="server" />
 
-<y:YDropDownList   id="検索材料メーカー" DefaultValue=""  Label="材料メーカー"  IsGrid="false"    ValidationGroup="Search"    runat="server" DataSourceID="材料メーカーDataSource" DataTextField="会社名称" DataValueField="会社ID"   AddEmptyItem="true"   AppendDataBoundItems="true"/>
-<y:YDropDownList   id="検索材質大分類" DefaultValue=""  Label="材質大分類"  IsGrid="false"    ValidationGroup="Search"    runat="server" DataSourceID="材質大分類DataSource" DataTextField="名称" DataValueField="コードID"   AddEmptyItem="true" AppendDataBoundItems="true"/>
-<y:YDropDownList   id="検索材質" DefaultValue=""  Label="材質"  IsGrid="false"    ValidationGroup="Search"    runat="server" DataSourceID="材質DataSource" DataTextField="名称" DataValueField="コードID"   AddEmptyItem="true"   AppendDataBoundItems="true"/>
+<y:YDropDownList   id="検索材料メーカー" DefaultValue=""  Label="材料メーカー"  IsGrid="false"    ValidationGroup="Search"    runat="server" DataSourceID="検索材料メーカーDataSource" DataTextField="会社名称" DataValueField="会社ID"   AddEmptyItem="true"   AppendDataBoundItems="true"/>
+<y:YDropDownList   id="検索材質大分類" DefaultValue=""  Label="材質大分類"  IsGrid="false"    ValidationGroup="Search"    runat="server" DataSourceID="検索材質大分類DataSource" DataTextField="名称" DataValueField="コードID"   AddEmptyItem="true" AppendDataBoundItems="true"/>
+<y:YDropDownList   id="検索材質" DefaultValue=""  Label="材質"  IsGrid="false"    ValidationGroup="Search"    runat="server" DataSourceID="検索材質DataSource" DataTextField="名称" DataValueField="コードID"   AddEmptyItem="true"   AppendDataBoundItems="true"/>
 <y:YCheckBox   id="検索有効フラグ" DefaultValue=""  Label="有効フラグ"  IsGrid="false"    ValidationGroup="Search"    runat="server" />
 <y:YCheckBox   id="検索削除フラグ" DefaultValue=""  Label="削除フラグ"  IsGrid="false"    ValidationGroup="Search"    runat="server" />
 
             
             　　　<asp:Button runat="server" ID="検索" Text="検索" OnClick="検索_Click" /> 
             <asp:Button runat="server" ID="Clear" Text="クリア" OnClick="Clear_Click" /> 
+                        <y:YDropDownList runat="server" ID="ページサイズ"  OnSelectedIndexChanged="pageSize_SelectedIndexChanged"/>
 
 
             <y:BaseGridView CssClass="GridView" ID="mainGridView" runat="server"
@@ -414,7 +415,6 @@
                 SelectCommand="SELECT  `コードID` ,  `名称`  
                     FROM  `Mコード` 
                     WHERE  `グループ` =  '材質大分類'
-                    AND (`削除フラグ` is null or `削除フラグ` !=  'true')
                     ">
             </y:BaseSqlDataSource>
 
@@ -424,7 +424,6 @@
                 SelectCommand="SELECT  `コードID` ,  `名称`  
                     FROM  `Mコード` 
                     WHERE  `グループ` =  '材質'
-                    AND (`削除フラグ` is null or `削除フラグ` !=  'true')
                     ">
             </y:BaseSqlDataSource>
 
@@ -440,18 +439,45 @@
             <y:BaseSqlDataSource runat="server" ID="ユーザーDataSource"
                 ConnectionString="<%$ ConnectionStrings:mysqlConLocal %>"
                 ProviderName="<%$ ConnectionStrings:mysqlConLocal.ProviderName %>"
-                SelectCommand="SELECT ユーザーId, ユーザー名 FROM `Mユーザー` WHERE (`削除フラグ` is null or `削除フラグ` !=  'true')">
+                SelectCommand="SELECT ユーザーId, ユーザー名 FROM `Mユーザー` ">
             </y:BaseSqlDataSource>
 
 
-            
-            <y:BaseSqlDataSource runat="server" ID="材料メーカーDataSource"
+        
+
+             <y:BaseSqlDataSource runat="server" ID="材料メーカーDataSource"
+                ConnectionString="<%$ ConnectionStrings:mysqlConLocal %>"
+                ProviderName="<%$ ConnectionStrings:mysqlConLocal.ProviderName %>"
+                SelectCommand="SELECT  `会社ID` ,  `会社名称`  
+                    FROM  `M会社` 
+                    WHERE  (`材料メーカー` =  'True')
+                    ">
+            </y:BaseSqlDataSource>
+
+
+                
+            <y:BaseSqlDataSource runat="server" ID="検索材料メーカーDataSource"
                 ConnectionString="<%$ ConnectionStrings:mysqlConLocal %>"
                 ProviderName="<%$ ConnectionStrings:mysqlConLocal.ProviderName %>"
                 SelectCommand="select t2.会社ID, t2.会社名称 from ( SELECT distinct(材料メーカー) as 材料メーカー FROM `m材料価格`) as t1 left outer join m会社 as t2 on t1.材料メーカー = t2.会社ID
                     ">
             </y:BaseSqlDataSource>
 
+            <y:BaseSqlDataSource runat="server" ID="検索材質大分類DataSource"
+                ConnectionString="<%$ ConnectionStrings:mysqlConLocal %>"
+                ProviderName="<%$ ConnectionStrings:mysqlConLocal.ProviderName %>"
+                SelectCommand="
+                select t2.コードID, t2.名称 from ( SELECT distinct(材質大分類) as 材質大分類 FROM `m材料価格`) as t1 left outer join mコード as t2 on t2.グループ = '材質大分類' and t1.材質大分類 = t2.コードID 
+                    ">
+            </y:BaseSqlDataSource>
+
+            <y:BaseSqlDataSource runat="server" ID="検索材質DataSource"
+                ConnectionString="<%$ ConnectionStrings:mysqlConLocal %>"
+                ProviderName="<%$ ConnectionStrings:mysqlConLocal.ProviderName %>"
+                SelectCommand="
+                select t2.コードID, t2.名称 from ( SELECT distinct(材質) as 材質 FROM `m材料価格`) as t1 left outer join mコード as t2 on t2.グループ = '材質' and t1.材質 = t2.コードID 
+                    ">
+            </y:BaseSqlDataSource>
 
         </div>
     </form>

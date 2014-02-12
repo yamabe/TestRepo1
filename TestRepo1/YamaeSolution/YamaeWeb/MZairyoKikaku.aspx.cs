@@ -39,19 +39,6 @@ public partial class MZairyoKikaku : BaseForm
 
     }
 
-    protected void 検索_Click(object sender, EventArgs e)
-    {
-        Search();
-    }
-
-
-    protected void Clear_Click(object sender, EventArgs e)
-    {
-        ConditionClear();
-        Search();
-
-        this.mainGridView.PageIndex = 0;
-    }
 
     protected override void Search()
     {

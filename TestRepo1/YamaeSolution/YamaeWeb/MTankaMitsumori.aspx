@@ -10,14 +10,27 @@
     <link href="css/style.css" rel="stylesheet" />
 
     <script type="text/javascript" src="js/lib/jquery-1.11.0.js"></script>
+	<script src="js/ui/jquery.ui.core.js"></script>
+	<script src="js/ui/jquery.ui.widget.js"></script>
+	<script src="js/ui/jquery.ui.mouse.js"></script>
+	<script src="js/ui/jquery.ui.draggable.js"></script>
+	<script src="js/ui/jquery.ui.position.js"></script>
+	<script src="js/ui/jquery.ui.resizable.js"></script>
+	<script src="js/ui/jquery.ui.button.js"></script>
+	<script src="js/ui/jquery.ui.dialog.js"></script>
+
+    <script type="text/javascript" src="js/lib/ccchart.js"></script>
     <script type="text/javascript" src="js/utils/JQueryUtils.js"></script>
     <script type="text/javascript" src="js/utils/SpecialGlobal.js"></script>
     <script type="text/javascript" src="js/utils/NumberUtils.js"></script>
     <script type="text/javascript" src="js/utils/StringUtils.js"></script>
 
+      <link rel="stylesheet" type="text/css" href="themes/base/jquery.ui.all.css"/>
+
+
 </head>
 <body>
-    
+
     <script type="text/javascript">
 
         var autoCalculateControl = [];
@@ -1245,24 +1258,109 @@
 
 
 
+            $("#計算値コピー").click(function () {
+                try {
+                    見積_裁断.val(計算_裁断.val());
+                    見積_打抜.val(計算_打抜.val());
+                    見積_貼り.val(計算_貼り.val());
+                    見積_曲げ.val(計算_曲げ.val());
+                    見積_仕上げ.val(計算_仕上げ.val());
+                    見積_ロス管理.val(計算_ロス管理.val());
 
+                } catch (e) {
+                    console.log(e);
+                }
+            });
+
+            $("#材料費コピー").click(function () {
+                try {
+                    見積_材料費.val(計算_材料費.val());
+
+                } catch (e) {
+                    console.log(e);
+                }
+            });
+
+            function initPriceChart() {
+                var chartdata1 = {
+
+                    "config": {
+                        "width":460,
+                        "height":260,
+                        "title": "材料費・加工費",
+                        "subTitle": "",
+                        "type": "bar",
+                        "useVal": "yes",
+                        "colorSet":
+                              ["#FF9114", "#3CB000", "#00A8A2", "#0036C0", "#C328FF", "#FF34C0"],
+                        "bgGradient": {
+                            "direction": "vertical",
+                            "from": "#687478",
+                            "to": "#222222"
+                        }
+                    },
+
+                    "data": [
+                      ["種類", "材料", "加工", "裁断", "打抜", "貼り", "曲げ", "仕上げ", "利益"],
+                      ["見積", V(見積_材料費), V(見積_加工費小計), V(見積_裁断), V(見積_打抜), V(見積_貼り), V(見積_曲げ), V(見積_仕上げ), V(見積_ロス管理)],
+                      ["計算", V(計算_材料費), V(計算_加工費小計), V(計算_裁断), V(計算_打抜), V(計算_貼り), V(計算_曲げ), V(計算_仕上げ), V(計算_ロス管理)],
+                    ]
+                };
+                ccchart.init('priceChart', chartdata1)
+            };
+
+
+            var eleList = [見積_材料費, 見積_加工費小計, 見積_裁断, 見積_打抜, 見積_貼り, 見積_曲げ, 見積_仕上げ, 見積_ロス管理, 計算_材料費, 計算_加工費小計, 計算_裁断, 計算_打抜, 計算_貼り, 計算_曲げ, 計算_仕上げ, 計算_ロス管理];
+            BindEvent(eleList, initPriceChart);
+
+
+            initPriceChart();
+
+            $("#priceChart").click(function () {
+
+                initPriceChart();
+            });
+
+            var element = $("#popupPriceChart");
+            element.dialog({
+                    position: ["right", "bottom"],
+                    //position: [50, 200],
+                    width: 440,
+                    height: 320,
+                    open: function (event, ui) {
+                        //var refleshButtn = $("<input type='button' value='reflesh' />");
+                        //refleshButtn.click(function () {
+                        //    initPriceChart();
+                        //});
+                        //$(this).parent().children().children(".ui-dialog-titlebar-close").parent().before().before().append(refleshButtn);
+                    }
+            });
+
+
+
+            $("#openPriceChart").click(function () {
+                var element = $("#popupPriceChart");
+                element.dialog({
+                    position: ["right", "bottom"],
+                    width: 440,
+                    height: 320,
+                });
+            });
+
+            $("#mainDiv").click(function () {
+                console.log("CALL LOG");
+                var element = $("#popupPriceChart");
+                element.dialog({
+                    position: ["right", "bottom"],
+                    width: 440,
+                    height: 320,
+                });
+            });
 
              <% } %>
 
         }
 
-        $(document).ready(function () {
-
-
-
-            <% if (mainFormView.FindControl("部品コード") != null)
-               { %>
-
-           
-          
-            <% } %>
-
-        });
 
         function UpdateDetail() {
             //$("#autoCalculate").click();
@@ -1280,6 +1378,8 @@
 
             }
 
+            initPriceChart();
+
 
             return true;
         }
@@ -1289,7 +1389,11 @@
 
     </script>
     <form id="form1" runat="server">
-        <div>
+        <div id="mainDiv">
+
+            <div id="popupPriceChart" style="">
+                <canvas id="priceChart"></canvas>
+            </div>
 
 
             <asp:LinkButton ID="LinkButton2" runat="server" PostBackUrl="~/Menu.aspx" Text="メニュー画面へ" />
@@ -1301,10 +1405,10 @@
             <y:YTextBox ID="検索部品コード" DefaultValue="" Label="部品コード【-】" IsGrid="false" ValidationGroup="Search" runat="server" />
             <y:YTextBox ID="検索部品名称" DefaultValue="" Label="部品名称【-】" IsGrid="false" ValidationGroup="Search" runat="server" />
 
-            <y:YTextBox   id="検索作成日時開始" DefaultValue=""  Label="作成日時"  IsGrid="false"    ValidationGroup="Search"    runat="server"  IsDate="true" />
-            ～<y:YTextBox   id="検索作成日時終了" DefaultValue=""  Label="作成日時"  IsGrid="true"    ValidationGroup="Search"    runat="server"  IsDate="true" />
+            <y:YTextBox ID="検索作成日時開始" DefaultValue="" Label="作成日時" IsGrid="false" ValidationGroup="Search" runat="server" IsDate="true" />
+            ～<y:YTextBox ID="検索作成日時終了" DefaultValue="" Label="作成日時" IsGrid="true" ValidationGroup="Search" runat="server" IsDate="true" />
 
-            <y:YCheckBox   id="検索削除フラグ" DefaultValue=""  Label="削除フラグ"  IsGrid="false"    ValidationGroup="Search"    runat="server" />
+            <y:YCheckBox ID="検索削除フラグ" DefaultValue="" Label="削除フラグ" IsGrid="false" ValidationGroup="Search" runat="server" />
 
             <br />
 
@@ -1312,6 +1416,7 @@
             <asp:Button runat="server" ID="検索" Text="検索" OnClick="検索_Click" />
             <asp:Button runat="server" ID="Clear" Text="クリア" OnClick="Clear_Click" />
 
+            <y:YDropDownList runat="server" ID="ページサイズ" OnSelectedIndexChanged="pageSize_SelectedIndexChanged" />
 
             <y:BaseGridView CssClass="GridView" ID="mainGridView" runat="server"
                 DataSourceID="mainDataSource"
@@ -1399,6 +1504,7 @@
 
             <br />
             <input type="button" value="再計算" id="autoCalculate" />
+            <input type="button" value="グラフ表示" id="openPriceChart" />
             <y:BaseFormView ID="mainFormView"
                 runat="server"
                 DataKeyNames="単価ID,最終更新日時" DataSourceID="mainDataSource" BackColor="#DEBA84"
@@ -1407,147 +1513,252 @@
                 AllowPaging="true">
                 <EditItemTemplate>
 
-<table><tr><td><table><tr><td><table><tr class="titleRow"><td colspan="2">基本情報</td></tr>
-<y:YTextBox   id="単価ID"  Label="単価ID"   IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("単価ID", "") %>'     IsRequired="FALSE" IsDate="false"  DataFormatString="" IsInteger="false" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="部品コード"  Label="部品コード"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("部品コード", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="false" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="部品名称"  Label="部品名称"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("部品名称", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="false" runat="server" CssClass="Input"   TextMode="MultiLine" Rows="2"  Width="100"/>
-<y:YDropDownList   id="材料ID"  Label="材料ID"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" SelectedValue='<%# Bind("材料ID") %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"  DataSourceID="材料DataSource" DataTextField="材料名称識別テキスト" DataValueField="材料ID"   AppendDataBoundItems="true"   OnSelectedIndexChanged="材料ID_SelectedIndexChanged" AutoPostBack="true"  Width="100"/>
-<y:YTextBox   id="材料名称"  Label="材料名称"   IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("材料名称", "") %>'     IsRequired="FALSE" IsDate="false"  DataFormatString="" IsInteger="false" runat="server" CssClass="Input"   Width="100"/>
-<y:YTextBox   id="材質大分類"  Label="材質大分類"   IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("材質大分類", "") %>'     IsRequired="FALSE" IsDate="false"  DataFormatString="" IsInteger="false" runat="server" CssClass="Input"   Width="100"/>
-<y:YTextBox   id="材質"  Label="材質"   IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("材質", "") %>'     IsRequired="FALSE" IsDate="false"  DataFormatString="" IsInteger="false" runat="server" CssClass="Input"   Width="100"/>
-<y:YTextBox   id="定尺寸法縦_original"  Label="定尺寸法縦【mm】"   IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("定尺寸法縦_original", "{0:f2}") %>'     IsRequired="FALSE" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="定尺寸法横_original"  Label="定尺寸法横【mm】"   IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("定尺寸法横_original", "{0:f2}") %>'     IsRequired="FALSE" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="定尺仕入金額_original"  Label="定尺仕入金額【\】"   IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("定尺仕入金額_original", "{0:f2}") %>'     IsRequired="FALSE" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<tr><td></td><td><asp:Button runat="server" ID="定尺情報設定" OnClick="定尺情報設定_Click" Text="定尺情報設定" /></td></tr>
-<y:YTextBox   id="定尺寸法縦"  Label="定尺寸法縦【mm】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("定尺寸法縦", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="定尺寸法横"  Label="定尺寸法横【mm】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("定尺寸法横", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="厚み"  Label="厚み【mm】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("厚み", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="定尺仕入金額"  Label="定尺仕入金額【\】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("定尺仕入金額", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YCheckBox   id="定尺仕入自動計算フラグ"  Label="定尺仕入自動計算"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Checked='<%# ConvertToBoolean(Eval("定尺仕入自動計算フラグ")) %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="false" runat="server" CssClass="Input"   Width="40"/>
-<tr class="blankrow"><td></td><td class="Input" colspan="2"><input type="button" id="定尺仕入自動計算" value="定尺仕入自動計算" /></tr>
-<y:YTextBox   id="定尺売り金額"  Label="定尺売り金額【\】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("定尺売り金額", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="時間単価"  Label="時間単価【\】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("時間単価", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="分単価"  Label="分単価【\】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("分単価", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="秒単価"  Label="秒単価【\】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("秒単価", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<tr class="titleRow"><td colspan="2">m2あたりの材料</td></tr>
-<y:YTextBox   id="m2あたりの材料費"  Label="材料費【\】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("m2あたりの材料費", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="m2あたりの取数たて"  Label="取数たて【ヶ】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("m2あたりの取数たて", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="m2あたりの取数よこ"  Label="取数よこ【ヶ】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("m2あたりの取数よこ", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="m2あたりの取数"  Label="取数【ヶ】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("m2あたりの取数", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-</table></td><td><table>
-<y:YTextBox   id="仕入れ単価"  Label="仕入れ単価【\】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("仕入れ単価", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="商品たて"  Label="商品たて【mm】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("商品たて", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="商品よこ"  Label="商品よこ【mm】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("商品よこ", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<tr class="blankrow"><td></td><td><input type="button" id="商品たてよこ逆" value="入れ替え"/></td></tr><tr class="blankrow"><td colspan="2"></td></tr>
-<y:YTextBox   id="たてしろ"  Label="たてしろ【mm】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("たてしろ", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="よこしろ"  Label="よこしろ【mm】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("よこしろ", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<tr class="titleRow"><td colspan="2">見積</td></tr>
-<tr class="blankrow"><td></td></tr>
-<y:YTextBox   id="取り数"  Label="取り数【ヶ】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("取り数", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="見積_材料費"  Label="材料費【\】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("見積_材料費", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<tr class="blankrow"><td></td></tr>
-<y:YTextBox   id="見積_裁断"  Label="裁断【\】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("見積_裁断", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="見積_打抜"  Label="打抜【\】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("見積_打抜", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="見積_貼り"  Label="貼り【\】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("見積_貼り", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="見積_曲げ"  Label="曲げ【\】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("見積_曲げ", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="見積_仕上げ"  Label="仕上げ【\】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("見積_仕上げ", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="見積_ロス管理"  Label="ロス管理【\】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("見積_ロス管理", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="見積_材料費比"  Label="材料費比【%】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("見積_材料費比", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="見積_加工費小計"  Label="加工費小計【\】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("見積_加工費小計", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="見積_加工費比"  Label="加工費比【\】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("見積_加工費比", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="見積_単価"  Label="単価【\】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("見積_単価", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="見積_m2あたり材料費"  Label="m2あたり材料費【\】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("見積_m2あたり材料費", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-</table></td><td><table><tr class="blankrow"><td colspan="2"></td></tr>
-<y:YTextBox   id="たて_しろあり"  Label="抜きたて【mm】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("たて_しろあり", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="よこ_しろあり"  Label="抜きよこ【mm】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("よこ_しろあり", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="縦取り数"  Label="縦取り数【mm】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("縦取り数", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="横取り数"  Label="横取り数【mm】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("横取り数", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="たて余"  Label="たて余【mm】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("たて余", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="よこ余"  Label="よこ余【mm】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("よこ余", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<tr class="titleRow"><td colspan="2">計算</td></tr>
-<y:YTextBox   id="計算_取り数"  Label="取り数【mm】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("計算_取り数", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="計算_材料費T"  Label="材料費T【\】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("計算_材料費T", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="計算_材料費"  Label="材料費【\】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("計算_材料費", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<tr class="blankrow"><td></td><td><input type="button" id="材料費コピー" value="材料費コピー"/></td></tr>
-<y:YTextBox   id="計算_裁断"  Label="裁断【\】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("計算_裁断", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="計算_打抜"  Label="打抜【\】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("計算_打抜", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="計算_貼り"  Label="貼り【\】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("計算_貼り", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="計算_曲げ"  Label="曲げ【\】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("計算_曲げ", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="計算_仕上げ"  Label="仕上げ【\】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("計算_仕上げ", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="計算_ロス管理"  Label="ロス管理【\】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("計算_ロス管理", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="計算_材料費比"  Label="材料費比【%】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("計算_材料費比", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="計算_加工費小計"  Label="加工費小計【\】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("計算_加工費小計", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="計算_加工費比"  Label="加工費比【%】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("計算_加工費比", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="計算_単価"  Label="単価【\】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("計算_単価", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-</table></td><td><table><tr class="titleRow"><td colspan="2">定尺裁断</td></tr>
-<y:YTextBox   id="定尺裁断_数"  Label="数【個所】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("定尺裁断_数", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="定尺裁断_所要時間"  Label="所要時間【秒】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("定尺裁断_所要時間", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="定尺裁断_割数"  Label="割数【個所】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("定尺裁断_割数", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<tr class="titleRow"><td colspan="2">寸法カット</td></tr> 
-<y:YTextBox   id="寸法カット_数"  Label="数【個所】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("寸法カット_数", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="寸法カット_所要時間"  Label="所要時間【秒】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("寸法カット_所要時間", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="寸法カット_割数"  Label="割数【個所】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("寸法カット_割数", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<tr class="titleRow"><td colspan="2">打抜</td></tr>    
-<y:YTextBox   id="打抜_型取数"  Label="型取数【ヶ】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("打抜_型取数", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="打抜_プレス回数"  Label="プレス回数【回/時】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("打抜_プレス回数", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<tr class="titleRow"><td colspan="2">曲げ</td></tr> 
-<y:YTextBox   id="曲げ_数"  Label="数【個所】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("曲げ_数", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="曲げ_秒数"  Label="秒数【秒】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("曲げ_秒数", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="曲げ_同時加工"  Label="同時加工【ヶ】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("曲げ_同時加工", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<tr class="titleRow"><td colspan="2">仕上げ</td></tr>    
-<y:YTextBox   id="仕上げ_数"  Label="数【個所】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("仕上げ_数", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="仕上げ_秒数"  Label="秒数【秒】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("仕上げ_秒数", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="仕上げ_同時加工"  Label="同時加工【ヶ】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("仕上げ_同時加工", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<tr class="titleRow"><td colspan="2">ロス管理</td></tr>    
-<y:YTextBox   id="ロス管理_材比"  Label="材比【%】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("ロス管理_材比", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="ロス管理_加工比"  Label="加工比【%】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("ロス管理_加工比", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-</table></td><td><table><tr class="titleRow"><td colspan="2"></td></tr>
-<y:YTextBox   id="定尺裁断_時間"  Label="時間【秒】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("定尺裁断_時間", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="定尺裁断_作業費"  Label="作業費【\】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("定尺裁断_作業費", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="定尺裁断_単価当り"  Label="単価当り【\】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("定尺裁断_単価当り", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<tr class="titleRow"><td colspan="2"></td></tr>   
-<y:YTextBox   id="寸法カット_時間"  Label="時間【秒】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("寸法カット_時間", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="寸法カット_作業費"  Label="作業費【\】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("寸法カット_作業費", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="寸法カット_単価当り"  Label="単価当り【\】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("寸法カット_単価当り", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<tr class="titleRow"><td colspan="2"></td></tr>   
-<y:YTextBox   id="打抜_時間当たりの加工数"  Label="加工数/時間【ヶ】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("打抜_時間当たりの加工数", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="打抜_単価当り"  Label="単価当り【\】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("打抜_単価当り", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<tr class="titleRow"><td colspan="2"></td></tr>   
-<y:YTextBox   id="曲げ_時間"  Label="時間【秒】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("曲げ_時間", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="曲げ_作業費"  Label="作業費【\】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("曲げ_作業費", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="曲げ_単価当り"  Label="単価当り【\】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("曲げ_単価当り", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<tr class="titleRow"><td colspan="2"></td></tr>   
-<y:YTextBox   id="仕上げ_時間"  Label="時間【秒】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("仕上げ_時間", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="仕上げ_作業費"  Label="作業費【\】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("仕上げ_作業費", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="仕上げ_単価当り"  Label="単価当り【\】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("仕上げ_単価当り", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<tr class="titleRow"><td colspan="2"></td></tr>   
-<y:YTextBox   id="ロス管理_材_費用"  Label="材_費用【\】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("ロス管理_材_費用", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="ロス管理_加工_費用"  Label="加工_費用【\】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("ロス管理_加工_費用", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-</table></td><td><table>
-<y:YTextBox   id="見積_定尺裁断費比"  Label="見積_定尺裁断費比【%】"   IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("見積_定尺裁断費比", "{0:f2}") %>'     IsRequired="FALSE" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="計算_定尺裁断費比"  Label="計算_定尺裁断費比【%】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("計算_定尺裁断費比", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="計算_寸法カット費比"  Label="計算_寸法カット費比【%】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("計算_寸法カット費比", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<tr class="blankrow"><td colspan="2"></td></tr><tr class="blankrow"><td colspan="2"></td></tr><tr class="blankrow"><td colspan="2"></td></tr>
-<y:YTextBox   id="見積_打抜費比"  Label="見積_打抜費比【%】"   IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("見積_打抜費比", "{0:f2}") %>'     IsRequired="FALSE" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="計算_打抜費比"  Label="計算_打抜費比【%】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("計算_打抜費比", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="見積_貼り費比"  Label="見積_貼り費比【%】"   IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("見積_貼り費比", "{0:f2}") %>'     IsRequired="FALSE" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="計算_貼り費比"  Label="計算_貼り費比【%】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("計算_貼り費比", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="見積_曲げ費比"  Label="見積_曲げ費比【%】"   IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("見積_曲げ費比", "{0:f2}") %>'     IsRequired="FALSE" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="計算_曲げ費比"  Label="計算_曲げ費比【%】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("計算_曲げ費比", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="見積_仕上げ費比"  Label="見積_仕上げ費比【%】"   IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("見積_仕上げ費比", "{0:f2}") %>'     IsRequired="FALSE" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="計算_仕上げ費比"  Label="計算_仕上げ費比【%】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("計算_仕上げ費比", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="見積_ロス管理費比"  Label="見積_ロス管理費比【%】"   IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("見積_ロス管理費比", "{0:f2}") %>'     IsRequired="FALSE" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="計算_ロス管理費比"  Label="計算_ロス管理費比【%】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("計算_ロス管理費比", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-</table></td><td><table>
-<y:YTextBox   id="ロット"  Label="ロット【ヶ】"   IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("ロット", "") %>'     IsRequired="FALSE" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="丸め数"  Label="丸め数【ヶ】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("丸め数", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="商品重量"  Label="商品重量【g】"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("商品重量", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YCheckBox   id="削除フラグ"  Label="削除フラグ"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Checked='<%# ConvertToBoolean(Eval("削除フラグ")) %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="false" runat="server" CssClass="Input"   Width="40"/>
-<y:YDropDownList   id="作成ユーザー"  Label="作成ユーザー"   IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" SelectedValue='<%# Bind("作成ユーザー") %>'    IsRequired="FALSE" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"  DataSourceID="ユーザーDataSource" DataTextField="ユーザー名" DataValueField="ユーザーId"   AppendDataBoundItems="true"   Width="100"/>
-<y:YDropDownList   id="最終更新ユーザー"  Label="最終更新ユーザー"   IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" SelectedValue='<%# Bind("最終更新ユーザー") %>'    IsRequired="FALSE" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"  DataSourceID="ユーザーDataSource" DataTextField="ユーザー名" DataValueField="ユーザーId"   AppendDataBoundItems="true"   Width="100"/>
-<y:YTextBox   id="作成日時"  Label="作成日時"   IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("作成日時", "{0:yyyy/MM/dd hh:mm:ss}") %>'     IsRequired="FALSE" IsDate="true"  DataFormatString="{0:yyyy/MM/dd hh:mm:ss}" IsInteger="false" runat="server" CssClass="Input"   Width="100"/>
-<y:YTextBox   id="最終更新日時"  Label="最終更新日時"   IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("最終更新日時", "{0:yyyy/MM/dd hh:mm:ss}") %>'     IsRequired="FALSE" IsDate="true"  DataFormatString="{0:yyyy/MM/dd hh:mm:ss}" IsInteger="false" runat="server" CssClass="Input"   Width="100"/>
-</table></td></tr></table></td></tr></table>
+                    <table>
+                        <tr>
+                            <td>
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <table>
+                                                <tr class="titleRow">
+                                                    <td colspan="2">基本情報</td>
+                                                </tr>
+                                                <y:YTextBox ID="単価ID" Label="単価ID" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("単価ID", "") %>' IsRequired="FALSE" IsDate="false" DataFormatString="" IsInteger="false" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="部品コード" Label="部品コード" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("部品コード", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="false" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="部品名称" Label="部品名称" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("部品名称", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="false" runat="server" CssClass="Input" TextMode="MultiLine" Rows="2" Width="100" />
+                                                <y:YDropDownList ID="材料ID" Label="材料ID" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" SelectedValue='<%# Bind("材料ID") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" DataSourceID="材料DataSource" DataTextField="材料名称識別テキスト" DataValueField="材料ID" AppendDataBoundItems="true" OnSelectedIndexChanged="材料ID_SelectedIndexChanged" AutoPostBack="true" Width="100" />
+                                                <y:YTextBox ID="材料名称" Label="材料名称" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("材料名称", "") %>' IsRequired="FALSE" IsDate="false" DataFormatString="" IsInteger="false" runat="server" CssClass="Input" Width="100" />
+                                                <y:YTextBox ID="材質大分類" Label="材質大分類" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("材質大分類", "") %>' IsRequired="FALSE" IsDate="false" DataFormatString="" IsInteger="false" runat="server" CssClass="Input" Width="100" />
+                                                <y:YTextBox ID="材質" Label="材質" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("材質", "") %>' IsRequired="FALSE" IsDate="false" DataFormatString="" IsInteger="false" runat="server" CssClass="Input" Width="100" />
+                                                <y:YTextBox ID="定尺寸法縦_original" Label="定尺寸法縦【mm】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("定尺寸法縦_original", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="定尺寸法横_original" Label="定尺寸法横【mm】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("定尺寸法横_original", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="定尺仕入金額_original" Label="定尺仕入金額【\】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("定尺仕入金額_original", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <tr>
+                                                    <td></td>
+                                                    <td>
+                                                        <asp:Button runat="server" ID="定尺情報設定" OnClick="定尺情報設定_Click" Text="定尺情報設定" /></td>
+                                                </tr>
+                                                <y:YTextBox ID="定尺寸法縦" Label="定尺寸法縦【mm】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("定尺寸法縦", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="定尺寸法横" Label="定尺寸法横【mm】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("定尺寸法横", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="厚み" Label="厚み【mm】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("厚み", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="定尺仕入金額" Label="定尺仕入金額【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("定尺仕入金額", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YCheckBox ID="定尺仕入自動計算フラグ" Label="定尺仕入自動計算" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Checked='<%# ConvertToBoolean(Eval("定尺仕入自動計算フラグ")) %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="false" runat="server" CssClass="Input" Width="40" />
+                                                <tr class="blankrow">
+                                                    <td></td>
+                                                    <td class="Input" colspan="2">
+                                                        <input type="button" id="定尺仕入自動計算" value="定尺仕入自動計算" />
+                                                </tr>
+                                                <y:YTextBox ID="定尺売り金額" Label="定尺売り金額【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("定尺売り金額", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="時間単価" Label="時間単価【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("時間単価", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="分単価" Label="分単価【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("分単価", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="秒単価" Label="秒単価【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("秒単価", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <tr class="titleRow">
+                                                    <td colspan="2">m2あたりの材料</td>
+                                                </tr>
+                                                <y:YTextBox ID="m2あたりの材料費" Label="材料費【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("m2あたりの材料費", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="m2あたりの取数たて" Label="取数たて【ヶ】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("m2あたりの取数たて", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="m2あたりの取数よこ" Label="取数よこ【ヶ】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("m2あたりの取数よこ", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="m2あたりの取数" Label="取数【ヶ】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("m2あたりの取数", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table>
+                                                <y:YTextBox ID="仕入れ単価" Label="仕入れ単価【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("仕入れ単価", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="商品たて" Label="商品たて【mm】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("商品たて", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="商品よこ" Label="商品よこ【mm】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("商品よこ", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <tr class="blankrow">
+                                                    <td></td>
+                                                    <td>
+                                                        <input type="button" id="商品たてよこ逆" value="入れ替え" /></td>
+                                                </tr>
+                                                <tr class="blankrow">
+                                                    <td colspan="2"></td>
+                                                </tr>
+                                                <y:YTextBox ID="たてしろ" Label="たてしろ【mm】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("たてしろ", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="よこしろ" Label="よこしろ【mm】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("よこしろ", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <tr class="titleRow">
+                                                    <td colspan="2">見積</td>
+                                                </tr>
+                                                <tr class="blankrow">
+                                                    <td></td>
+                                                </tr>
+                                                <y:YTextBox ID="取り数" Label="取り数【ヶ】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("取り数", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="見積_材料費" Label="材料費【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("見積_材料費", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <tr class="blankrow">
+                                                    <td></td>
+                                                </tr>
+                                                <y:YTextBox ID="見積_裁断" Label="裁断【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("見積_裁断", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="見積_打抜" Label="打抜【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("見積_打抜", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="見積_貼り" Label="貼り【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("見積_貼り", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="見積_曲げ" Label="曲げ【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("見積_曲げ", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="見積_仕上げ" Label="仕上げ【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("見積_仕上げ", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="見積_ロス管理" Label="ロス管理【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("見積_ロス管理", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="見積_材料費比" Label="材料費比【%】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("見積_材料費比", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="見積_加工費小計" Label="加工費小計【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("見積_加工費小計", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="見積_加工費比" Label="加工費比【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("見積_加工費比", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="見積_単価" Label="単価【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("見積_単価", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="見積_m2あたり材料費" Label="m2あたり材料費【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("見積_m2あたり材料費", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table>
+                                                <tr class="blankrow">
+                                                    <td colspan="2"></td>
+                                                </tr>
+                                                <y:YTextBox ID="たて_しろあり" Label="抜きたて【mm】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("たて_しろあり", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="よこ_しろあり" Label="抜きよこ【mm】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("よこ_しろあり", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="縦取り数" Label="縦取り数【mm】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("縦取り数", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="横取り数" Label="横取り数【mm】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("横取り数", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="たて余" Label="たて余【mm】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("たて余", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="よこ余" Label="よこ余【mm】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("よこ余", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <tr class="titleRow">
+                                                    <td colspan="2">計算</td>
+                                                </tr>
+                                                <y:YTextBox ID="計算_取り数" Label="取り数【mm】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("計算_取り数", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_材料費T" Label="材料費T【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("計算_材料費T", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_材料費" Label="材料費【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("計算_材料費", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <tr class="blankrow">
+                                                    <td></td>
+                                                    <td>
+                                                        <input type="button" id="材料費コピー" value="材料費コピー" /></td>
+                                                </tr>
+                                                <y:YTextBox ID="計算_裁断" Label="裁断【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("計算_裁断", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_打抜" Label="打抜【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("計算_打抜", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_貼り" Label="貼り【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("計算_貼り", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_曲げ" Label="曲げ【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("計算_曲げ", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_仕上げ" Label="仕上げ【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("計算_仕上げ", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_ロス管理" Label="ロス管理【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("計算_ロス管理", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_材料費比" Label="材料費比【%】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("計算_材料費比", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_加工費小計" Label="加工費小計【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("計算_加工費小計", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_加工費比" Label="加工費比【%】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("計算_加工費比", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_単価" Label="単価【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("計算_単価", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <tr class="blankrow">
+                                                    <td></td>
+                                                    <td>
+                                                        <input type="button" id="計算値コピー" value="見積←計算"></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table>
+                                                <tr class="titleRow">
+                                                    <td colspan="2">定尺裁断</td>
+                                                </tr>
+                                                <y:YTextBox ID="定尺裁断_数" Label="数【個所】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("定尺裁断_数", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="定尺裁断_所要時間" Label="所要時間【秒】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("定尺裁断_所要時間", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="定尺裁断_割数" Label="割数【個所】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("定尺裁断_割数", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <tr class="titleRow">
+                                                    <td colspan="2">寸法カット</td>
+                                                </tr>
+                                                <y:YTextBox ID="寸法カット_数" Label="数【個所】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("寸法カット_数", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="寸法カット_所要時間" Label="所要時間【秒】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("寸法カット_所要時間", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="寸法カット_割数" Label="割数【個所】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("寸法カット_割数", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <tr class="titleRow">
+                                                    <td colspan="2">打抜</td>
+                                                </tr>
+                                                <y:YTextBox ID="打抜_型取数" Label="型取数【ヶ】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("打抜_型取数", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="打抜_プレス回数" Label="プレス回数【回/時】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("打抜_プレス回数", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <tr class="titleRow">
+                                                    <td colspan="2">曲げ</td>
+                                                </tr>
+                                                <y:YTextBox ID="曲げ_数" Label="数【個所】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("曲げ_数", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="曲げ_秒数" Label="秒数【秒】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("曲げ_秒数", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="曲げ_同時加工" Label="同時加工【ヶ】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("曲げ_同時加工", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <tr class="titleRow">
+                                                    <td colspan="2">仕上げ</td>
+                                                </tr>
+                                                <y:YTextBox ID="仕上げ_数" Label="数【個所】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("仕上げ_数", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="仕上げ_秒数" Label="秒数【秒】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("仕上げ_秒数", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="仕上げ_同時加工" Label="同時加工【ヶ】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("仕上げ_同時加工", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <tr class="titleRow">
+                                                    <td colspan="2">ロス管理</td>
+                                                </tr>
+                                                <y:YTextBox ID="ロス管理_材比" Label="材比【%】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("ロス管理_材比", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="ロス管理_加工比" Label="加工比【%】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("ロス管理_加工比", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table>
+                                                <tr class="titleRow">
+                                                    <td colspan="2"></td>
+                                                </tr>
+                                                <y:YTextBox ID="定尺裁断_時間" Label="時間【秒】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("定尺裁断_時間", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="定尺裁断_作業費" Label="作業費【\】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("定尺裁断_作業費", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="定尺裁断_単価当り" Label="単価当り【\】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("定尺裁断_単価当り", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <tr class="titleRow">
+                                                    <td colspan="2"></td>
+                                                </tr>
+                                                <y:YTextBox ID="寸法カット_時間" Label="時間【秒】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("寸法カット_時間", "") %>' IsRequired="FALSE" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="寸法カット_作業費" Label="作業費【\】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("寸法カット_作業費", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="寸法カット_単価当り" Label="単価当り【\】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("寸法カット_単価当り", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <tr class="titleRow">
+                                                    <td colspan="2"></td>
+                                                </tr>
+                                                <y:YTextBox ID="打抜_時間当たりの加工数" Label="加工数/時間【ヶ】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("打抜_時間当たりの加工数", "") %>' IsRequired="FALSE" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="打抜_単価当り" Label="単価当り【\】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("打抜_単価当り", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <tr class="titleRow">
+                                                    <td colspan="2"></td>
+                                                </tr>
+                                                <y:YTextBox ID="曲げ_時間" Label="時間【秒】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("曲げ_時間", "") %>' IsRequired="FALSE" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="曲げ_作業費" Label="作業費【\】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("曲げ_作業費", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="曲げ_単価当り" Label="単価当り【\】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("曲げ_単価当り", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <tr class="titleRow">
+                                                    <td colspan="2"></td>
+                                                </tr>
+                                                <y:YTextBox ID="仕上げ_時間" Label="時間【秒】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("仕上げ_時間", "") %>' IsRequired="FALSE" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="仕上げ_作業費" Label="作業費【\】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("仕上げ_作業費", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="仕上げ_単価当り" Label="単価当り【\】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("仕上げ_単価当り", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <tr class="titleRow">
+                                                    <td colspan="2"></td>
+                                                </tr>
+                                                <y:YTextBox ID="ロス管理_材_費用" Label="材_費用【\】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("ロス管理_材_費用", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="ロス管理_加工_費用" Label="加工_費用【\】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("ロス管理_加工_費用", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                            </table>
+                                        </td>
+                                        <td runat="server" visible="false">
+                                            <table>
+                                                <y:YTextBox ID="見積_定尺裁断費比" Label="見積_定尺裁断費比【%】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("見積_定尺裁断費比", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_定尺裁断費比" Label="計算_定尺裁断費比【%】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("計算_定尺裁断費比", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_寸法カット費比" Label="計算_寸法カット費比【%】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("計算_寸法カット費比", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <tr class="blankrow">
+                                                    <td colspan="2"></td>
+                                                </tr>
+                                                <tr class="blankrow">
+                                                    <td colspan="2"></td>
+                                                </tr>
+                                                <tr class="blankrow">
+                                                    <td colspan="2"></td>
+                                                </tr>
+                                                <y:YTextBox ID="見積_打抜費比" Label="見積_打抜費比【%】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("見積_打抜費比", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_打抜費比" Label="計算_打抜費比【%】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("計算_打抜費比", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="見積_貼り費比" Label="見積_貼り費比【%】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("見積_貼り費比", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_貼り費比" Label="計算_貼り費比【%】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("計算_貼り費比", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="見積_曲げ費比" Label="見積_曲げ費比【%】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("見積_曲げ費比", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_曲げ費比" Label="計算_曲げ費比【%】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("計算_曲げ費比", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="見積_仕上げ費比" Label="見積_仕上げ費比【%】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("見積_仕上げ費比", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_仕上げ費比" Label="計算_仕上げ費比【%】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("計算_仕上げ費比", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="見積_ロス管理費比" Label="見積_ロス管理費比【%】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("見積_ロス管理費比", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_ロス管理費比" Label="計算_ロス管理費比【%】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("計算_ロス管理費比", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table>
+                                                <y:YTextBox ID="ロット" Label="ロット【ヶ】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("ロット", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="丸め数" Label="丸め数【ヶ】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("丸め数", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="商品重量" Label="商品重量【g】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("商品重量", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YCheckBox ID="削除フラグ" Label="削除フラグ" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Checked='<%# ConvertToBoolean(Eval("削除フラグ")) %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="false" runat="server" CssClass="Input" Width="40" />
+                                                <y:YDropDownList ID="作成ユーザー" Label="作成ユーザー" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" SelectedValue='<%# Bind("作成ユーザー") %>' IsRequired="FALSE" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" DataSourceID="ユーザーDataSource" DataTextField="ユーザー名" DataValueField="ユーザーId" AppendDataBoundItems="true" Width="100" />
+                                                <y:YDropDownList ID="最終更新ユーザー" Label="最終更新ユーザー" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" SelectedValue='<%# Bind("最終更新ユーザー") %>' IsRequired="FALSE" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" DataSourceID="ユーザーDataSource" DataTextField="ユーザー名" DataValueField="ユーザーId" AppendDataBoundItems="true" Width="100" />
+                                                <y:YTextBox ID="作成日時" Label="作成日時" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("作成日時", "{0:yyyy/MM/dd hh:mm:ss}") %>' IsRequired="FALSE" IsDate="true" DataFormatString="{0:yyyy/MM/dd hh:mm:ss}" IsInteger="false" runat="server" CssClass="Input" Width="100" />
+                                                <y:YTextBox ID="最終更新日時" Label="最終更新日時" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" Text='<%# Bind("最終更新日時", "{0:yyyy/MM/dd hh:mm:ss}") %>' IsRequired="FALSE" IsDate="true" DataFormatString="{0:yyyy/MM/dd hh:mm:ss}" IsInteger="false" runat="server" CssClass="Input" Width="100" />
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+
 
 
                     <asp:ValidationSummary ID="ValidationSummary1" runat="server" EnableClientScript="true" ValidationGroup="DetailUpdate" />
@@ -1561,147 +1772,251 @@
                 <HeaderStyle BackColor="#A55129" Font-Bold="True" ForeColor="White" />
                 <InsertItemTemplate>
 
-<table><tr><td><table><tr><td><table><tr class="titleRow"><td colspan="2">基本情報</td></tr>
-<y:YTextBox   id="単価ID" DefaultValue=""  Label="単価ID"  IsGrid="false"  ReadOnly="TRUE"  ValidationGroup="DetailInsert" Text='<%# Bind("単価ID", "") %>'     IsRequired="FALSE" IsDate="false"  DataFormatString="" IsInteger="false" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="部品コード" DefaultValue=""  Label="部品コード"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("部品コード", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="false" runat="server" CssClass="Input"   Width="65" />
-<y:YTextBox   id="部品名称" DefaultValue=""  Label="部品名称"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("部品名称", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="false" runat="server" CssClass="Input"   TextMode="MultiLine" Rows="2"  Width="100" />
-<y:YDropDownList   id="材料ID" DefaultValue=""  Label="材料ID"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" SelectedValue='<%# Bind("材料ID") %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"  DataSourceID="材料DataSource" DataTextField="材料名称識別テキスト" DataValueField="材料ID"   AppendDataBoundItems="true"   OnSelectedIndexChanged="材料ID_SelectedIndexChanged" AutoPostBack="true"  Width="100" />
-<y:YTextBox   id="材料名称" DefaultValue=""  Label="材料名称"  IsGrid="false"  ReadOnly="TRUE"  ValidationGroup="DetailInsert" Text='<%# Bind("材料名称", "") %>'     IsRequired="FALSE" IsDate="false"  DataFormatString="" IsInteger="false" runat="server" CssClass="Input"   Width="100" />
-<y:YTextBox   id="材質大分類" DefaultValue=""  Label="材質大分類"  IsGrid="false"  ReadOnly="TRUE"  ValidationGroup="DetailInsert" Text='<%# Bind("材質大分類", "") %>'     IsRequired="FALSE" IsDate="false"  DataFormatString="" IsInteger="false" runat="server" CssClass="Input"   Width="100" />
-<y:YTextBox   id="材質" DefaultValue=""  Label="材質"  IsGrid="false"  ReadOnly="TRUE"  ValidationGroup="DetailInsert" Text='<%# Bind("材質", "") %>'     IsRequired="FALSE" IsDate="false"  DataFormatString="" IsInteger="false" runat="server" CssClass="Input"   Width="100" />
-<y:YTextBox   id="定尺寸法縦_original" DefaultValue=""  Label="定尺寸法縦【mm】"  IsGrid="false"  ReadOnly="TRUE"  ValidationGroup="DetailInsert" Text='<%# Bind("定尺寸法縦_original", "{0:f2}") %>'     IsRequired="FALSE" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-<y:YTextBox   id="定尺寸法横_original" DefaultValue=""  Label="定尺寸法横【mm】"  IsGrid="false"  ReadOnly="TRUE"  ValidationGroup="DetailInsert" Text='<%# Bind("定尺寸法横_original", "{0:f2}") %>'     IsRequired="FALSE" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-<y:YTextBox   id="定尺仕入金額_original" DefaultValue=""  Label="定尺仕入金額【\】"  IsGrid="false"  ReadOnly="TRUE"  ValidationGroup="DetailInsert" Text='<%# Bind("定尺仕入金額_original", "{0:f2}") %>'     IsRequired="FALSE" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-<tr><td></td><td><asp:Button runat="server" ID="定尺情報設定" OnClick="定尺情報設定_Click" Text="定尺情報設定" /></td></tr>
-<y:YTextBox   id="定尺寸法縦" DefaultValue=""  Label="定尺寸法縦【mm】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("定尺寸法縦", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-<y:YTextBox   id="定尺寸法横" DefaultValue=""  Label="定尺寸法横【mm】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("定尺寸法横", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-<y:YTextBox   id="厚み" DefaultValue=""  Label="厚み【mm】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("厚み", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-<y:YTextBox   id="定尺仕入金額" DefaultValue=""  Label="定尺仕入金額【\】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("定尺仕入金額", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-<y:YCheckBox   id="定尺仕入自動計算フラグ" DefaultValue=""  Label="定尺仕入自動計算"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Checked='<%# ConvertToBoolean(Eval("定尺仕入自動計算フラグ")) %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="false" runat="server" CssClass="Input"   Width="40" />
-<tr class="blankrow"><td></td><td class="Input" colspan="2"><input type="button" id="定尺仕入自動計算" value="定尺仕入自動計算" /></tr>
-<y:YTextBox   id="定尺売り金額" DefaultValue=""  Label="定尺売り金額【\】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("定尺売り金額", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-<y:YTextBox   id="時間単価" DefaultValue=""  Label="時間単価【\】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("時間単価", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-<y:YTextBox   id="分単価" DefaultValue=""  Label="分単価【\】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("分単価", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="秒単価" DefaultValue=""  Label="秒単価【\】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("秒単価", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<tr class="titleRow"><td colspan="2">m2あたりの材料</td></tr>
-<y:YTextBox   id="m2あたりの材料費" DefaultValue=""  Label="材料費【\】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("m2あたりの材料費", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="m2あたりの取数たて" DefaultValue=""  Label="取数たて【ヶ】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("m2あたりの取数たて", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="m2あたりの取数よこ" DefaultValue=""  Label="取数よこ【ヶ】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("m2あたりの取数よこ", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="m2あたりの取数" DefaultValue=""  Label="取数【ヶ】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("m2あたりの取数", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-</table></td><td><table>
-<y:YTextBox   id="仕入れ単価" DefaultValue=""  Label="仕入れ単価【\】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("仕入れ単価", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-<y:YTextBox   id="商品たて" DefaultValue=""  Label="商品たて【mm】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("商品たて", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-<y:YTextBox   id="商品よこ" DefaultValue=""  Label="商品よこ【mm】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("商品よこ", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-<tr class="blankrow"><td></td><td><input type="button" id="商品たてよこ逆" value="入れ替え"/></td></tr><tr class="blankrow"><td colspan="2"></td></tr>
-<y:YTextBox   id="たてしろ" DefaultValue=""  Label="たてしろ【mm】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("たてしろ", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-<y:YTextBox   id="よこしろ" DefaultValue=""  Label="よこしろ【mm】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("よこしろ", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-<tr class="titleRow"><td colspan="2">見積</td></tr>
-<tr class="blankrow"><td></td></tr>
-<y:YTextBox   id="取り数" DefaultValue=""  Label="取り数【ヶ】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("取り数", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-<y:YTextBox   id="見積_材料費" DefaultValue=""  Label="材料費【\】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("見積_材料費", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-<tr class="blankrow"><td></td></tr>
-<y:YTextBox   id="見積_裁断" DefaultValue=""  Label="裁断【\】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("見積_裁断", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-<y:YTextBox   id="見積_打抜" DefaultValue=""  Label="打抜【\】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("見積_打抜", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-<y:YTextBox   id="見積_貼り" DefaultValue=""  Label="貼り【\】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("見積_貼り", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-<y:YTextBox   id="見積_曲げ" DefaultValue=""  Label="曲げ【\】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("見積_曲げ", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-<y:YTextBox   id="見積_仕上げ" DefaultValue=""  Label="仕上げ【\】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("見積_仕上げ", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-<y:YTextBox   id="見積_ロス管理" DefaultValue=""  Label="ロス管理【\】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("見積_ロス管理", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-<y:YTextBox   id="見積_材料費比" DefaultValue=""  Label="材料費比【%】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("見積_材料費比", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="見積_加工費小計" DefaultValue=""  Label="加工費小計【\】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("見積_加工費小計", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="見積_加工費比" DefaultValue=""  Label="加工費比【\】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("見積_加工費比", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="見積_単価" DefaultValue=""  Label="単価【\】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("見積_単価", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="見積_m2あたり材料費" DefaultValue=""  Label="m2あたり材料費【\】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("見積_m2あたり材料費", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-</table></td><td><table><tr class="blankrow"><td colspan="2"></td></tr>
-<y:YTextBox   id="たて_しろあり" DefaultValue=""  Label="抜きたて【mm】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("たて_しろあり", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="よこ_しろあり" DefaultValue=""  Label="抜きよこ【mm】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("よこ_しろあり", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="縦取り数" DefaultValue=""  Label="縦取り数【mm】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("縦取り数", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="横取り数" DefaultValue=""  Label="横取り数【mm】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("横取り数", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="たて余" DefaultValue=""  Label="たて余【mm】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("たて余", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="よこ余" DefaultValue=""  Label="よこ余【mm】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("よこ余", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<tr class="titleRow"><td colspan="2">計算</td></tr>
-<y:YTextBox   id="計算_取り数" DefaultValue=""  Label="取り数【mm】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("計算_取り数", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="計算_材料費T" DefaultValue=""  Label="材料費T【\】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("計算_材料費T", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="計算_材料費" DefaultValue=""  Label="材料費【\】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("計算_材料費", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<tr class="blankrow"><td></td><td><input type="button" id="材料費コピー" value="材料費コピー"/></td></tr>
-<y:YTextBox   id="計算_裁断" DefaultValue=""  Label="裁断【\】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("計算_裁断", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="計算_打抜" DefaultValue=""  Label="打抜【\】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("計算_打抜", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="計算_貼り" DefaultValue=""  Label="貼り【\】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("計算_貼り", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="計算_曲げ" DefaultValue=""  Label="曲げ【\】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("計算_曲げ", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="計算_仕上げ" DefaultValue=""  Label="仕上げ【\】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("計算_仕上げ", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="計算_ロス管理" DefaultValue=""  Label="ロス管理【\】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("計算_ロス管理", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="計算_材料費比" DefaultValue=""  Label="材料費比【%】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("計算_材料費比", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="計算_加工費小計" DefaultValue=""  Label="加工費小計【\】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("計算_加工費小計", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="計算_加工費比" DefaultValue=""  Label="加工費比【%】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("計算_加工費比", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="計算_単価" DefaultValue=""  Label="単価【\】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("計算_単価", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-</table></td><td><table><tr class="titleRow"><td colspan="2">定尺裁断</td></tr>
-<y:YTextBox   id="定尺裁断_数" DefaultValue=""  Label="数【個所】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("定尺裁断_数", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-<y:YTextBox   id="定尺裁断_所要時間" DefaultValue=""  Label="所要時間【秒】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("定尺裁断_所要時間", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-<y:YTextBox   id="定尺裁断_割数" DefaultValue=""  Label="割数【個所】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("定尺裁断_割数", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-<tr class="titleRow"><td colspan="2">寸法カット</td></tr> 
-<y:YTextBox   id="寸法カット_数" DefaultValue=""  Label="数【個所】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("寸法カット_数", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-<y:YTextBox   id="寸法カット_所要時間" DefaultValue=""  Label="所要時間【秒】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("寸法カット_所要時間", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-<y:YTextBox   id="寸法カット_割数" DefaultValue=""  Label="割数【個所】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("寸法カット_割数", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-<tr class="titleRow"><td colspan="2">打抜</td></tr>    
-<y:YTextBox   id="打抜_型取数" DefaultValue=""  Label="型取数【ヶ】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("打抜_型取数", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-<y:YTextBox   id="打抜_プレス回数" DefaultValue=""  Label="プレス回数【回/時】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("打抜_プレス回数", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-<tr class="titleRow"><td colspan="2">曲げ</td></tr> 
-<y:YTextBox   id="曲げ_数" DefaultValue=""  Label="数【個所】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("曲げ_数", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-<y:YTextBox   id="曲げ_秒数" DefaultValue=""  Label="秒数【秒】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("曲げ_秒数", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-<y:YTextBox   id="曲げ_同時加工" DefaultValue=""  Label="同時加工【ヶ】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("曲げ_同時加工", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-<tr class="titleRow"><td colspan="2">仕上げ</td></tr>    
-<y:YTextBox   id="仕上げ_数" DefaultValue=""  Label="数【個所】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("仕上げ_数", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-<y:YTextBox   id="仕上げ_秒数" DefaultValue=""  Label="秒数【秒】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("仕上げ_秒数", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-<y:YTextBox   id="仕上げ_同時加工" DefaultValue=""  Label="同時加工【ヶ】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("仕上げ_同時加工", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-<tr class="titleRow"><td colspan="2">ロス管理</td></tr>    
-<y:YTextBox   id="ロス管理_材比" DefaultValue=""  Label="材比【%】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("ロス管理_材比", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-<y:YTextBox   id="ロス管理_加工比" DefaultValue=""  Label="加工比【%】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("ロス管理_加工比", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-</table></td><td><table><tr class="titleRow"><td colspan="2"></td></tr>
-<y:YTextBox   id="定尺裁断_時間" DefaultValue=""  Label="時間【秒】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("定尺裁断_時間", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="定尺裁断_作業費" DefaultValue=""  Label="作業費【\】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("定尺裁断_作業費", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="定尺裁断_単価当り" DefaultValue=""  Label="単価当り【\】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("定尺裁断_単価当り", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<tr class="titleRow"><td colspan="2"></td></tr>   
-<y:YTextBox   id="寸法カット_時間" DefaultValue=""  Label="時間【秒】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("寸法カット_時間", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="寸法カット_作業費" DefaultValue=""  Label="作業費【\】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("寸法カット_作業費", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="寸法カット_単価当り" DefaultValue=""  Label="単価当り【\】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("寸法カット_単価当り", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<tr class="titleRow"><td colspan="2"></td></tr>   
-<y:YTextBox   id="打抜_時間当たりの加工数" DefaultValue=""  Label="加工数/時間【ヶ】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("打抜_時間当たりの加工数", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="打抜_単価当り" DefaultValue=""  Label="単価当り【\】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("打抜_単価当り", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<tr class="titleRow"><td colspan="2"></td></tr>   
-<y:YTextBox   id="曲げ_時間" DefaultValue=""  Label="時間【秒】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("曲げ_時間", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="曲げ_作業費" DefaultValue=""  Label="作業費【\】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("曲げ_作業費", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="曲げ_単価当り" DefaultValue=""  Label="単価当り【\】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("曲げ_単価当り", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<tr class="titleRow"><td colspan="2"></td></tr>   
-<y:YTextBox   id="仕上げ_時間" DefaultValue=""  Label="時間【秒】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("仕上げ_時間", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="仕上げ_作業費" DefaultValue=""  Label="作業費【\】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("仕上げ_作業費", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="仕上げ_単価当り" DefaultValue=""  Label="単価当り【\】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("仕上げ_単価当り", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<tr class="titleRow"><td colspan="2"></td></tr>   
-<y:YTextBox   id="ロス管理_材_費用" DefaultValue=""  Label="材_費用【\】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("ロス管理_材_費用", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="ロス管理_加工_費用" DefaultValue=""  Label="加工_費用【\】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("ロス管理_加工_費用", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-</table></td><td><table>
-<y:YTextBox   id="見積_定尺裁断費比" DefaultValue=""  Label="見積_定尺裁断費比【%】"  IsGrid="false"  ReadOnly="TRUE"  ValidationGroup="DetailInsert" Text='<%# Bind("見積_定尺裁断費比", "{0:f2}") %>'     IsRequired="FALSE" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="計算_定尺裁断費比" DefaultValue=""  Label="計算_定尺裁断費比【%】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("計算_定尺裁断費比", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="計算_寸法カット費比" DefaultValue=""  Label="計算_寸法カット費比【%】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("計算_寸法カット費比", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<tr class="blankrow"><td colspan="2"></td></tr><tr class="blankrow"><td colspan="2"></td></tr><tr class="blankrow"><td colspan="2"></td></tr>
-<y:YTextBox   id="見積_打抜費比" DefaultValue=""  Label="見積_打抜費比【%】"  IsGrid="false"  ReadOnly="TRUE"  ValidationGroup="DetailInsert" Text='<%# Bind("見積_打抜費比", "{0:f2}") %>'     IsRequired="FALSE" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="計算_打抜費比" DefaultValue=""  Label="計算_打抜費比【%】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("計算_打抜費比", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="見積_貼り費比" DefaultValue=""  Label="見積_貼り費比【%】"  IsGrid="false"  ReadOnly="TRUE"  ValidationGroup="DetailInsert" Text='<%# Bind("見積_貼り費比", "{0:f2}") %>'     IsRequired="FALSE" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="計算_貼り費比" DefaultValue=""  Label="計算_貼り費比【%】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("計算_貼り費比", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="見積_曲げ費比" DefaultValue=""  Label="見積_曲げ費比【%】"  IsGrid="false"  ReadOnly="TRUE"  ValidationGroup="DetailInsert" Text='<%# Bind("見積_曲げ費比", "{0:f2}") %>'     IsRequired="FALSE" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="計算_曲げ費比" DefaultValue=""  Label="計算_曲げ費比【%】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("計算_曲げ費比", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="見積_仕上げ費比" DefaultValue=""  Label="見積_仕上げ費比【%】"  IsGrid="false"  ReadOnly="TRUE"  ValidationGroup="DetailInsert" Text='<%# Bind("見積_仕上げ費比", "{0:f2}") %>'     IsRequired="FALSE" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="計算_仕上げ費比" DefaultValue=""  Label="計算_仕上げ費比【%】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("計算_仕上げ費比", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="見積_ロス管理費比" DefaultValue=""  Label="見積_ロス管理費比【%】"  IsGrid="false"  ReadOnly="TRUE"  ValidationGroup="DetailInsert" Text='<%# Bind("見積_ロス管理費比", "{0:f2}") %>'     IsRequired="FALSE" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-<y:YTextBox   id="計算_ロス管理費比" DefaultValue=""  Label="計算_ロス管理費比【%】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("計算_ロス管理費比", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65" />
-</table></td><td><table>
-<y:YTextBox   id="ロット" DefaultValue=""  Label="ロット【ヶ】"  IsGrid="false"  ReadOnly="TRUE"  ValidationGroup="DetailInsert" Text='<%# Bind("ロット", "") %>'     IsRequired="FALSE" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-<y:YTextBox   id="丸め数" DefaultValue=""  Label="丸め数【ヶ】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("丸め数", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-<y:YTextBox   id="商品重量" DefaultValue=""  Label="商品重量【g】"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("商品重量", "{0:f2}") %>'     IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input"   Width="65" />
-<y:YCheckBox   id="削除フラグ" DefaultValue=""  Label="削除フラグ"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Checked='<%# ConvertToBoolean(Eval("削除フラグ")) %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="false" runat="server" CssClass="Input"   Width="40" />
-<y:YDropDownList   id="作成ユーザー" DefaultValue=""  Label="作成ユーザー"  IsGrid="false"  ReadOnly="TRUE"  ValidationGroup="DetailInsert" SelectedValue='<%# Bind("作成ユーザー") %>'    IsRequired="FALSE" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"  DataSourceID="ユーザーDataSource" DataTextField="ユーザー名" DataValueField="ユーザーId"   AppendDataBoundItems="true"   Width="100" />
-<y:YDropDownList   id="最終更新ユーザー" DefaultValue=""  Label="最終更新ユーザー"  IsGrid="false"  ReadOnly="TRUE"  ValidationGroup="DetailInsert" SelectedValue='<%# Bind("最終更新ユーザー") %>'    IsRequired="FALSE" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"  DataSourceID="ユーザーDataSource" DataTextField="ユーザー名" DataValueField="ユーザーId"   AppendDataBoundItems="true"   Width="100" />
-<y:YTextBox   id="作成日時" DefaultValue=""  Label="作成日時"  IsGrid="false"  ReadOnly="TRUE"  ValidationGroup="DetailInsert" Text='<%# Bind("作成日時", "{0:yyyy/MM/dd hh:mm:ss}") %>'     IsRequired="FALSE" IsDate="true"  DataFormatString="{0:yyyy/MM/dd hh:mm:ss}" IsInteger="false" runat="server" CssClass="Input"   Width="100" />
-<y:YTextBox   id="最終更新日時" DefaultValue=""  Label="最終更新日時"  IsGrid="false"  ReadOnly="TRUE"  ValidationGroup="DetailInsert" Text='<%# Bind("最終更新日時", "{0:yyyy/MM/dd hh:mm:ss}") %>'     IsRequired="FALSE" IsDate="true"  DataFormatString="{0:yyyy/MM/dd hh:mm:ss}" IsInteger="false" runat="server" CssClass="Input"   Width="100" />
-</table></td></tr></table></td></tr></table>
+                    <table>
+                        <tr>
+                            <td>
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <table>
+                                                <tr class="titleRow">
+                                                    <td colspan="2">基本情報</td>
+                                                </tr>
+                                                <y:YTextBox ID="単価ID" DefaultValue="" Label="単価ID" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" Text='<%# Bind("単価ID", "") %>' IsRequired="FALSE" IsDate="false" DataFormatString="" IsInteger="false" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="部品コード" DefaultValue="" Label="部品コード" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("部品コード", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="false" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="部品名称" DefaultValue="" Label="部品名称" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("部品名称", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="false" runat="server" CssClass="Input" TextMode="MultiLine" Rows="2" Width="100" />
+                                                <y:YDropDownList ID="材料ID" DefaultValue="" Label="材料ID" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" SelectedValue='<%# Bind("材料ID") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" DataSourceID="材料DataSource" DataTextField="材料名称識別テキスト" DataValueField="材料ID" AppendDataBoundItems="true" OnSelectedIndexChanged="材料ID_SelectedIndexChanged" AutoPostBack="true" Width="100" />
+                                                <y:YTextBox ID="材料名称" DefaultValue="" Label="材料名称" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" Text='<%# Bind("材料名称", "") %>' IsRequired="FALSE" IsDate="false" DataFormatString="" IsInteger="false" runat="server" CssClass="Input" Width="100" />
+                                                <y:YTextBox ID="材質大分類" DefaultValue="" Label="材質大分類" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" Text='<%# Bind("材質大分類", "") %>' IsRequired="FALSE" IsDate="false" DataFormatString="" IsInteger="false" runat="server" CssClass="Input" Width="100" />
+                                                <y:YTextBox ID="材質" DefaultValue="" Label="材質" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" Text='<%# Bind("材質", "") %>' IsRequired="FALSE" IsDate="false" DataFormatString="" IsInteger="false" runat="server" CssClass="Input" Width="100" />
+                                                <y:YTextBox ID="定尺寸法縦_original" DefaultValue="" Label="定尺寸法縦【mm】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" Text='<%# Bind("定尺寸法縦_original", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="定尺寸法横_original" DefaultValue="" Label="定尺寸法横【mm】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" Text='<%# Bind("定尺寸法横_original", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="定尺仕入金額_original" DefaultValue="" Label="定尺仕入金額【\】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" Text='<%# Bind("定尺仕入金額_original", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <tr>
+                                                    <td></td>
+                                                    <td>
+                                                        <asp:Button runat="server" ID="定尺情報設定" OnClick="定尺情報設定_Click" Text="定尺情報設定" /></td>
+                                                </tr>
+                                                <y:YTextBox ID="定尺寸法縦" DefaultValue="" Label="定尺寸法縦【mm】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("定尺寸法縦", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="定尺寸法横" DefaultValue="" Label="定尺寸法横【mm】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("定尺寸法横", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="厚み" DefaultValue="" Label="厚み【mm】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("厚み", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="定尺仕入金額" DefaultValue="" Label="定尺仕入金額【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("定尺仕入金額", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YCheckBox ID="定尺仕入自動計算フラグ" DefaultValue="" Label="定尺仕入自動計算" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Checked='<%# ConvertToBoolean(Eval("定尺仕入自動計算フラグ")) %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="false" runat="server" CssClass="Input" Width="40" />
+                                                <tr class="blankrow">
+                                                    <td></td>
+                                                    <td class="Input" colspan="2">
+                                                        <input type="button" id="定尺仕入自動計算" value="定尺仕入自動計算" />
+                                                </tr>
+                                                <y:YTextBox ID="定尺売り金額" DefaultValue="" Label="定尺売り金額【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("定尺売り金額", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="時間単価" DefaultValue="" Label="時間単価【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("時間単価", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="分単価" DefaultValue="" Label="分単価【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("分単価", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="秒単価" DefaultValue="" Label="秒単価【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("秒単価", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <tr class="titleRow">
+                                                    <td colspan="2">m2あたりの材料</td>
+                                                </tr>
+                                                <y:YTextBox ID="m2あたりの材料費" DefaultValue="" Label="材料費【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("m2あたりの材料費", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="m2あたりの取数たて" DefaultValue="" Label="取数たて【ヶ】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("m2あたりの取数たて", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="m2あたりの取数よこ" DefaultValue="" Label="取数よこ【ヶ】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("m2あたりの取数よこ", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="m2あたりの取数" DefaultValue="" Label="取数【ヶ】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("m2あたりの取数", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table>
+                                                <y:YTextBox ID="仕入れ単価" DefaultValue="" Label="仕入れ単価【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("仕入れ単価", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="商品たて" DefaultValue="" Label="商品たて【mm】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("商品たて", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="商品よこ" DefaultValue="" Label="商品よこ【mm】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("商品よこ", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <tr class="blankrow">
+                                                    <td></td>
+                                                    <td>
+                                                        <input type="button" id="商品たてよこ逆" value="入れ替え" /></td>
+                                                </tr>
+                                                <tr class="blankrow">
+                                                    <td colspan="2"></td>
+                                                </tr>
+                                                <y:YTextBox ID="たてしろ" DefaultValue="" Label="たてしろ【mm】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("たてしろ", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="よこしろ" DefaultValue="" Label="よこしろ【mm】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("よこしろ", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <tr class="titleRow">
+                                                    <td colspan="2">見積</td>
+                                                </tr>
+                                                <tr class="blankrow">
+                                                    <td></td>
+                                                </tr>
+                                                <y:YTextBox ID="取り数" DefaultValue="" Label="取り数【ヶ】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("取り数", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="見積_材料費" DefaultValue="" Label="材料費【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("見積_材料費", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <tr class="blankrow">
+                                                    <td></td>
+                                                </tr>
+                                                <y:YTextBox ID="見積_裁断" DefaultValue="" Label="裁断【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("見積_裁断", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="見積_打抜" DefaultValue="" Label="打抜【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("見積_打抜", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="見積_貼り" DefaultValue="" Label="貼り【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("見積_貼り", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="見積_曲げ" DefaultValue="" Label="曲げ【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("見積_曲げ", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="見積_仕上げ" DefaultValue="" Label="仕上げ【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("見積_仕上げ", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="見積_ロス管理" DefaultValue="" Label="ロス管理【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("見積_ロス管理", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="見積_材料費比" DefaultValue="" Label="材料費比【%】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("見積_材料費比", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="見積_加工費小計" DefaultValue="" Label="加工費小計【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("見積_加工費小計", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="見積_加工費比" DefaultValue="" Label="加工費比【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("見積_加工費比", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="見積_単価" DefaultValue="" Label="単価【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("見積_単価", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="見積_m2あたり材料費" DefaultValue="" Label="m2あたり材料費【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("見積_m2あたり材料費", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table>
+                                                <tr class="blankrow">
+                                                    <td colspan="2"></td>
+                                                </tr>
+                                                <y:YTextBox ID="たて_しろあり" DefaultValue="" Label="抜きたて【mm】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("たて_しろあり", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="よこ_しろあり" DefaultValue="" Label="抜きよこ【mm】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("よこ_しろあり", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="縦取り数" DefaultValue="" Label="縦取り数【mm】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("縦取り数", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="横取り数" DefaultValue="" Label="横取り数【mm】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("横取り数", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="たて余" DefaultValue="" Label="たて余【mm】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("たて余", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="よこ余" DefaultValue="" Label="よこ余【mm】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("よこ余", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <tr class="titleRow">
+                                                    <td colspan="2">計算</td>
+                                                </tr>
+                                                <y:YTextBox ID="計算_取り数" DefaultValue="" Label="取り数【mm】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("計算_取り数", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_材料費T" DefaultValue="" Label="材料費T【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("計算_材料費T", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_材料費" DefaultValue="" Label="材料費【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("計算_材料費", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <tr class="blankrow">
+                                                    <td></td>
+                                                    <td>
+                                                        <input type="button" id="材料費コピー" value="材料費コピー" /></td>
+                                                </tr>
+                                                <y:YTextBox ID="計算_裁断" DefaultValue="" Label="裁断【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("計算_裁断", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_打抜" DefaultValue="" Label="打抜【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("計算_打抜", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_貼り" DefaultValue="" Label="貼り【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("計算_貼り", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_曲げ" DefaultValue="" Label="曲げ【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("計算_曲げ", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_仕上げ" DefaultValue="" Label="仕上げ【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("計算_仕上げ", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_ロス管理" DefaultValue="" Label="ロス管理【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("計算_ロス管理", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_材料費比" DefaultValue="" Label="材料費比【%】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("計算_材料費比", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_加工費小計" DefaultValue="" Label="加工費小計【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("計算_加工費小計", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_加工費比" DefaultValue="" Label="加工費比【%】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("計算_加工費比", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_単価" DefaultValue="" Label="単価【\】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("計算_単価", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <tr class="blankrow">
+                                                    <td></td>
+                                                    <td>
+                                                        <input type="button" id="計算値コピー" value="見積←計算"></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table>
+                                                <tr class="titleRow">
+                                                    <td colspan="2">定尺裁断</td>
+                                                </tr>
+                                                <y:YTextBox ID="定尺裁断_数" DefaultValue="" Label="数【個所】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("定尺裁断_数", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="定尺裁断_所要時間" DefaultValue="" Label="所要時間【秒】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("定尺裁断_所要時間", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="定尺裁断_割数" DefaultValue="" Label="割数【個所】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("定尺裁断_割数", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <tr class="titleRow">
+                                                    <td colspan="2">寸法カット</td>
+                                                </tr>
+                                                <y:YTextBox ID="寸法カット_数" DefaultValue="" Label="数【個所】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("寸法カット_数", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="寸法カット_所要時間" DefaultValue="" Label="所要時間【秒】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("寸法カット_所要時間", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="寸法カット_割数" DefaultValue="" Label="割数【個所】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("寸法カット_割数", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <tr class="titleRow">
+                                                    <td colspan="2">打抜</td>
+                                                </tr>
+                                                <y:YTextBox ID="打抜_型取数" DefaultValue="" Label="型取数【ヶ】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("打抜_型取数", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="打抜_プレス回数" DefaultValue="" Label="プレス回数【回/時】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("打抜_プレス回数", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <tr class="titleRow">
+                                                    <td colspan="2">曲げ</td>
+                                                </tr>
+                                                <y:YTextBox ID="曲げ_数" DefaultValue="" Label="数【個所】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("曲げ_数", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="曲げ_秒数" DefaultValue="" Label="秒数【秒】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("曲げ_秒数", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="曲げ_同時加工" DefaultValue="" Label="同時加工【ヶ】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("曲げ_同時加工", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <tr class="titleRow">
+                                                    <td colspan="2">仕上げ</td>
+                                                </tr>
+                                                <y:YTextBox ID="仕上げ_数" DefaultValue="" Label="数【個所】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("仕上げ_数", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="仕上げ_秒数" DefaultValue="" Label="秒数【秒】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("仕上げ_秒数", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="仕上げ_同時加工" DefaultValue="" Label="同時加工【ヶ】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("仕上げ_同時加工", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <tr class="titleRow">
+                                                    <td colspan="2">ロス管理</td>
+                                                </tr>
+                                                <y:YTextBox ID="ロス管理_材比" DefaultValue="" Label="材比【%】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("ロス管理_材比", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="ロス管理_加工比" DefaultValue="" Label="加工比【%】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("ロス管理_加工比", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table>
+                                                <tr class="titleRow">
+                                                    <td colspan="2"></td>
+                                                </tr>
+                                                <y:YTextBox ID="定尺裁断_時間" DefaultValue="" Label="時間【秒】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" Text='<%# Bind("定尺裁断_時間", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="定尺裁断_作業費" DefaultValue="" Label="作業費【\】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" Text='<%# Bind("定尺裁断_作業費", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="定尺裁断_単価当り" DefaultValue="" Label="単価当り【\】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" Text='<%# Bind("定尺裁断_単価当り", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <tr class="titleRow">
+                                                    <td colspan="2"></td>
+                                                </tr>
+                                                <y:YTextBox ID="寸法カット_時間" DefaultValue="" Label="時間【秒】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" Text='<%# Bind("寸法カット_時間", "") %>' IsRequired="FALSE" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="寸法カット_作業費" DefaultValue="" Label="作業費【\】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" Text='<%# Bind("寸法カット_作業費", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="寸法カット_単価当り" DefaultValue="" Label="単価当り【\】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" Text='<%# Bind("寸法カット_単価当り", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <tr class="titleRow">
+                                                    <td colspan="2"></td>
+                                                </tr>
+                                                <y:YTextBox ID="打抜_時間当たりの加工数" DefaultValue="" Label="加工数/時間【ヶ】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" Text='<%# Bind("打抜_時間当たりの加工数", "") %>' IsRequired="FALSE" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="打抜_単価当り" DefaultValue="" Label="単価当り【\】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" Text='<%# Bind("打抜_単価当り", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <tr class="titleRow">
+                                                    <td colspan="2"></td>
+                                                </tr>
+                                                <y:YTextBox ID="曲げ_時間" DefaultValue="" Label="時間【秒】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" Text='<%# Bind("曲げ_時間", "") %>' IsRequired="FALSE" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="曲げ_作業費" DefaultValue="" Label="作業費【\】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" Text='<%# Bind("曲げ_作業費", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="曲げ_単価当り" DefaultValue="" Label="単価当り【\】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" Text='<%# Bind("曲げ_単価当り", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <tr class="titleRow">
+                                                    <td colspan="2"></td>
+                                                </tr>
+                                                <y:YTextBox ID="仕上げ_時間" DefaultValue="" Label="時間【秒】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" Text='<%# Bind("仕上げ_時間", "") %>' IsRequired="FALSE" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="仕上げ_作業費" DefaultValue="" Label="作業費【\】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" Text='<%# Bind("仕上げ_作業費", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="仕上げ_単価当り" DefaultValue="" Label="単価当り【\】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" Text='<%# Bind("仕上げ_単価当り", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <tr class="titleRow">
+                                                    <td colspan="2"></td>
+                                                </tr>
+                                                <y:YTextBox ID="ロス管理_材_費用" DefaultValue="" Label="材_費用【\】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" Text='<%# Bind("ロス管理_材_費用", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="ロス管理_加工_費用" DefaultValue="" Label="加工_費用【\】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" Text='<%# Bind("ロス管理_加工_費用", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                            </table>
+                                        </td>
+                                        <td id="Td1" runat="server" visible="false">
+                                            <table>
+                                                <y:YTextBox ID="見積_定尺裁断費比" DefaultValue="" Label="見積_定尺裁断費比【%】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" Text='<%# Bind("見積_定尺裁断費比", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_定尺裁断費比" DefaultValue="" Label="計算_定尺裁断費比【%】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" Text='<%# Bind("計算_定尺裁断費比", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_寸法カット費比" DefaultValue="" Label="計算_寸法カット費比【%】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" Text='<%# Bind("計算_寸法カット費比", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <tr class="blankrow">
+                                                    <td colspan="2"></td>
+                                                </tr>
+                                                <tr class="blankrow">
+                                                    <td colspan="2"></td>
+                                                </tr>
+                                                <tr class="blankrow">
+                                                    <td colspan="2"></td>
+                                                </tr>
+                                                <y:YTextBox ID="見積_打抜費比" DefaultValue="" Label="見積_打抜費比【%】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" Text='<%# Bind("見積_打抜費比", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_打抜費比" DefaultValue="" Label="計算_打抜費比【%】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" Text='<%# Bind("計算_打抜費比", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="見積_貼り費比" DefaultValue="" Label="見積_貼り費比【%】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" Text='<%# Bind("見積_貼り費比", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_貼り費比" DefaultValue="" Label="計算_貼り費比【%】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" Text='<%# Bind("計算_貼り費比", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="見積_曲げ費比" DefaultValue="" Label="見積_曲げ費比【%】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" Text='<%# Bind("見積_曲げ費比", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_曲げ費比" DefaultValue="" Label="計算_曲げ費比【%】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" Text='<%# Bind("計算_曲げ費比", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="見積_仕上げ費比" DefaultValue="" Label="見積_仕上げ費比【%】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" Text='<%# Bind("見積_仕上げ費比", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_仕上げ費比" DefaultValue="" Label="計算_仕上げ費比【%】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" Text='<%# Bind("計算_仕上げ費比", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="見積_ロス管理費比" DefaultValue="" Label="見積_ロス管理費比【%】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" Text='<%# Bind("見積_ロス管理費比", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_ロス管理費比" DefaultValue="" Label="計算_ロス管理費比【%】" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" Text='<%# Bind("計算_ロス管理費比", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table>
+                                                <y:YTextBox ID="ロット" DefaultValue="" Label="ロット【ヶ】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("ロット", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="丸め数" DefaultValue="" Label="丸め数【ヶ】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("丸め数", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="商品重量" DefaultValue="" Label="商品重量【g】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("商品重量", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YCheckBox ID="削除フラグ" DefaultValue="" Label="削除フラグ" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Checked='<%# ConvertToBoolean(Eval("削除フラグ")) %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="false" runat="server" CssClass="Input" Width="40" />
+                                                <y:YDropDownList ID="作成ユーザー" DefaultValue="" Label="作成ユーザー" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" SelectedValue='<%# Bind("作成ユーザー") %>' IsRequired="FALSE" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" DataSourceID="ユーザーDataSource" DataTextField="ユーザー名" DataValueField="ユーザーId" AppendDataBoundItems="true" Width="100" />
+                                                <y:YDropDownList ID="最終更新ユーザー" DefaultValue="" Label="最終更新ユーザー" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" SelectedValue='<%# Bind("最終更新ユーザー") %>' IsRequired="FALSE" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" DataSourceID="ユーザーDataSource" DataTextField="ユーザー名" DataValueField="ユーザーId" AppendDataBoundItems="true" Width="100" />
+                                                <y:YTextBox ID="作成日時" DefaultValue="" Label="作成日時" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" Text='<%# Bind("作成日時", "{0:yyyy/MM/dd hh:mm:ss}") %>' IsRequired="FALSE" IsDate="true" DataFormatString="{0:yyyy/MM/dd hh:mm:ss}" IsInteger="false" runat="server" CssClass="Input" Width="100" />
+                                                <y:YTextBox ID="最終更新日時" DefaultValue="" Label="最終更新日時" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" Text='<%# Bind("最終更新日時", "{0:yyyy/MM/dd hh:mm:ss}") %>' IsRequired="FALSE" IsDate="true" DataFormatString="{0:yyyy/MM/dd hh:mm:ss}" IsInteger="false" runat="server" CssClass="Input" Width="100" />
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
 
 
                     <asp:ValidationSummary ID="ValidationSummary2" runat="server" EnableClientScript="true" ValidationGroup="DetailInsert" />
@@ -1712,147 +2027,251 @@
                 </InsertItemTemplate>
                 <ItemTemplate>
 
-<table><tr><td><table><tr><td><table><tr class="titleRow"><td colspan="2">基本情報</td></tr>
-<y:YTextBox   id="単価ID"  Label="単価ID"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("単価ID", "") %>'    IsRequired="FALSE" IsDate="false"  DataFormatString="" IsInteger="false" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="部品コード"  Label="部品コード"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("部品コード", "") %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="false" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="部品名称"  Label="部品名称"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("部品名称", "") %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="false" runat="server" CssClass="Input"   TextMode="MultiLine" Rows="2"  Width="100"/>
-<y:YDropDownList   id="材料ID"  Label="材料ID"  IsGrid="false"  ReadOnly="TRUE" SelectedValue='<%# Bind("材料ID") %>'   IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"  DataSourceID="材料DataSource" DataTextField="材料名称識別テキスト" DataValueField="材料ID"   AppendDataBoundItems="true"   OnSelectedIndexChanged="材料ID_SelectedIndexChanged" AutoPostBack="true"  Width="100"/>
-<y:YTextBox   id="材料名称"  Label="材料名称"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("材料名称", "") %>'    IsRequired="FALSE" IsDate="false"  DataFormatString="" IsInteger="false" runat="server" CssClass="Input"   Width="100"/>
-<y:YTextBox   id="材質大分類"  Label="材質大分類"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("材質大分類", "") %>'    IsRequired="FALSE" IsDate="false"  DataFormatString="" IsInteger="false" runat="server" CssClass="Input"   Width="100"/>
-<y:YTextBox   id="材質"  Label="材質"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("材質", "") %>'    IsRequired="FALSE" IsDate="false"  DataFormatString="" IsInteger="false" runat="server" CssClass="Input"   Width="100"/>
-<y:YTextBox   id="定尺寸法縦_original"  Label="定尺寸法縦【mm】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("定尺寸法縦_original", "{0:f2}") %>'    IsRequired="FALSE" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="定尺寸法横_original"  Label="定尺寸法横【mm】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("定尺寸法横_original", "{0:f2}") %>'    IsRequired="FALSE" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="定尺仕入金額_original"  Label="定尺仕入金額【\】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("定尺仕入金額_original", "{0:f2}") %>'    IsRequired="FALSE" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<tr><td></td><td><asp:Button runat="server" ID="定尺情報設定" OnClick="定尺情報設定_Click" Text="定尺情報設定" /></td></tr>
-<y:YTextBox   id="定尺寸法縦"  Label="定尺寸法縦【mm】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("定尺寸法縦", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="定尺寸法横"  Label="定尺寸法横【mm】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("定尺寸法横", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="厚み"  Label="厚み【mm】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("厚み", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="定尺仕入金額"  Label="定尺仕入金額【\】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("定尺仕入金額", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YCheckBox   id="定尺仕入自動計算フラグ"  Label="定尺仕入自動計算"  IsGrid="false"  ReadOnly="TRUE" Checked='<%# ConvertToBoolean(Eval("定尺仕入自動計算フラグ")) %>'   IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="false" runat="server" CssClass="Input"   Width="40"/>
-<tr class="blankrow"><td></td><td class="Input" colspan="2"><input type="button" id="定尺仕入自動計算" value="定尺仕入自動計算" /></tr>
-<y:YTextBox   id="定尺売り金額"  Label="定尺売り金額【\】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("定尺売り金額", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="時間単価"  Label="時間単価【\】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("時間単価", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="分単価"  Label="分単価【\】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("分単価", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="秒単価"  Label="秒単価【\】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("秒単価", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<tr class="titleRow"><td colspan="2">m2あたりの材料</td></tr>
-<y:YTextBox   id="m2あたりの材料費"  Label="材料費【\】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("m2あたりの材料費", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="m2あたりの取数たて"  Label="取数たて【ヶ】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("m2あたりの取数たて", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="m2あたりの取数よこ"  Label="取数よこ【ヶ】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("m2あたりの取数よこ", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="m2あたりの取数"  Label="取数【ヶ】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("m2あたりの取数", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-</table></td><td><table>
-<y:YTextBox   id="仕入れ単価"  Label="仕入れ単価【\】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("仕入れ単価", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="商品たて"  Label="商品たて【mm】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("商品たて", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="商品よこ"  Label="商品よこ【mm】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("商品よこ", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<tr class="blankrow"><td></td><td><input type="button" id="商品たてよこ逆" value="入れ替え"/></td></tr><tr class="blankrow"><td colspan="2"></td></tr>
-<y:YTextBox   id="たてしろ"  Label="たてしろ【mm】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("たてしろ", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="よこしろ"  Label="よこしろ【mm】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("よこしろ", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<tr class="titleRow"><td colspan="2">見積</td></tr>
-<tr class="blankrow"><td></td></tr>
-<y:YTextBox   id="取り数"  Label="取り数【ヶ】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("取り数", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="見積_材料費"  Label="材料費【\】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("見積_材料費", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<tr class="blankrow"><td></td></tr>
-<y:YTextBox   id="見積_裁断"  Label="裁断【\】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("見積_裁断", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="見積_打抜"  Label="打抜【\】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("見積_打抜", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="見積_貼り"  Label="貼り【\】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("見積_貼り", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="見積_曲げ"  Label="曲げ【\】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("見積_曲げ", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="見積_仕上げ"  Label="仕上げ【\】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("見積_仕上げ", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="見積_ロス管理"  Label="ロス管理【\】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("見積_ロス管理", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="見積_材料費比"  Label="材料費比【%】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("見積_材料費比", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="見積_加工費小計"  Label="加工費小計【\】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("見積_加工費小計", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="見積_加工費比"  Label="加工費比【\】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("見積_加工費比", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="見積_単価"  Label="単価【\】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("見積_単価", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="見積_m2あたり材料費"  Label="m2あたり材料費【\】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("見積_m2あたり材料費", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-</table></td><td><table><tr class="blankrow"><td colspan="2"></td></tr>
-<y:YTextBox   id="たて_しろあり"  Label="抜きたて【mm】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("たて_しろあり", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="よこ_しろあり"  Label="抜きよこ【mm】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("よこ_しろあり", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="縦取り数"  Label="縦取り数【mm】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("縦取り数", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="横取り数"  Label="横取り数【mm】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("横取り数", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="たて余"  Label="たて余【mm】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("たて余", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="よこ余"  Label="よこ余【mm】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("よこ余", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<tr class="titleRow"><td colspan="2">計算</td></tr>
-<y:YTextBox   id="計算_取り数"  Label="取り数【mm】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("計算_取り数", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="計算_材料費T"  Label="材料費T【\】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("計算_材料費T", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="計算_材料費"  Label="材料費【\】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("計算_材料費", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<tr class="blankrow"><td></td><td><input type="button" id="材料費コピー" value="材料費コピー"/></td></tr>
-<y:YTextBox   id="計算_裁断"  Label="裁断【\】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("計算_裁断", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="計算_打抜"  Label="打抜【\】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("計算_打抜", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="計算_貼り"  Label="貼り【\】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("計算_貼り", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="計算_曲げ"  Label="曲げ【\】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("計算_曲げ", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="計算_仕上げ"  Label="仕上げ【\】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("計算_仕上げ", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="計算_ロス管理"  Label="ロス管理【\】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("計算_ロス管理", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="計算_材料費比"  Label="材料費比【%】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("計算_材料費比", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="計算_加工費小計"  Label="加工費小計【\】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("計算_加工費小計", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="計算_加工費比"  Label="加工費比【%】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("計算_加工費比", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="計算_単価"  Label="単価【\】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("計算_単価", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-</table></td><td><table><tr class="titleRow"><td colspan="2">定尺裁断</td></tr>
-<y:YTextBox   id="定尺裁断_数"  Label="数【個所】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("定尺裁断_数", "") %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="定尺裁断_所要時間"  Label="所要時間【秒】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("定尺裁断_所要時間", "") %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="定尺裁断_割数"  Label="割数【個所】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("定尺裁断_割数", "") %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<tr class="titleRow"><td colspan="2">寸法カット</td></tr> 
-<y:YTextBox   id="寸法カット_数"  Label="数【個所】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("寸法カット_数", "") %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="寸法カット_所要時間"  Label="所要時間【秒】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("寸法カット_所要時間", "") %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="寸法カット_割数"  Label="割数【個所】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("寸法カット_割数", "") %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<tr class="titleRow"><td colspan="2">打抜</td></tr>    
-<y:YTextBox   id="打抜_型取数"  Label="型取数【ヶ】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("打抜_型取数", "") %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="打抜_プレス回数"  Label="プレス回数【回/時】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("打抜_プレス回数", "") %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<tr class="titleRow"><td colspan="2">曲げ</td></tr> 
-<y:YTextBox   id="曲げ_数"  Label="数【個所】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("曲げ_数", "") %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="曲げ_秒数"  Label="秒数【秒】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("曲げ_秒数", "") %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="曲げ_同時加工"  Label="同時加工【ヶ】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("曲げ_同時加工", "") %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<tr class="titleRow"><td colspan="2">仕上げ</td></tr>    
-<y:YTextBox   id="仕上げ_数"  Label="数【個所】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("仕上げ_数", "") %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="仕上げ_秒数"  Label="秒数【秒】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("仕上げ_秒数", "") %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="仕上げ_同時加工"  Label="同時加工【ヶ】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("仕上げ_同時加工", "") %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<tr class="titleRow"><td colspan="2">ロス管理</td></tr>    
-<y:YTextBox   id="ロス管理_材比"  Label="材比【%】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("ロス管理_材比", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="ロス管理_加工比"  Label="加工比【%】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("ロス管理_加工比", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-</table></td><td><table><tr class="titleRow"><td colspan="2"></td></tr>
-<y:YTextBox   id="定尺裁断_時間"  Label="時間【秒】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("定尺裁断_時間", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="定尺裁断_作業費"  Label="作業費【\】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("定尺裁断_作業費", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="定尺裁断_単価当り"  Label="単価当り【\】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("定尺裁断_単価当り", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<tr class="titleRow"><td colspan="2"></td></tr>   
-<y:YTextBox   id="寸法カット_時間"  Label="時間【秒】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("寸法カット_時間", "") %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="寸法カット_作業費"  Label="作業費【\】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("寸法カット_作業費", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="寸法カット_単価当り"  Label="単価当り【\】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("寸法カット_単価当り", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<tr class="titleRow"><td colspan="2"></td></tr>   
-<y:YTextBox   id="打抜_時間当たりの加工数"  Label="加工数/時間【ヶ】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("打抜_時間当たりの加工数", "") %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="打抜_単価当り"  Label="単価当り【\】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("打抜_単価当り", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<tr class="titleRow"><td colspan="2"></td></tr>   
-<y:YTextBox   id="曲げ_時間"  Label="時間【秒】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("曲げ_時間", "") %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="曲げ_作業費"  Label="作業費【\】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("曲げ_作業費", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="曲げ_単価当り"  Label="単価当り【\】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("曲げ_単価当り", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<tr class="titleRow"><td colspan="2"></td></tr>   
-<y:YTextBox   id="仕上げ_時間"  Label="時間【秒】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("仕上げ_時間", "") %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="仕上げ_作業費"  Label="作業費【\】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("仕上げ_作業費", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="仕上げ_単価当り"  Label="単価当り【\】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("仕上げ_単価当り", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<tr class="titleRow"><td colspan="2"></td></tr>   
-<y:YTextBox   id="ロス管理_材_費用"  Label="材_費用【\】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("ロス管理_材_費用", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="ロス管理_加工_費用"  Label="加工_費用【\】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("ロス管理_加工_費用", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-</table></td><td><table>
-<y:YTextBox   id="見積_定尺裁断費比"  Label="見積_定尺裁断費比【%】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("見積_定尺裁断費比", "{0:f2}") %>'    IsRequired="FALSE" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="計算_定尺裁断費比"  Label="計算_定尺裁断費比【%】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("計算_定尺裁断費比", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="計算_寸法カット費比"  Label="計算_寸法カット費比【%】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("計算_寸法カット費比", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<tr class="blankrow"><td colspan="2"></td></tr><tr class="blankrow"><td colspan="2"></td></tr><tr class="blankrow"><td colspan="2"></td></tr>
-<y:YTextBox   id="見積_打抜費比"  Label="見積_打抜費比【%】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("見積_打抜費比", "{0:f2}") %>'    IsRequired="FALSE" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="計算_打抜費比"  Label="計算_打抜費比【%】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("計算_打抜費比", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="見積_貼り費比"  Label="見積_貼り費比【%】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("見積_貼り費比", "{0:f2}") %>'    IsRequired="FALSE" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="計算_貼り費比"  Label="計算_貼り費比【%】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("計算_貼り費比", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="見積_曲げ費比"  Label="見積_曲げ費比【%】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("見積_曲げ費比", "{0:f2}") %>'    IsRequired="FALSE" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="計算_曲げ費比"  Label="計算_曲げ費比【%】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("計算_曲げ費比", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="見積_仕上げ費比"  Label="見積_仕上げ費比【%】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("見積_仕上げ費比", "{0:f2}") %>'    IsRequired="FALSE" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="計算_仕上げ費比"  Label="計算_仕上げ費比【%】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("計算_仕上げ費比", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="見積_ロス管理費比"  Label="見積_ロス管理費比【%】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("見積_ロス管理費比", "{0:f2}") %>'    IsRequired="FALSE" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-<y:YTextBox   id="計算_ロス管理費比"  Label="計算_ロス管理費比【%】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("計算_ロス管理費比", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto"   Width="65"/>
-</table></td><td><table>
-<y:YTextBox   id="ロット"  Label="ロット【ヶ】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("ロット", "") %>'    IsRequired="FALSE" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="丸め数"  Label="丸め数【ヶ】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("丸め数", "") %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YTextBox   id="商品重量"  Label="商品重量【g】"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("商品重量", "{0:f2}") %>'    IsRequired="false" IsDate="false"  DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input"   Width="65"/>
-<y:YCheckBox   id="削除フラグ"  Label="削除フラグ"  IsGrid="false"  ReadOnly="TRUE" Checked='<%# ConvertToBoolean(Eval("削除フラグ")) %>'   IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="false" runat="server" CssClass="Input"   Width="40"/>
-<y:YDropDownList   id="作成ユーザー"  Label="作成ユーザー"  IsGrid="false"  ReadOnly="TRUE" SelectedValue='<%# Bind("作成ユーザー") %>'   IsRequired="FALSE" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"  DataSourceID="ユーザーDataSource" DataTextField="ユーザー名" DataValueField="ユーザーId"   AppendDataBoundItems="true"   Width="100"/>
-<y:YDropDownList   id="最終更新ユーザー"  Label="最終更新ユーザー"  IsGrid="false"  ReadOnly="TRUE" SelectedValue='<%# Bind("最終更新ユーザー") %>'   IsRequired="FALSE" IsDate="false"  DataFormatString="" IsInteger="true" runat="server" CssClass="Input"  DataSourceID="ユーザーDataSource" DataTextField="ユーザー名" DataValueField="ユーザーId"   AppendDataBoundItems="true"   Width="100"/>
-<y:YTextBox   id="作成日時"  Label="作成日時"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("作成日時", "{0:yyyy/MM/dd hh:mm:ss}") %>'    IsRequired="FALSE" IsDate="true"  DataFormatString="{0:yyyy/MM/dd hh:mm:ss}" IsInteger="false" runat="server" CssClass="Input"   Width="100"/>
-<y:YTextBox   id="最終更新日時"  Label="最終更新日時"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("最終更新日時", "{0:yyyy/MM/dd hh:mm:ss}") %>'    IsRequired="FALSE" IsDate="true"  DataFormatString="{0:yyyy/MM/dd hh:mm:ss}" IsInteger="false" runat="server" CssClass="Input"   Width="100"/>
-</table></td></tr></table></td></tr></table>
+                    <table>
+                        <tr>
+                            <td>
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <table>
+                                                <tr class="titleRow">
+                                                    <td colspan="2">基本情報</td>
+                                                </tr>
+                                                <y:YTextBox ID="単価ID" Label="単価ID" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("単価ID", "") %>' IsRequired="FALSE" IsDate="false" DataFormatString="" IsInteger="false" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="部品コード" Label="部品コード" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("部品コード", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="false" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="部品名称" Label="部品名称" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("部品名称", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="false" runat="server" CssClass="Input" TextMode="MultiLine" Rows="2" Width="100" />
+                                                <y:YDropDownList ID="材料ID" Label="材料ID" IsGrid="false" ReadOnly="TRUE" SelectedValue='<%# Bind("材料ID") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" DataSourceID="材料DataSource" DataTextField="材料名称識別テキスト" DataValueField="材料ID" AppendDataBoundItems="true" OnSelectedIndexChanged="材料ID_SelectedIndexChanged" AutoPostBack="true" Width="100" />
+                                                <y:YTextBox ID="材料名称" Label="材料名称" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("材料名称", "") %>' IsRequired="FALSE" IsDate="false" DataFormatString="" IsInteger="false" runat="server" CssClass="Input" Width="100" />
+                                                <y:YTextBox ID="材質大分類" Label="材質大分類" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("材質大分類", "") %>' IsRequired="FALSE" IsDate="false" DataFormatString="" IsInteger="false" runat="server" CssClass="Input" Width="100" />
+                                                <y:YTextBox ID="材質" Label="材質" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("材質", "") %>' IsRequired="FALSE" IsDate="false" DataFormatString="" IsInteger="false" runat="server" CssClass="Input" Width="100" />
+                                                <y:YTextBox ID="定尺寸法縦_original" Label="定尺寸法縦【mm】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("定尺寸法縦_original", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="定尺寸法横_original" Label="定尺寸法横【mm】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("定尺寸法横_original", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="定尺仕入金額_original" Label="定尺仕入金額【\】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("定尺仕入金額_original", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <tr>
+                                                    <td></td>
+                                                    <td>
+                                                        <asp:Button runat="server" ID="定尺情報設定" OnClick="定尺情報設定_Click" Text="定尺情報設定" /></td>
+                                                </tr>
+                                                <y:YTextBox ID="定尺寸法縦" Label="定尺寸法縦【mm】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("定尺寸法縦", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="定尺寸法横" Label="定尺寸法横【mm】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("定尺寸法横", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="厚み" Label="厚み【mm】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("厚み", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="定尺仕入金額" Label="定尺仕入金額【\】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("定尺仕入金額", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YCheckBox ID="定尺仕入自動計算フラグ" Label="定尺仕入自動計算" IsGrid="false" ReadOnly="TRUE" Checked='<%# ConvertToBoolean(Eval("定尺仕入自動計算フラグ")) %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="false" runat="server" CssClass="Input" Width="40" />
+                                                <tr class="blankrow">
+                                                    <td></td>
+                                                    <td class="Input" colspan="2">
+                                                        <input type="button" id="定尺仕入自動計算" value="定尺仕入自動計算" />
+                                                </tr>
+                                                <y:YTextBox ID="定尺売り金額" Label="定尺売り金額【\】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("定尺売り金額", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="時間単価" Label="時間単価【\】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("時間単価", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="分単価" Label="分単価【\】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("分単価", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="秒単価" Label="秒単価【\】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("秒単価", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <tr class="titleRow">
+                                                    <td colspan="2">m2あたりの材料</td>
+                                                </tr>
+                                                <y:YTextBox ID="m2あたりの材料費" Label="材料費【\】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("m2あたりの材料費", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="m2あたりの取数たて" Label="取数たて【ヶ】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("m2あたりの取数たて", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="m2あたりの取数よこ" Label="取数よこ【ヶ】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("m2あたりの取数よこ", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="m2あたりの取数" Label="取数【ヶ】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("m2あたりの取数", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table>
+                                                <y:YTextBox ID="仕入れ単価" Label="仕入れ単価【\】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("仕入れ単価", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="商品たて" Label="商品たて【mm】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("商品たて", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="商品よこ" Label="商品よこ【mm】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("商品よこ", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <tr class="blankrow">
+                                                    <td></td>
+                                                    <td>
+                                                        <input type="button" id="商品たてよこ逆" value="入れ替え" /></td>
+                                                </tr>
+                                                <tr class="blankrow">
+                                                    <td colspan="2"></td>
+                                                </tr>
+                                                <y:YTextBox ID="たてしろ" Label="たてしろ【mm】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("たてしろ", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="よこしろ" Label="よこしろ【mm】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("よこしろ", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <tr class="titleRow">
+                                                    <td colspan="2">見積</td>
+                                                </tr>
+                                                <tr class="blankrow">
+                                                    <td></td>
+                                                </tr>
+                                                <y:YTextBox ID="取り数" Label="取り数【ヶ】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("取り数", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="見積_材料費" Label="材料費【\】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("見積_材料費", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <tr class="blankrow">
+                                                    <td></td>
+                                                </tr>
+                                                <y:YTextBox ID="見積_裁断" Label="裁断【\】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("見積_裁断", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="見積_打抜" Label="打抜【\】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("見積_打抜", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="見積_貼り" Label="貼り【\】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("見積_貼り", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="見積_曲げ" Label="曲げ【\】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("見積_曲げ", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="見積_仕上げ" Label="仕上げ【\】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("見積_仕上げ", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="見積_ロス管理" Label="ロス管理【\】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("見積_ロス管理", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="見積_材料費比" Label="材料費比【%】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("見積_材料費比", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="見積_加工費小計" Label="加工費小計【\】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("見積_加工費小計", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="見積_加工費比" Label="加工費比【\】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("見積_加工費比", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="見積_単価" Label="単価【\】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("見積_単価", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="見積_m2あたり材料費" Label="m2あたり材料費【\】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("見積_m2あたり材料費", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table>
+                                                <tr class="blankrow">
+                                                    <td colspan="2"></td>
+                                                </tr>
+                                                <y:YTextBox ID="たて_しろあり" Label="抜きたて【mm】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("たて_しろあり", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="よこ_しろあり" Label="抜きよこ【mm】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("よこ_しろあり", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="縦取り数" Label="縦取り数【mm】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("縦取り数", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="横取り数" Label="横取り数【mm】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("横取り数", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="たて余" Label="たて余【mm】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("たて余", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="よこ余" Label="よこ余【mm】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("よこ余", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <tr class="titleRow">
+                                                    <td colspan="2">計算</td>
+                                                </tr>
+                                                <y:YTextBox ID="計算_取り数" Label="取り数【mm】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("計算_取り数", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_材料費T" Label="材料費T【\】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("計算_材料費T", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_材料費" Label="材料費【\】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("計算_材料費", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <tr class="blankrow">
+                                                    <td></td>
+                                                    <td>
+                                                        <input type="button" id="材料費コピー" value="材料費コピー" /></td>
+                                                </tr>
+                                                <y:YTextBox ID="計算_裁断" Label="裁断【\】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("計算_裁断", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_打抜" Label="打抜【\】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("計算_打抜", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_貼り" Label="貼り【\】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("計算_貼り", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_曲げ" Label="曲げ【\】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("計算_曲げ", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_仕上げ" Label="仕上げ【\】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("計算_仕上げ", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_ロス管理" Label="ロス管理【\】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("計算_ロス管理", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_材料費比" Label="材料費比【%】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("計算_材料費比", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_加工費小計" Label="加工費小計【\】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("計算_加工費小計", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_加工費比" Label="加工費比【%】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("計算_加工費比", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_単価" Label="単価【\】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("計算_単価", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <tr class="blankrow">
+                                                    <td></td>
+                                                    <td>
+                                                        <input type="button" id="計算値コピー" value="見積←計算"></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table>
+                                                <tr class="titleRow">
+                                                    <td colspan="2">定尺裁断</td>
+                                                </tr>
+                                                <y:YTextBox ID="定尺裁断_数" Label="数【個所】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("定尺裁断_数", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="定尺裁断_所要時間" Label="所要時間【秒】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("定尺裁断_所要時間", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="定尺裁断_割数" Label="割数【個所】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("定尺裁断_割数", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <tr class="titleRow">
+                                                    <td colspan="2">寸法カット</td>
+                                                </tr>
+                                                <y:YTextBox ID="寸法カット_数" Label="数【個所】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("寸法カット_数", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="寸法カット_所要時間" Label="所要時間【秒】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("寸法カット_所要時間", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="寸法カット_割数" Label="割数【個所】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("寸法カット_割数", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <tr class="titleRow">
+                                                    <td colspan="2">打抜</td>
+                                                </tr>
+                                                <y:YTextBox ID="打抜_型取数" Label="型取数【ヶ】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("打抜_型取数", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="打抜_プレス回数" Label="プレス回数【回/時】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("打抜_プレス回数", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <tr class="titleRow">
+                                                    <td colspan="2">曲げ</td>
+                                                </tr>
+                                                <y:YTextBox ID="曲げ_数" Label="数【個所】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("曲げ_数", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="曲げ_秒数" Label="秒数【秒】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("曲げ_秒数", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="曲げ_同時加工" Label="同時加工【ヶ】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("曲げ_同時加工", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <tr class="titleRow">
+                                                    <td colspan="2">仕上げ</td>
+                                                </tr>
+                                                <y:YTextBox ID="仕上げ_数" Label="数【個所】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("仕上げ_数", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="仕上げ_秒数" Label="秒数【秒】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("仕上げ_秒数", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="仕上げ_同時加工" Label="同時加工【ヶ】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("仕上げ_同時加工", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <tr class="titleRow">
+                                                    <td colspan="2">ロス管理</td>
+                                                </tr>
+                                                <y:YTextBox ID="ロス管理_材比" Label="材比【%】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("ロス管理_材比", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="ロス管理_加工比" Label="加工比【%】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("ロス管理_加工比", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table>
+                                                <tr class="titleRow">
+                                                    <td colspan="2"></td>
+                                                </tr>
+                                                <y:YTextBox ID="定尺裁断_時間" Label="時間【秒】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("定尺裁断_時間", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="定尺裁断_作業費" Label="作業費【\】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("定尺裁断_作業費", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="定尺裁断_単価当り" Label="単価当り【\】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("定尺裁断_単価当り", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <tr class="titleRow">
+                                                    <td colspan="2"></td>
+                                                </tr>
+                                                <y:YTextBox ID="寸法カット_時間" Label="時間【秒】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("寸法カット_時間", "") %>' IsRequired="FALSE" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="寸法カット_作業費" Label="作業費【\】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("寸法カット_作業費", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="寸法カット_単価当り" Label="単価当り【\】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("寸法カット_単価当り", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <tr class="titleRow">
+                                                    <td colspan="2"></td>
+                                                </tr>
+                                                <y:YTextBox ID="打抜_時間当たりの加工数" Label="加工数/時間【ヶ】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("打抜_時間当たりの加工数", "") %>' IsRequired="FALSE" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="打抜_単価当り" Label="単価当り【\】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("打抜_単価当り", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <tr class="titleRow">
+                                                    <td colspan="2"></td>
+                                                </tr>
+                                                <y:YTextBox ID="曲げ_時間" Label="時間【秒】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("曲げ_時間", "") %>' IsRequired="FALSE" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="曲げ_作業費" Label="作業費【\】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("曲げ_作業費", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="曲げ_単価当り" Label="単価当り【\】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("曲げ_単価当り", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <tr class="titleRow">
+                                                    <td colspan="2"></td>
+                                                </tr>
+                                                <y:YTextBox ID="仕上げ_時間" Label="時間【秒】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("仕上げ_時間", "") %>' IsRequired="FALSE" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="仕上げ_作業費" Label="作業費【\】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("仕上げ_作業費", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="仕上げ_単価当り" Label="単価当り【\】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("仕上げ_単価当り", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <tr class="titleRow">
+                                                    <td colspan="2"></td>
+                                                </tr>
+                                                <y:YTextBox ID="ロス管理_材_費用" Label="材_費用【\】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("ロス管理_材_費用", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="ロス管理_加工_費用" Label="加工_費用【\】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("ロス管理_加工_費用", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:c2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                            </table>
+                                        </td>
+                                        <td id="Td2" runat="server" visible="false">
+                                            <table>
+                                                <y:YTextBox ID="見積_定尺裁断費比" Label="見積_定尺裁断費比【%】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("見積_定尺裁断費比", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_定尺裁断費比" Label="計算_定尺裁断費比【%】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("計算_定尺裁断費比", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_寸法カット費比" Label="計算_寸法カット費比【%】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("計算_寸法カット費比", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <tr class="blankrow">
+                                                    <td colspan="2"></td>
+                                                </tr>
+                                                <tr class="blankrow">
+                                                    <td colspan="2"></td>
+                                                </tr>
+                                                <tr class="blankrow">
+                                                    <td colspan="2"></td>
+                                                </tr>
+                                                <y:YTextBox ID="見積_打抜費比" Label="見積_打抜費比【%】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("見積_打抜費比", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_打抜費比" Label="計算_打抜費比【%】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("計算_打抜費比", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="見積_貼り費比" Label="見積_貼り費比【%】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("見積_貼り費比", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_貼り費比" Label="計算_貼り費比【%】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("計算_貼り費比", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="見積_曲げ費比" Label="見積_曲げ費比【%】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("見積_曲げ費比", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_曲げ費比" Label="計算_曲げ費比【%】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("計算_曲げ費比", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="見積_仕上げ費比" Label="見積_仕上げ費比【%】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("見積_仕上げ費比", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_仕上げ費比" Label="計算_仕上げ費比【%】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("計算_仕上げ費比", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="見積_ロス管理費比" Label="見積_ロス管理費比【%】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("見積_ロス管理費比", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                                <y:YTextBox ID="計算_ロス管理費比" Label="計算_ロス管理費比【%】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("計算_ロス管理費比", "{0:f2}") %>' IsRequired="FALSE" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Auto" Width="65" />
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table>
+                                                <y:YTextBox ID="ロット" Label="ロット【ヶ】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("ロット", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="丸め数" Label="丸め数【ヶ】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("丸め数", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YTextBox ID="商品重量" Label="商品重量【g】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("商品重量", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                                <y:YCheckBox ID="削除フラグ" Label="削除フラグ" IsGrid="false" ReadOnly="TRUE" Checked='<%# ConvertToBoolean(Eval("削除フラグ")) %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="false" runat="server" CssClass="Input" Width="40" />
+                                                <y:YDropDownList ID="作成ユーザー" Label="作成ユーザー" IsGrid="false" ReadOnly="TRUE" SelectedValue='<%# Bind("作成ユーザー") %>' IsRequired="FALSE" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" DataSourceID="ユーザーDataSource" DataTextField="ユーザー名" DataValueField="ユーザーId" AppendDataBoundItems="true" Width="100" />
+                                                <y:YDropDownList ID="最終更新ユーザー" Label="最終更新ユーザー" IsGrid="false" ReadOnly="TRUE" SelectedValue='<%# Bind("最終更新ユーザー") %>' IsRequired="FALSE" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" DataSourceID="ユーザーDataSource" DataTextField="ユーザー名" DataValueField="ユーザーId" AppendDataBoundItems="true" Width="100" />
+                                                <y:YTextBox ID="作成日時" Label="作成日時" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("作成日時", "{0:yyyy/MM/dd hh:mm:ss}") %>' IsRequired="FALSE" IsDate="true" DataFormatString="{0:yyyy/MM/dd hh:mm:ss}" IsInteger="false" runat="server" CssClass="Input" Width="100" />
+                                                <y:YTextBox ID="最終更新日時" Label="最終更新日時" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("最終更新日時", "{0:yyyy/MM/dd hh:mm:ss}") %>' IsRequired="FALSE" IsDate="true" DataFormatString="{0:yyyy/MM/dd hh:mm:ss}" IsInteger="false" runat="server" CssClass="Input" Width="100" />
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
 
 
                     <asp:LinkButton ID="EditButton" runat="server" CausesValidation="False"
@@ -1869,6 +2288,7 @@
                     <asp:LinkButton ID="LinkButton1" CommandName="New" runat="server" Text="新規追加" />
                 </EmptyDataTemplate>
             </y:BaseFormView>
+
 
             <y:BaseSqlDataSource ID="mainDataSource" runat="server"
                 SelectCommand="select * from T単価"
@@ -1888,288 +2308,288 @@
                 OnInserting="mainDataSource_Inserting">
 
                 <InsertParameters>
-                   <asp:formparameter  name="単価ID" formfield="単価ID"   ConvertEmptyStringToNull="true"  　Type="Int32" />
-<asp:formparameter  name="部品コード" formfield="部品コード"   ConvertEmptyStringToNull="true"  　Type="String" />
-<asp:formparameter  name="部品名称" formfield="部品名称"   ConvertEmptyStringToNull="true"  　Type="String" />
-<asp:formparameter  name="材料ID" formfield="材料ID"   ConvertEmptyStringToNull="true"  　Type="Int32" />
-<asp:formparameter  name="材料名称" formfield="材料名称"   ConvertEmptyStringToNull="true"  　Type="String" />
-<asp:formparameter  name="材質大分類" formfield="材質大分類"   ConvertEmptyStringToNull="true"  　Type="String" />
-<asp:formparameter  name="材質" formfield="材質"   ConvertEmptyStringToNull="true"  　Type="String" />
-<asp:formparameter  name="定尺寸法縦_original" formfield="定尺寸法縦_original"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="定尺寸法横_original" formfield="定尺寸法横_original"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="定尺仕入金額_original" formfield="定尺仕入金額_original"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
+                    <asp:FormParameter Name="単価ID" FormField="単価ID" ConvertEmptyStringToNull="true" Type="Int32" />
+                    <asp:FormParameter Name="部品コード" FormField="部品コード" ConvertEmptyStringToNull="true" Type="String" />
+                    <asp:FormParameter Name="部品名称" FormField="部品名称" ConvertEmptyStringToNull="true" Type="String" />
+                    <asp:FormParameter Name="材料ID" FormField="材料ID" ConvertEmptyStringToNull="true" Type="Int32" />
+                    <asp:FormParameter Name="材料名称" FormField="材料名称" ConvertEmptyStringToNull="true" Type="String" />
+                    <asp:FormParameter Name="材質大分類" FormField="材質大分類" ConvertEmptyStringToNull="true" Type="String" />
+                    <asp:FormParameter Name="材質" FormField="材質" ConvertEmptyStringToNull="true" Type="String" />
+                    <asp:FormParameter Name="定尺寸法縦_original" FormField="定尺寸法縦_original" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="定尺寸法横_original" FormField="定尺寸法横_original" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="定尺仕入金額_original" FormField="定尺仕入金額_original" ConvertEmptyStringToNull="true" Type="Decimal" />
 
-<asp:formparameter  name="定尺寸法縦" formfield="定尺寸法縦"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="定尺寸法横" formfield="定尺寸法横"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="厚み" formfield="厚み"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="定尺仕入金額" formfield="定尺仕入金額"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="定尺仕入自動計算フラグ" formfield="定尺仕入自動計算フラグ"   ConvertEmptyStringToNull="true"  　Type="String" />
+                    <asp:FormParameter Name="定尺寸法縦" FormField="定尺寸法縦" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="定尺寸法横" FormField="定尺寸法横" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="厚み" FormField="厚み" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="定尺仕入金額" FormField="定尺仕入金額" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="定尺仕入自動計算フラグ" FormField="定尺仕入自動計算フラグ" ConvertEmptyStringToNull="true" Type="String" />
 
-<asp:formparameter  name="定尺売り金額" formfield="定尺売り金額"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="時間単価" formfield="時間単価"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="分単価" formfield="分単価"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="秒単価" formfield="秒単価"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
+                    <asp:FormParameter Name="定尺売り金額" FormField="定尺売り金額" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="時間単価" FormField="時間単価" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="分単価" FormField="分単価" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="秒単価" FormField="秒単価" ConvertEmptyStringToNull="true" Type="Decimal" />
 
-<asp:formparameter  name="m2あたりの材料費" formfield="m2あたりの材料費"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="m2あたりの取数たて" formfield="m2あたりの取数たて"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="m2あたりの取数よこ" formfield="m2あたりの取数よこ"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="m2あたりの取数" formfield="m2あたりの取数"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
+                    <asp:FormParameter Name="m2あたりの材料費" FormField="m2あたりの材料費" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="m2あたりの取数たて" FormField="m2あたりの取数たて" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="m2あたりの取数よこ" FormField="m2あたりの取数よこ" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="m2あたりの取数" FormField="m2あたりの取数" ConvertEmptyStringToNull="true" Type="Decimal" />
 
-<asp:formparameter  name="仕入れ単価" formfield="仕入れ単価"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="商品たて" formfield="商品たて"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="商品よこ" formfield="商品よこ"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
+                    <asp:FormParameter Name="仕入れ単価" FormField="仕入れ単価" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="商品たて" FormField="商品たて" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="商品よこ" FormField="商品よこ" ConvertEmptyStringToNull="true" Type="Decimal" />
 
-<asp:formparameter  name="たてしろ" formfield="たてしろ"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="よこしろ" formfield="よこしろ"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-
-
-<asp:formparameter  name="取り数" formfield="取り数"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="見積_材料費" formfield="見積_材料費"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-
-<asp:formparameter  name="見積_裁断" formfield="見積_裁断"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="見積_打抜" formfield="見積_打抜"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="見積_貼り" formfield="見積_貼り"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="見積_曲げ" formfield="見積_曲げ"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="見積_仕上げ" formfield="見積_仕上げ"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="見積_ロス管理" formfield="見積_ロス管理"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="見積_材料費比" formfield="見積_材料費比"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="見積_加工費小計" formfield="見積_加工費小計"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="見積_加工費比" formfield="見積_加工費比"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="見積_単価" formfield="見積_単価"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="見積_m2あたり材料費" formfield="見積_m2あたり材料費"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-
-<asp:formparameter  name="たて_しろあり" formfield="たて_しろあり"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="よこ_しろあり" formfield="よこ_しろあり"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="縦取り数" formfield="縦取り数"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="横取り数" formfield="横取り数"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="たて余" formfield="たて余"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="よこ余" formfield="よこ余"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-
-<asp:formparameter  name="計算_取り数" formfield="計算_取り数"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="計算_材料費T" formfield="計算_材料費T"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="計算_材料費" formfield="計算_材料費"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-
-<asp:formparameter  name="計算_裁断" formfield="計算_裁断"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="計算_打抜" formfield="計算_打抜"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="計算_貼り" formfield="計算_貼り"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="計算_曲げ" formfield="計算_曲げ"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="計算_仕上げ" formfield="計算_仕上げ"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="計算_ロス管理" formfield="計算_ロス管理"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="計算_材料費比" formfield="計算_材料費比"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="計算_加工費小計" formfield="計算_加工費小計"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="計算_加工費比" formfield="計算_加工費比"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="計算_単価" formfield="計算_単価"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-
-<asp:formparameter  name="定尺裁断_数" formfield="定尺裁断_数"   ConvertEmptyStringToNull="true"  　Type="Int32" />
-<asp:formparameter  name="定尺裁断_所要時間" formfield="定尺裁断_所要時間"   ConvertEmptyStringToNull="true"  　Type="Int32" />
-<asp:formparameter  name="定尺裁断_割数" formfield="定尺裁断_割数"   ConvertEmptyStringToNull="true"  　Type="Int32" />
-
-<asp:formparameter  name="寸法カット_数" formfield="寸法カット_数"   ConvertEmptyStringToNull="true"  　Type="Int32" />
-<asp:formparameter  name="寸法カット_所要時間" formfield="寸法カット_所要時間"   ConvertEmptyStringToNull="true"  　Type="Int32" />
-<asp:formparameter  name="寸法カット_割数" formfield="寸法カット_割数"   ConvertEmptyStringToNull="true"  　Type="Int32" />
-
-<asp:formparameter  name="打抜_型取数" formfield="打抜_型取数"   ConvertEmptyStringToNull="true"  　Type="Int32" />
-<asp:formparameter  name="打抜_プレス回数" formfield="打抜_プレス回数"   ConvertEmptyStringToNull="true"  　Type="Int32" />
-
-<asp:formparameter  name="曲げ_数" formfield="曲げ_数"   ConvertEmptyStringToNull="true"  　Type="Int32" />
-<asp:formparameter  name="曲げ_秒数" formfield="曲げ_秒数"   ConvertEmptyStringToNull="true"  　Type="Int32" />
-<asp:formparameter  name="曲げ_同時加工" formfield="曲げ_同時加工"   ConvertEmptyStringToNull="true"  　Type="Int32" />
-
-<asp:formparameter  name="仕上げ_数" formfield="仕上げ_数"   ConvertEmptyStringToNull="true"  　Type="Int32" />
-<asp:formparameter  name="仕上げ_秒数" formfield="仕上げ_秒数"   ConvertEmptyStringToNull="true"  　Type="Int32" />
-<asp:formparameter  name="仕上げ_同時加工" formfield="仕上げ_同時加工"   ConvertEmptyStringToNull="true"  　Type="Int32" />
-
-<asp:formparameter  name="ロス管理_材比" formfield="ロス管理_材比"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="ロス管理_加工比" formfield="ロス管理_加工比"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-
-<asp:formparameter  name="定尺裁断_時間" formfield="定尺裁断_時間"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="定尺裁断_作業費" formfield="定尺裁断_作業費"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="定尺裁断_単価当り" formfield="定尺裁断_単価当り"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-
-<asp:formparameter  name="寸法カット_時間" formfield="寸法カット_時間"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="寸法カット_作業費" formfield="寸法カット_作業費"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="寸法カット_単価当り" formfield="寸法カット_単価当り"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-
-<asp:formparameter  name="打抜_時間当たりの加工数" formfield="打抜_時間当たりの加工数"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="打抜_単価当り" formfield="打抜_単価当り"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-
-<asp:formparameter  name="曲げ_時間" formfield="曲げ_時間"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="曲げ_作業費" formfield="曲げ_作業費"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="曲げ_単価当り" formfield="曲げ_単価当り"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-
-<asp:formparameter  name="仕上げ_時間" formfield="仕上げ_時間"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="仕上げ_作業費" formfield="仕上げ_作業費"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="仕上げ_単価当り" formfield="仕上げ_単価当り"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-
-<asp:formparameter  name="ロス管理_材_費用" formfield="ロス管理_材_費用"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="ロス管理_加工_費用" formfield="ロス管理_加工_費用"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-
-<asp:formparameter  name="見積_定尺裁断費比" formfield="見積_定尺裁断費比"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="計算_定尺裁断費比" formfield="計算_定尺裁断費比"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="計算_寸法カット費比" formfield="計算_寸法カット費比"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-
-<asp:formparameter  name="見積_打抜費比" formfield="見積_打抜費比"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="計算_打抜費比" formfield="計算_打抜費比"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="見積_貼り費比" formfield="見積_貼り費比"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="計算_貼り費比" formfield="計算_貼り費比"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="見積_曲げ費比" formfield="見積_曲げ費比"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="計算_曲げ費比" formfield="計算_曲げ費比"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="見積_仕上げ費比" formfield="見積_仕上げ費比"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="計算_仕上げ費比" formfield="計算_仕上げ費比"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="見積_ロス管理費比" formfield="見積_ロス管理費比"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="計算_ロス管理費比" formfield="計算_ロス管理費比"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-
-<asp:formparameter  name="ロット" formfield="ロット"   ConvertEmptyStringToNull="true"  　Type="Int32" />
-<asp:formparameter  name="丸め数" formfield="丸め数"   ConvertEmptyStringToNull="true"  　Type="Int32" />
-<asp:formparameter  name="商品重量" formfield="商品重量"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="削除フラグ" formfield="削除フラグ"   ConvertEmptyStringToNull="true"  　Type="String" />
-<asp:formparameter  name="作成ユーザー" formfield="作成ユーザー"   ConvertEmptyStringToNull="true"  　Type="String" />
-<asp:formparameter  name="最終更新ユーザー" formfield="最終更新ユーザー"   ConvertEmptyStringToNull="true"  　Type="String" />
-<asp:formparameter  name="作成日時" formfield="作成日時"   ConvertEmptyStringToNull="true"  　Type="DateTime" />
-<asp:formparameter  name="最終更新日時" formfield="最終更新日時"   ConvertEmptyStringToNull="true"  　Type="DateTime" />
+                    <asp:FormParameter Name="たてしろ" FormField="たてしろ" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="よこしろ" FormField="よこしろ" ConvertEmptyStringToNull="true" Type="Decimal" />
 
 
-    </InsertParameters>
+                    <asp:FormParameter Name="取り数" FormField="取り数" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="見積_材料費" FormField="見積_材料費" ConvertEmptyStringToNull="true" Type="Decimal" />
+
+                    <asp:FormParameter Name="見積_裁断" FormField="見積_裁断" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="見積_打抜" FormField="見積_打抜" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="見積_貼り" FormField="見積_貼り" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="見積_曲げ" FormField="見積_曲げ" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="見積_仕上げ" FormField="見積_仕上げ" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="見積_ロス管理" FormField="見積_ロス管理" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="見積_材料費比" FormField="見積_材料費比" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="見積_加工費小計" FormField="見積_加工費小計" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="見積_加工費比" FormField="見積_加工費比" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="見積_単価" FormField="見積_単価" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="見積_m2あたり材料費" FormField="見積_m2あたり材料費" ConvertEmptyStringToNull="true" Type="Decimal" />
+
+                    <asp:FormParameter Name="たて_しろあり" FormField="たて_しろあり" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="よこ_しろあり" FormField="よこ_しろあり" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="縦取り数" FormField="縦取り数" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="横取り数" FormField="横取り数" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="たて余" FormField="たて余" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="よこ余" FormField="よこ余" ConvertEmptyStringToNull="true" Type="Decimal" />
+
+                    <asp:FormParameter Name="計算_取り数" FormField="計算_取り数" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="計算_材料費T" FormField="計算_材料費T" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="計算_材料費" FormField="計算_材料費" ConvertEmptyStringToNull="true" Type="Decimal" />
+
+                    <asp:FormParameter Name="計算_裁断" FormField="計算_裁断" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="計算_打抜" FormField="計算_打抜" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="計算_貼り" FormField="計算_貼り" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="計算_曲げ" FormField="計算_曲げ" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="計算_仕上げ" FormField="計算_仕上げ" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="計算_ロス管理" FormField="計算_ロス管理" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="計算_材料費比" FormField="計算_材料費比" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="計算_加工費小計" FormField="計算_加工費小計" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="計算_加工費比" FormField="計算_加工費比" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="計算_単価" FormField="計算_単価" ConvertEmptyStringToNull="true" Type="Decimal" />
+
+                    <asp:FormParameter Name="定尺裁断_数" FormField="定尺裁断_数" ConvertEmptyStringToNull="true" Type="Int32" />
+                    <asp:FormParameter Name="定尺裁断_所要時間" FormField="定尺裁断_所要時間" ConvertEmptyStringToNull="true" Type="Int32" />
+                    <asp:FormParameter Name="定尺裁断_割数" FormField="定尺裁断_割数" ConvertEmptyStringToNull="true" Type="Int32" />
+
+                    <asp:FormParameter Name="寸法カット_数" FormField="寸法カット_数" ConvertEmptyStringToNull="true" Type="Int32" />
+                    <asp:FormParameter Name="寸法カット_所要時間" FormField="寸法カット_所要時間" ConvertEmptyStringToNull="true" Type="Int32" />
+                    <asp:FormParameter Name="寸法カット_割数" FormField="寸法カット_割数" ConvertEmptyStringToNull="true" Type="Int32" />
+
+                    <asp:FormParameter Name="打抜_型取数" FormField="打抜_型取数" ConvertEmptyStringToNull="true" Type="Int32" />
+                    <asp:FormParameter Name="打抜_プレス回数" FormField="打抜_プレス回数" ConvertEmptyStringToNull="true" Type="Int32" />
+
+                    <asp:FormParameter Name="曲げ_数" FormField="曲げ_数" ConvertEmptyStringToNull="true" Type="Int32" />
+                    <asp:FormParameter Name="曲げ_秒数" FormField="曲げ_秒数" ConvertEmptyStringToNull="true" Type="Int32" />
+                    <asp:FormParameter Name="曲げ_同時加工" FormField="曲げ_同時加工" ConvertEmptyStringToNull="true" Type="Int32" />
+
+                    <asp:FormParameter Name="仕上げ_数" FormField="仕上げ_数" ConvertEmptyStringToNull="true" Type="Int32" />
+                    <asp:FormParameter Name="仕上げ_秒数" FormField="仕上げ_秒数" ConvertEmptyStringToNull="true" Type="Int32" />
+                    <asp:FormParameter Name="仕上げ_同時加工" FormField="仕上げ_同時加工" ConvertEmptyStringToNull="true" Type="Int32" />
+
+                    <asp:FormParameter Name="ロス管理_材比" FormField="ロス管理_材比" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="ロス管理_加工比" FormField="ロス管理_加工比" ConvertEmptyStringToNull="true" Type="Decimal" />
+
+                    <asp:FormParameter Name="定尺裁断_時間" FormField="定尺裁断_時間" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="定尺裁断_作業費" FormField="定尺裁断_作業費" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="定尺裁断_単価当り" FormField="定尺裁断_単価当り" ConvertEmptyStringToNull="true" Type="Decimal" />
+
+                    <asp:FormParameter Name="寸法カット_時間" FormField="寸法カット_時間" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="寸法カット_作業費" FormField="寸法カット_作業費" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="寸法カット_単価当り" FormField="寸法カット_単価当り" ConvertEmptyStringToNull="true" Type="Decimal" />
+
+                    <asp:FormParameter Name="打抜_時間当たりの加工数" FormField="打抜_時間当たりの加工数" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="打抜_単価当り" FormField="打抜_単価当り" ConvertEmptyStringToNull="true" Type="Decimal" />
+
+                    <asp:FormParameter Name="曲げ_時間" FormField="曲げ_時間" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="曲げ_作業費" FormField="曲げ_作業費" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="曲げ_単価当り" FormField="曲げ_単価当り" ConvertEmptyStringToNull="true" Type="Decimal" />
+
+                    <asp:FormParameter Name="仕上げ_時間" FormField="仕上げ_時間" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="仕上げ_作業費" FormField="仕上げ_作業費" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="仕上げ_単価当り" FormField="仕上げ_単価当り" ConvertEmptyStringToNull="true" Type="Decimal" />
+
+                    <asp:FormParameter Name="ロス管理_材_費用" FormField="ロス管理_材_費用" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="ロス管理_加工_費用" FormField="ロス管理_加工_費用" ConvertEmptyStringToNull="true" Type="Decimal" />
+
+                    <asp:FormParameter Name="見積_定尺裁断費比" FormField="見積_定尺裁断費比" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="計算_定尺裁断費比" FormField="計算_定尺裁断費比" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="計算_寸法カット費比" FormField="計算_寸法カット費比" ConvertEmptyStringToNull="true" Type="Decimal" />
+
+                    <asp:FormParameter Name="見積_打抜費比" FormField="見積_打抜費比" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="計算_打抜費比" FormField="計算_打抜費比" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="見積_貼り費比" FormField="見積_貼り費比" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="計算_貼り費比" FormField="計算_貼り費比" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="見積_曲げ費比" FormField="見積_曲げ費比" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="計算_曲げ費比" FormField="計算_曲げ費比" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="見積_仕上げ費比" FormField="見積_仕上げ費比" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="計算_仕上げ費比" FormField="計算_仕上げ費比" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="見積_ロス管理費比" FormField="見積_ロス管理費比" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="計算_ロス管理費比" FormField="計算_ロス管理費比" ConvertEmptyStringToNull="true" Type="Decimal" />
+
+                    <asp:FormParameter Name="ロット" FormField="ロット" ConvertEmptyStringToNull="true" Type="Int32" />
+                    <asp:FormParameter Name="丸め数" FormField="丸め数" ConvertEmptyStringToNull="true" Type="Int32" />
+                    <asp:FormParameter Name="商品重量" FormField="商品重量" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="削除フラグ" FormField="削除フラグ" ConvertEmptyStringToNull="true" Type="String" />
+                    <asp:FormParameter Name="作成ユーザー" FormField="作成ユーザー" ConvertEmptyStringToNull="true" Type="String" />
+                    <asp:FormParameter Name="最終更新ユーザー" FormField="最終更新ユーザー" ConvertEmptyStringToNull="true" Type="String" />
+                    <asp:FormParameter Name="作成日時" FormField="作成日時" ConvertEmptyStringToNull="true" Type="DateTime" />
+                    <asp:FormParameter Name="最終更新日時" FormField="最終更新日時" ConvertEmptyStringToNull="true" Type="DateTime" />
+
+
+                </InsertParameters>
 
                 <UpdateParameters>
-<asp:formparameter  name="部品コード" formfield="部品コード"   ConvertEmptyStringToNull="true"  　Type="String" />
-<asp:formparameter  name="部品名称" formfield="部品名称"   ConvertEmptyStringToNull="true"  　Type="String" />
-<asp:formparameter  name="材料ID" formfield="材料ID"   ConvertEmptyStringToNull="true"  　Type="Int32" />
-<asp:formparameter  name="材料名称" formfield="材料名称"   ConvertEmptyStringToNull="true"  　Type="String" />
-<asp:formparameter  name="材質大分類" formfield="材質大分類"   ConvertEmptyStringToNull="true"  　Type="String" />
-<asp:formparameter  name="材質" formfield="材質"   ConvertEmptyStringToNull="true"  　Type="String" />
-<asp:formparameter  name="定尺寸法縦_original" formfield="定尺寸法縦_original"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="定尺寸法横_original" formfield="定尺寸法横_original"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="定尺仕入金額_original" formfield="定尺仕入金額_original"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
+                    <asp:FormParameter Name="部品コード" FormField="部品コード" ConvertEmptyStringToNull="true" Type="String" />
+                    <asp:FormParameter Name="部品名称" FormField="部品名称" ConvertEmptyStringToNull="true" Type="String" />
+                    <asp:FormParameter Name="材料ID" FormField="材料ID" ConvertEmptyStringToNull="true" Type="Int32" />
+                    <asp:FormParameter Name="材料名称" FormField="材料名称" ConvertEmptyStringToNull="true" Type="String" />
+                    <asp:FormParameter Name="材質大分類" FormField="材質大分類" ConvertEmptyStringToNull="true" Type="String" />
+                    <asp:FormParameter Name="材質" FormField="材質" ConvertEmptyStringToNull="true" Type="String" />
+                    <asp:FormParameter Name="定尺寸法縦_original" FormField="定尺寸法縦_original" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="定尺寸法横_original" FormField="定尺寸法横_original" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="定尺仕入金額_original" FormField="定尺仕入金額_original" ConvertEmptyStringToNull="true" Type="Decimal" />
 
-<asp:formparameter  name="定尺寸法縦" formfield="定尺寸法縦"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="定尺寸法横" formfield="定尺寸法横"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="厚み" formfield="厚み"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="定尺仕入金額" formfield="定尺仕入金額"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="定尺仕入自動計算フラグ" formfield="定尺仕入自動計算フラグ"   ConvertEmptyStringToNull="true"  　Type="String" />
+                    <asp:FormParameter Name="定尺寸法縦" FormField="定尺寸法縦" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="定尺寸法横" FormField="定尺寸法横" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="厚み" FormField="厚み" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="定尺仕入金額" FormField="定尺仕入金額" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="定尺仕入自動計算フラグ" FormField="定尺仕入自動計算フラグ" ConvertEmptyStringToNull="true" Type="String" />
 
-<asp:formparameter  name="定尺売り金額" formfield="定尺売り金額"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="時間単価" formfield="時間単価"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="分単価" formfield="分単価"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="秒単価" formfield="秒単価"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
+                    <asp:FormParameter Name="定尺売り金額" FormField="定尺売り金額" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="時間単価" FormField="時間単価" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="分単価" FormField="分単価" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="秒単価" FormField="秒単価" ConvertEmptyStringToNull="true" Type="Decimal" />
 
-<asp:formparameter  name="m2あたりの材料費" formfield="m2あたりの材料費"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="m2あたりの取数たて" formfield="m2あたりの取数たて"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="m2あたりの取数よこ" formfield="m2あたりの取数よこ"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="m2あたりの取数" formfield="m2あたりの取数"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
+                    <asp:FormParameter Name="m2あたりの材料費" FormField="m2あたりの材料費" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="m2あたりの取数たて" FormField="m2あたりの取数たて" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="m2あたりの取数よこ" FormField="m2あたりの取数よこ" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="m2あたりの取数" FormField="m2あたりの取数" ConvertEmptyStringToNull="true" Type="Decimal" />
 
-<asp:formparameter  name="仕入れ単価" formfield="仕入れ単価"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="商品たて" formfield="商品たて"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="商品よこ" formfield="商品よこ"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
+                    <asp:FormParameter Name="仕入れ単価" FormField="仕入れ単価" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="商品たて" FormField="商品たて" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="商品よこ" FormField="商品よこ" ConvertEmptyStringToNull="true" Type="Decimal" />
 
-<asp:formparameter  name="たてしろ" formfield="たてしろ"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="よこしろ" formfield="よこしろ"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
+                    <asp:FormParameter Name="たてしろ" FormField="たてしろ" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="よこしろ" FormField="よこしろ" ConvertEmptyStringToNull="true" Type="Decimal" />
 
 
-<asp:formparameter  name="取り数" formfield="取り数"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="見積_材料費" formfield="見積_材料費"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
+                    <asp:FormParameter Name="取り数" FormField="取り数" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="見積_材料費" FormField="見積_材料費" ConvertEmptyStringToNull="true" Type="Decimal" />
 
-<asp:formparameter  name="見積_裁断" formfield="見積_裁断"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="見積_打抜" formfield="見積_打抜"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="見積_貼り" formfield="見積_貼り"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="見積_曲げ" formfield="見積_曲げ"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="見積_仕上げ" formfield="見積_仕上げ"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="見積_ロス管理" formfield="見積_ロス管理"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="見積_材料費比" formfield="見積_材料費比"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="見積_加工費小計" formfield="見積_加工費小計"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="見積_加工費比" formfield="見積_加工費比"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="見積_単価" formfield="見積_単価"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="見積_m2あたり材料費" formfield="見積_m2あたり材料費"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
+                    <asp:FormParameter Name="見積_裁断" FormField="見積_裁断" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="見積_打抜" FormField="見積_打抜" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="見積_貼り" FormField="見積_貼り" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="見積_曲げ" FormField="見積_曲げ" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="見積_仕上げ" FormField="見積_仕上げ" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="見積_ロス管理" FormField="見積_ロス管理" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="見積_材料費比" FormField="見積_材料費比" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="見積_加工費小計" FormField="見積_加工費小計" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="見積_加工費比" FormField="見積_加工費比" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="見積_単価" FormField="見積_単価" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="見積_m2あたり材料費" FormField="見積_m2あたり材料費" ConvertEmptyStringToNull="true" Type="Decimal" />
 
-<asp:formparameter  name="たて_しろあり" formfield="たて_しろあり"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="よこ_しろあり" formfield="よこ_しろあり"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="縦取り数" formfield="縦取り数"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="横取り数" formfield="横取り数"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="たて余" formfield="たて余"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="よこ余" formfield="よこ余"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
+                    <asp:FormParameter Name="たて_しろあり" FormField="たて_しろあり" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="よこ_しろあり" FormField="よこ_しろあり" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="縦取り数" FormField="縦取り数" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="横取り数" FormField="横取り数" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="たて余" FormField="たて余" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="よこ余" FormField="よこ余" ConvertEmptyStringToNull="true" Type="Decimal" />
 
-<asp:formparameter  name="計算_取り数" formfield="計算_取り数"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="計算_材料費T" formfield="計算_材料費T"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="計算_材料費" formfield="計算_材料費"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
+                    <asp:FormParameter Name="計算_取り数" FormField="計算_取り数" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="計算_材料費T" FormField="計算_材料費T" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="計算_材料費" FormField="計算_材料費" ConvertEmptyStringToNull="true" Type="Decimal" />
 
-<asp:formparameter  name="計算_裁断" formfield="計算_裁断"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="計算_打抜" formfield="計算_打抜"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="計算_貼り" formfield="計算_貼り"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="計算_曲げ" formfield="計算_曲げ"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="計算_仕上げ" formfield="計算_仕上げ"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="計算_ロス管理" formfield="計算_ロス管理"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="計算_材料費比" formfield="計算_材料費比"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="計算_加工費小計" formfield="計算_加工費小計"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="計算_加工費比" formfield="計算_加工費比"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="計算_単価" formfield="計算_単価"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
+                    <asp:FormParameter Name="計算_裁断" FormField="計算_裁断" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="計算_打抜" FormField="計算_打抜" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="計算_貼り" FormField="計算_貼り" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="計算_曲げ" FormField="計算_曲げ" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="計算_仕上げ" FormField="計算_仕上げ" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="計算_ロス管理" FormField="計算_ロス管理" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="計算_材料費比" FormField="計算_材料費比" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="計算_加工費小計" FormField="計算_加工費小計" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="計算_加工費比" FormField="計算_加工費比" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="計算_単価" FormField="計算_単価" ConvertEmptyStringToNull="true" Type="Decimal" />
 
-<asp:formparameter  name="定尺裁断_数" formfield="定尺裁断_数"   ConvertEmptyStringToNull="true"  　Type="Int32" />
-<asp:formparameter  name="定尺裁断_所要時間" formfield="定尺裁断_所要時間"   ConvertEmptyStringToNull="true"  　Type="Int32" />
-<asp:formparameter  name="定尺裁断_割数" formfield="定尺裁断_割数"   ConvertEmptyStringToNull="true"  　Type="Int32" />
+                    <asp:FormParameter Name="定尺裁断_数" FormField="定尺裁断_数" ConvertEmptyStringToNull="true" Type="Int32" />
+                    <asp:FormParameter Name="定尺裁断_所要時間" FormField="定尺裁断_所要時間" ConvertEmptyStringToNull="true" Type="Int32" />
+                    <asp:FormParameter Name="定尺裁断_割数" FormField="定尺裁断_割数" ConvertEmptyStringToNull="true" Type="Int32" />
 
-<asp:formparameter  name="寸法カット_数" formfield="寸法カット_数"   ConvertEmptyStringToNull="true"  　Type="Int32" />
-<asp:formparameter  name="寸法カット_所要時間" formfield="寸法カット_所要時間"   ConvertEmptyStringToNull="true"  　Type="Int32" />
-<asp:formparameter  name="寸法カット_割数" formfield="寸法カット_割数"   ConvertEmptyStringToNull="true"  　Type="Int32" />
+                    <asp:FormParameter Name="寸法カット_数" FormField="寸法カット_数" ConvertEmptyStringToNull="true" Type="Int32" />
+                    <asp:FormParameter Name="寸法カット_所要時間" FormField="寸法カット_所要時間" ConvertEmptyStringToNull="true" Type="Int32" />
+                    <asp:FormParameter Name="寸法カット_割数" FormField="寸法カット_割数" ConvertEmptyStringToNull="true" Type="Int32" />
 
-<asp:formparameter  name="打抜_型取数" formfield="打抜_型取数"   ConvertEmptyStringToNull="true"  　Type="Int32" />
-<asp:formparameter  name="打抜_プレス回数" formfield="打抜_プレス回数"   ConvertEmptyStringToNull="true"  　Type="Int32" />
+                    <asp:FormParameter Name="打抜_型取数" FormField="打抜_型取数" ConvertEmptyStringToNull="true" Type="Int32" />
+                    <asp:FormParameter Name="打抜_プレス回数" FormField="打抜_プレス回数" ConvertEmptyStringToNull="true" Type="Int32" />
 
-<asp:formparameter  name="曲げ_数" formfield="曲げ_数"   ConvertEmptyStringToNull="true"  　Type="Int32" />
-<asp:formparameter  name="曲げ_秒数" formfield="曲げ_秒数"   ConvertEmptyStringToNull="true"  　Type="Int32" />
-<asp:formparameter  name="曲げ_同時加工" formfield="曲げ_同時加工"   ConvertEmptyStringToNull="true"  　Type="Int32" />
+                    <asp:FormParameter Name="曲げ_数" FormField="曲げ_数" ConvertEmptyStringToNull="true" Type="Int32" />
+                    <asp:FormParameter Name="曲げ_秒数" FormField="曲げ_秒数" ConvertEmptyStringToNull="true" Type="Int32" />
+                    <asp:FormParameter Name="曲げ_同時加工" FormField="曲げ_同時加工" ConvertEmptyStringToNull="true" Type="Int32" />
 
-<asp:formparameter  name="仕上げ_数" formfield="仕上げ_数"   ConvertEmptyStringToNull="true"  　Type="Int32" />
-<asp:formparameter  name="仕上げ_秒数" formfield="仕上げ_秒数"   ConvertEmptyStringToNull="true"  　Type="Int32" />
-<asp:formparameter  name="仕上げ_同時加工" formfield="仕上げ_同時加工"   ConvertEmptyStringToNull="true"  　Type="Int32" />
+                    <asp:FormParameter Name="仕上げ_数" FormField="仕上げ_数" ConvertEmptyStringToNull="true" Type="Int32" />
+                    <asp:FormParameter Name="仕上げ_秒数" FormField="仕上げ_秒数" ConvertEmptyStringToNull="true" Type="Int32" />
+                    <asp:FormParameter Name="仕上げ_同時加工" FormField="仕上げ_同時加工" ConvertEmptyStringToNull="true" Type="Int32" />
 
-<asp:formparameter  name="ロス管理_材比" formfield="ロス管理_材比"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="ロス管理_加工比" formfield="ロス管理_加工比"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
+                    <asp:FormParameter Name="ロス管理_材比" FormField="ロス管理_材比" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="ロス管理_加工比" FormField="ロス管理_加工比" ConvertEmptyStringToNull="true" Type="Decimal" />
 
-<asp:formparameter  name="定尺裁断_時間" formfield="定尺裁断_時間"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="定尺裁断_作業費" formfield="定尺裁断_作業費"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="定尺裁断_単価当り" formfield="定尺裁断_単価当り"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
+                    <asp:FormParameter Name="定尺裁断_時間" FormField="定尺裁断_時間" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="定尺裁断_作業費" FormField="定尺裁断_作業費" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="定尺裁断_単価当り" FormField="定尺裁断_単価当り" ConvertEmptyStringToNull="true" Type="Decimal" />
 
-<asp:formparameter  name="寸法カット_時間" formfield="寸法カット_時間"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="寸法カット_作業費" formfield="寸法カット_作業費"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="寸法カット_単価当り" formfield="寸法カット_単価当り"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
+                    <asp:FormParameter Name="寸法カット_時間" FormField="寸法カット_時間" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="寸法カット_作業費" FormField="寸法カット_作業費" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="寸法カット_単価当り" FormField="寸法カット_単価当り" ConvertEmptyStringToNull="true" Type="Decimal" />
 
-<asp:formparameter  name="打抜_時間当たりの加工数" formfield="打抜_時間当たりの加工数"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="打抜_単価当り" formfield="打抜_単価当り"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
+                    <asp:FormParameter Name="打抜_時間当たりの加工数" FormField="打抜_時間当たりの加工数" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="打抜_単価当り" FormField="打抜_単価当り" ConvertEmptyStringToNull="true" Type="Decimal" />
 
-<asp:formparameter  name="曲げ_時間" formfield="曲げ_時間"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="曲げ_作業費" formfield="曲げ_作業費"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="曲げ_単価当り" formfield="曲げ_単価当り"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
+                    <asp:FormParameter Name="曲げ_時間" FormField="曲げ_時間" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="曲げ_作業費" FormField="曲げ_作業費" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="曲げ_単価当り" FormField="曲げ_単価当り" ConvertEmptyStringToNull="true" Type="Decimal" />
 
-<asp:formparameter  name="仕上げ_時間" formfield="仕上げ_時間"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="仕上げ_作業費" formfield="仕上げ_作業費"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="仕上げ_単価当り" formfield="仕上げ_単価当り"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
+                    <asp:FormParameter Name="仕上げ_時間" FormField="仕上げ_時間" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="仕上げ_作業費" FormField="仕上げ_作業費" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="仕上げ_単価当り" FormField="仕上げ_単価当り" ConvertEmptyStringToNull="true" Type="Decimal" />
 
-<asp:formparameter  name="ロス管理_材_費用" formfield="ロス管理_材_費用"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="ロス管理_加工_費用" formfield="ロス管理_加工_費用"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
+                    <asp:FormParameter Name="ロス管理_材_費用" FormField="ロス管理_材_費用" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="ロス管理_加工_費用" FormField="ロス管理_加工_費用" ConvertEmptyStringToNull="true" Type="Decimal" />
 
-<asp:formparameter  name="見積_定尺裁断費比" formfield="見積_定尺裁断費比"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="計算_定尺裁断費比" formfield="計算_定尺裁断費比"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="計算_寸法カット費比" formfield="計算_寸法カット費比"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
+                    <asp:FormParameter Name="見積_定尺裁断費比" FormField="見積_定尺裁断費比" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="計算_定尺裁断費比" FormField="計算_定尺裁断費比" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="計算_寸法カット費比" FormField="計算_寸法カット費比" ConvertEmptyStringToNull="true" Type="Decimal" />
 
-<asp:formparameter  name="見積_打抜費比" formfield="見積_打抜費比"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="計算_打抜費比" formfield="計算_打抜費比"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="見積_貼り費比" formfield="見積_貼り費比"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="計算_貼り費比" formfield="計算_貼り費比"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="見積_曲げ費比" formfield="見積_曲げ費比"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="計算_曲げ費比" formfield="計算_曲げ費比"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="見積_仕上げ費比" formfield="見積_仕上げ費比"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="計算_仕上げ費比" formfield="計算_仕上げ費比"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="見積_ロス管理費比" formfield="見積_ロス管理費比"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="計算_ロス管理費比" formfield="計算_ロス管理費比"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
+                    <asp:FormParameter Name="見積_打抜費比" FormField="見積_打抜費比" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="計算_打抜費比" FormField="計算_打抜費比" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="見積_貼り費比" FormField="見積_貼り費比" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="計算_貼り費比" FormField="計算_貼り費比" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="見積_曲げ費比" FormField="見積_曲げ費比" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="計算_曲げ費比" FormField="計算_曲げ費比" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="見積_仕上げ費比" FormField="見積_仕上げ費比" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="計算_仕上げ費比" FormField="計算_仕上げ費比" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="見積_ロス管理費比" FormField="見積_ロス管理費比" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="計算_ロス管理費比" FormField="計算_ロス管理費比" ConvertEmptyStringToNull="true" Type="Decimal" />
 
-<asp:formparameter  name="ロット" formfield="ロット"   ConvertEmptyStringToNull="true"  　Type="Int32" />
-<asp:formparameter  name="丸め数" formfield="丸め数"   ConvertEmptyStringToNull="true"  　Type="Int32" />
-<asp:formparameter  name="商品重量" formfield="商品重量"   ConvertEmptyStringToNull="true"  　Type="Decimal" />
-<asp:formparameter  name="削除フラグ" formfield="削除フラグ"   ConvertEmptyStringToNull="true"  　Type="String" />
-<asp:formparameter  name="作成ユーザー" formfield="作成ユーザー"   ConvertEmptyStringToNull="true"  　Type="String" />
-<asp:formparameter  name="最終更新ユーザー" formfield="最終更新ユーザー"   ConvertEmptyStringToNull="true"  　Type="String" />
-<asp:formparameter  name="作成日時" formfield="作成日時"   ConvertEmptyStringToNull="true"  　Type="DateTime" />
-<asp:formparameter  name="最終更新日時" formfield="最終更新日時"   ConvertEmptyStringToNull="true"  　Type="DateTime" />
+                    <asp:FormParameter Name="ロット" FormField="ロット" ConvertEmptyStringToNull="true" Type="Int32" />
+                    <asp:FormParameter Name="丸め数" FormField="丸め数" ConvertEmptyStringToNull="true" Type="Int32" />
+                    <asp:FormParameter Name="商品重量" FormField="商品重量" ConvertEmptyStringToNull="true" Type="Decimal" />
+                    <asp:FormParameter Name="削除フラグ" FormField="削除フラグ" ConvertEmptyStringToNull="true" Type="String" />
+                    <asp:FormParameter Name="作成ユーザー" FormField="作成ユーザー" ConvertEmptyStringToNull="true" Type="String" />
+                    <asp:FormParameter Name="最終更新ユーザー" FormField="最終更新ユーザー" ConvertEmptyStringToNull="true" Type="String" />
+                    <asp:FormParameter Name="作成日時" FormField="作成日時" ConvertEmptyStringToNull="true" Type="DateTime" />
+                    <asp:FormParameter Name="最終更新日時" FormField="最終更新日時" ConvertEmptyStringToNull="true" Type="DateTime" />
 
 
                     <asp:Parameter Name="original_単価ID" Type="String" />

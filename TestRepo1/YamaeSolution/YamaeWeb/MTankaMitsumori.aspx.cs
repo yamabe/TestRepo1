@@ -10,9 +10,6 @@ using uc;
 public partial class MTankaMitsumori : BaseForm
 {
 
-    private String _originalSelectCommand = string.Empty;
-    private ParameterCollection _selectCollection;
-
     protected void Page_Load(object sender, EventArgs e)
     {
         this.MainBaseFormView = mainFormView;
@@ -25,50 +22,6 @@ public partial class MTankaMitsumori : BaseForm
 
     }
 
-    //protected override void CreateChildControls()
-    //{
-    //    base.CreateChildControls();
-        
-
-    //}
-
-    //protected override void OnPreRenderComplete(EventArgs e)
-    //{
-    //    base.OnPreRenderComplete(e);
-
-    //    YTextBox ctrl = (YTextBox)mainFormView.FindControl("定尺寸法縦_original");
-    //    if (ctrl != null && !String.IsNullOrEmpty(ctrl.Text))
-    //    {
-    //        YDropDownList ddl = (YDropDownList)mainFormView.FindControl("材料ID");
-
-    //        Set定尺情報(ddl, false);
-    //    }
-    //}
-    //protected override void OnPreRender(EventArgs e)
-    //{
-    //    base.OnPreRender(e);
-
-    //    YTextBox ctrl = (YTextBox)mainFormView.FindControl("定尺寸法縦_original");
-    //    if (ctrl != null && !String.IsNullOrEmpty(ctrl.Text))
-    //    {
-    //        YDropDownList ddl = (YDropDownList)mainFormView.FindControl("材料ID");
-
-    //        Set定尺情報(ddl, false);
-    //    }
-    //}
-
-    //protected override void OnDataBinding(EventArgs e)
-    //{
-    //    base.OnDataBinding(e);
-
-    //    YTextBox ctrl = (YTextBox)mainFormView.FindControl("定尺寸法縦_original");
-    //    if (ctrl != null && !String.IsNullOrEmpty(ctrl.Text))
-    //    {
-    //        YDropDownList ddl = (YDropDownList)mainFormView.FindControl("材料ID");
-
-    //        Set定尺情報(ddl, false);
-    //    }
-    //}
 
     protected void mainDataSource_Updating(object sender, SqlDataSourceCommandEventArgs e)
     {
@@ -81,18 +34,6 @@ public partial class MTankaMitsumori : BaseForm
         // 追加前処理。自動で値を設定するなどはここ。
         //Parameter status = this.mainDataSource.UpdateParameters["ステータス"];
         //e.Command.Parameters["ステータス"].Value = new RyousanSireiStatusChecker().Get(e);
-
-    }
-    protected void 検索_Click(object sender, EventArgs e)
-    {
-        Search();
-    }
-    protected void Clear_Click(object sender, EventArgs e)
-    {
-        ConditionClear();
-        Search();
-
-        this.mainGridView.PageIndex = 0;
 
     }
     protected void 材料ID_SelectedIndexChanged(object sender, EventArgs e)
