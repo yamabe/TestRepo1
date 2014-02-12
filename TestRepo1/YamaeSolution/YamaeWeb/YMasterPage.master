@@ -1,21 +1,52 @@
 ﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="YMasterPage.master.cs" Inherits="YMasterPage" %>
 
+
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title></title>
-    <asp:ContentPlaceHolder id="head" runat="server">
+
+    <link href="css/style.css" rel="stylesheet" />
+
+    <script type="text/javascript" src="js/lib/jquery-1.11.0.js"></script>
+    <script src="js/ui/jquery.ui.core.js"></script>
+    <script src="js/ui/jquery.ui.widget.js"></script>
+    <script src="js/ui/jquery.ui.mouse.js"></script>
+    <script src="js/ui/jquery.ui.draggable.js"></script>
+    <script src="js/ui/jquery.ui.position.js"></script>
+    <script src="js/ui/jquery.ui.resizable.js"></script>
+    <script src="js/ui/jquery.ui.button.js"></script>
+    <script src="js/ui/jquery.ui.dialog.js"></script>
+
+    <script type="text/javascript" src="js/lib/ccchart.js"></script>
+    <script type="text/javascript" src="js/utils/JQueryUtils.js"></script>
+    <script type="text/javascript" src="js/utils/SpecialGlobal.js"></script>
+    <script type="text/javascript" src="js/utils/NumberUtils.js"></script>
+    <script type="text/javascript" src="js/utils/StringUtils.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="themes/base/jquery.ui.all.css" />
+    <asp:ContentPlaceHolder ID="head" runat="server">
     </asp:ContentPlaceHolder>
+
+
+
+    <asp:ContentPlaceHolder ID="script" runat="server">
+    </asp:ContentPlaceHolder>
+    
+    <script type="text/javascript">
+    </script>
+
+
+
 </head>
 <body>
     <form id="form1" runat="server">
-    <div>
-        <asp:ContentPlaceHolder id="ContentPlaceHolder1" runat="server">
-        
-        </asp:ContentPlaceHolder>
-    </div>
+        <div>
+            <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+            </asp:ContentPlaceHolder>
+        </div>
     </form>
 </body>
 </html>
