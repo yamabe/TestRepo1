@@ -1,4 +1,5 @@
 ﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="YMasterPage.master.cs" Inherits="YMasterPage" %>
+<%@ Register TagPrefix="y" Namespace="uc" %>
 
 
 <!DOCTYPE html>
@@ -6,7 +7,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title></title>
 
     <link href="css/style.css" rel="stylesheet" />
 
@@ -34,18 +34,26 @@
 
     <asp:ContentPlaceHolder ID="script" runat="server">
     </asp:ContentPlaceHolder>
-    
-    <script type="text/javascript">
-    </script>
-
-
 
 </head>
 <body>
     <form id="form1" runat="server">
-        <div>
-            <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+
+        <asp:LinkButton ID="LinkButton2" runat="server" PostBackUrl="~/Menu.aspx" Text="メニュー画面へ" />
+        <br />
+
+        <ajaxToolkit:ToolkitScriptManager runat="Server" EnableScriptGlobalization="true"
+            EnableScriptLocalization="true" ID="mainScriptManager" />
+
+        <div id="mainDiv">
+
+            <asp:ContentPlaceHolder ID="Main" runat="server">
             </asp:ContentPlaceHolder>
+
+            <asp:ContentPlaceHolder ID="Chart" runat="server">
+            </asp:ContentPlaceHolder>
+
+
         </div>
     </form>
 </body>

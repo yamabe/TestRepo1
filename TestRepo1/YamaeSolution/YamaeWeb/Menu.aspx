@@ -1,15 +1,16 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Menu.aspx.cs" Inherits="Menu" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/YMasterPage.master"  AutoEventWireup="true" CodeFile="Menu.aspx.cs" Inherits="Menu" %>
 
-<!DOCTYPE html>
+<asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
+    <title>メニュー画面</title>
+</asp:Content>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head runat="server">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title></title>
-</head>
-<body>
-    <form id="form1" runat="server">
-    <div>
+<asp:Content ID="Content3" ContentPlaceHolderID="script" runat="Server">
+
+
+</asp:Content>
+
+<asp:Content ID="Content5" ContentPlaceHolderID="Main" runat="Server">
+
         <asp:LinkButton ID="LinkButton6" runat="server" PostBackUrl="~/MTankaMitsumori.aspx" Text="単価見積もり" />
     
 
@@ -25,6 +26,10 @@
         <br />
         <br />
         <asp:LinkButton ID="LinkButton4" runat="server" PostBackUrl="~/MZairyoKikaku.aspx" Text="材料規格メンテナンス" />
+
+            <br />
+        <br />
+        <asp:LinkButton ID="LinkButton8" runat="server" PostBackUrl="~/ZairyoIchiran.aspx" Text="材料一覧" />
 
         <br />
         <br />
@@ -46,7 +51,5 @@
         <br />
         <br />
     
-    </div>
-    </form>
-</body>
-</html>
+ 
+</asp:Content>

@@ -33,6 +33,7 @@ namespace uc
 
         void BaseSqlDataSource_Selecting(object sender, SqlDataSourceSelectingEventArgs e)
         {
+            // WHERE (`削除フラグ` is null or `削除フラグ` !=  'true')
             DbCommand command = e.Command;
 
             String commandText = command.CommandText.ToLower();

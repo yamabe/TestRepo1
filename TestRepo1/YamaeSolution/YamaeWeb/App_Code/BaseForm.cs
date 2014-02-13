@@ -105,7 +105,22 @@ public abstract class BaseForm : System.Web.UI.Page
 
     protected override void OnLoadComplete(EventArgs e)
     {
-        YDropDownList pageSize = this.FindControl("ページサイズ") as YDropDownList;
+
+        Button search = this.FindControl("検索") as Button;
+        Button clear = this.FindControl("Clear") as Button;
+
+        if (search != null)
+        {
+            search.Click += 検索_Click;
+        }
+        if (clear != null)
+        {
+            clear.Click += Clear_Click;
+        }
+
+
+
+        YDropDownList pageSize = this.Master.FindControl("Main").FindControl("ページサイズ") as YDropDownList;
 
 
         if (pageSize != null)
