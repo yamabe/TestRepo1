@@ -28,6 +28,17 @@
     <y:YDropDownList ID="検索作成ユーザー" DefaultValue="" Label="作成ユーザー" IsGrid="false" ValidationGroup="Search" IsDate="false" DataFormatString="" IsInteger="true" runat="server" DataSourceID="ユーザーDataSource" DataTextField="ユーザー名" DataValueField="ユーザーId" AppendDataBoundItems="true" AddEmptyItem="true" />
     <y:YDropDownList ID="検索最終更新ユーザー" DefaultValue="" Label="最終更新ユーザー" IsGrid="false" ValidationGroup="Search" IsDate="false" DataFormatString="" IsInteger="true" runat="server" DataSourceID="ユーザーDataSource" DataTextField="ユーザー名" DataValueField="ユーザーId" AppendDataBoundItems="true" AddEmptyItem="true" />
 
+    
+    <y:YDropDownList ID="順序" Width="160" runat="server" Label="順序" AutoPostBack="false">
+        <asp:ListItem Value=" ステータス" Text="ステータス" Selected="True"></asp:ListItem>
+        <asp:ListItem Value=" 規格番号" Text="規格番号"></asp:ListItem>
+        <asp:ListItem Value=" 材料名" Text="材料名"></asp:ListItem>
+        <asp:ListItem Value=" 山恵フラグ desc" Text="山恵フラグ"></asp:ListItem>
+        <asp:ListItem Value=" 仕入れ先" Text="仕入れ先"></asp:ListItem>
+        <asp:ListItem Value=" 材料メーカー" Text="材料メーカー"></asp:ListItem>
+        <asp:ListItem Value=" 材質" Text="材質"></asp:ListItem>
+        <asp:ListItem Value=" M材料_材料ID" Text="M材料_材料ID"></asp:ListItem>
+    </y:YDropDownList>
 
     <asp:Button runat="server" ID="検索" Text="検索" OnClick="検索_Click" />
     <asp:Button runat="server" ID="Clear" Text="クリア" OnClick="Clear_Click" />
@@ -289,4 +300,6 @@
         ProviderName="<%$ ConnectionStrings:mysqlConLocal.ProviderName %>"
         SelectCommand="SELECT ユーザーId, ユーザー名 FROM `Mユーザー` ">
     </y:BaseSqlDataSource>
+
+
 </asp:Content>

@@ -151,7 +151,17 @@
     <y:YDropDownList ID="検索材質" DefaultValue="" Label="材質" IsGrid="false" ValidationGroup="Search" runat="server" DataSourceID="検索材質DataSource" DataTextField="名称" DataValueField="コードID" AddEmptyItem="true" AppendDataBoundItems="true" />
     <y:YCheckBox ID="検索有効フラグ" DefaultValue="" Label="有効フラグ" IsGrid="false" ValidationGroup="Search" runat="server" />
     <y:YCheckBox ID="検索削除フラグ" DefaultValue="" Label="削除フラグ" IsGrid="false" ValidationGroup="Search" runat="server" />
-
+    <y:YDropDownList   id="検索材料属性ID" DefaultValue=""  Label="材料属性ID"  IsGrid="false"    ValidationGroup="Search"    runat="server" DataSourceID="材料属性DataSource" DataTextField="材料名称" DataValueField="材料属性ID" AddEmptyItem="true" AppendDataBoundItems="true" />
+    <y:YDropDownList ID="順序" Width="160" runat="server" Label="順序" AutoPostBack="false">
+        <asp:ListItem Value=" 材料名称" Text="材料名称" Selected="True"></asp:ListItem>
+        <asp:ListItem Value=" 材料属性ID" Text="材料属性ID"></asp:ListItem>
+        <asp:ListItem Value=" 材料メーカー" Text="材料メーカー"></asp:ListItem>
+        <asp:ListItem Value=" 材質大分類" Text="材質大分類"></asp:ListItem>
+        <asp:ListItem Value=" 材質" Text="材質"></asp:ListItem>
+        <asp:ListItem Value=" 厚み" Text="厚み"></asp:ListItem>
+        <asp:ListItem Value=" 密度" Text="密度"></asp:ListItem>
+        <asp:ListItem Value=" M2あたり材料費" Text="M2あたり材料費"></asp:ListItem>
+    </y:YDropDownList>
 
     <asp:Button runat="server" ID="検索" Text="検索" OnClick="検索_Click" />
     <asp:Button runat="server" ID="Clear" Text="クリア" OnClick="Clear_Click" />
@@ -167,7 +177,6 @@
         PagerStyle-CssClass="grid_pager">
         <Columns>
             <asp:CommandField ShowEditButton="true" ControlStyle-Width="25" ItemStyle-Width="25"></asp:CommandField>
-            <asp:CommandField ShowDeleteButton="True" ControlStyle-Width="25" ItemStyle-Width="25"></asp:CommandField>
             <asp:ButtonField CommandName="ShowDetailUpdate" Text="詳細編集" ControlStyle-Width="50" />
 
             <asp:ButtonField ButtonType="Link" CommandName="Copy" Text="Copy" />
@@ -206,7 +215,10 @@
         CellSpacing="2" GridLines="Both"
         AllowPaging="true">
         <EditItemTemplate>
-            <table>
+ <asp:LinkButton ID="LinkButton2" runat="server" CausesValidation="True"
+                CommandName="Update" Text="更新" ValidationGroup="DetailUpdate" />
+            &nbsp;<asp:LinkButton ID="LinkButton3" runat="server"
+                CausesValidation="False" CommandName="Cancel" Text="キャンセル" />            <table>
                 <tr>
                     <td>
                         <table>

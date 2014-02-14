@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -17,24 +18,72 @@ public partial class ZairyoIchiran : BaseForm
         //_originalSelectCommand = this.MainBaseSqlDataSource.SelectCommand;
         //_selectCollection = this.MainBaseSqlDataSource.SelectParameters;
 
-
         this.MainBaseGridView.Columns.Clear();
 
+        List<String> hiddenFields = new List<string>();
+        hiddenFields.Add("材料ID");
+        hiddenFields.Add("材料属性ID");
+        hiddenFields.Add("耐寒");
 
-        DataTable table = ZairyoManager.Read(this);
+        if (!String.IsNullOrEmpty(検索M2あたり材料費.GetInternalValue()))
+        {
+            hiddenFields.Add(検索M2あたり材料費.GetInternalValue());
+        }
+        if (!String.IsNullOrEmpty(検索定尺仕入金額.GetInternalValue()))
+        {
+            hiddenFields.Add(検索定尺仕入金額.GetInternalValue());
+        }
+        if (!String.IsNullOrEmpty(検索定尺売り金額.GetInternalValue()))
+        {
+            hiddenFields.Add(検索定尺売り金額.GetInternalValue());
+        }
+        if (!String.IsNullOrEmpty(検索利益率.GetInternalValue()))
+        {
+            hiddenFields.Add(検索利益率.GetInternalValue());
+        }
+
+        Dictionary<String, String> where = new Dictionary<string, string>();
+        if (!String.IsNullOrEmpty(検索材料メーカー.GetInternalValue()))
+        {
+            where.Add("t1.材料メーカー", 検索材料メーカー.GetInternalValue());
+        }
+        if (!String.IsNullOrEmpty(検索材質大分類.GetInternalValue()))
+        {
+            where.Add("t1.材質大分類", 検索材質大分類.GetInternalValue());
+        }
+        if (!String.IsNullOrEmpty(検索材質.GetInternalValue()))
+        {
+            where.Add("t1.材質", 検索材質.GetInternalValue());
+        }
+
+
+        DataTable table = ZairyoManager.Read(this, where, 順序.GetInternalValue());
         this.MainBaseGridView.DataSource = table;
-
-        //this.MainBaseGridView.Columns.Add(
 
         foreach (DataColumn c in table.Columns)
         {
+            bool isHidden = false;
+            foreach (String h in hiddenFields)
+            {
+                if (c.ColumnName.Contains(h))
+                {
+                    isHidden = true;
+                    break;
+                }
+            }
+
+            if (isHidden)
+            {
+                continue;
+            }
+
             BoundField bf = new BoundField();
 
             if (c.DataType == typeof(decimal) || c.DataType == typeof(Int32))
             {
                 bf.ItemStyle.CssClass = "numeric";
-
             }
+
             bf.HeaderText = c.ColumnName;
             bf.DataField = c.ColumnName;
 
@@ -42,13 +91,10 @@ public partial class ZairyoIchiran : BaseForm
         }
         
         this.MainBaseGridView.DataBind();
-
     }
-
 
     protected override void Search()
     {
-
         //StringBuilder command = new StringBuilder(_originalSelectCommand);
         //this.mainDataSource.SelectParameters.Clear();
 
@@ -83,8 +129,6 @@ public partial class ZairyoIchiran : BaseForm
 
         //DataSourceSelectArguments arg = new DataSourceSelectArguments();
         //this.mainDataSource.Select(arg);
-
-
     }
 
     protected override void ConditionClear()
@@ -95,7 +139,16 @@ public partial class ZairyoIchiran : BaseForm
         //検索作成日時終了.Text = string.Empty;
 
         //検索ステータス.Text = String.Empty;
-        //検索得意先.SelectedIndex = 0;
+        検索材料メーカー.SelectedIndex = 0;
+        検索材質大分類.SelectedIndex = 0;
+        検索材質.SelectedIndex = 0;
+        検索定尺仕入金額.SelectedIndex = 0;
+        検索M2あたり材料費.SelectedIndex = 1;
+        検索定尺売り金額.SelectedIndex = 1;
+        検索利益率.SelectedIndex = 1;
+        順序.SelectedIndex = 0;
+
+        Page_Load(null, null);
         //検索規格番号.Text = String.Empty;
         //検索材料名.Text = String.Empty;
         //検索No.Text = String.Empty;

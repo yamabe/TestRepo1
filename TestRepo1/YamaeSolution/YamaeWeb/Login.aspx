@@ -1,19 +1,17 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Login.aspx.cs" Inherits="Login" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/YMasterPage.master" AutoEventWireup="true" CodeFile="Login.aspx.cs" Inherits="Login" %>
 
 <%@ Register TagPrefix="y" Namespace="uc" %>
 
 
-<!DOCTYPE html>
+<asp:content id="Content1" contentplaceholderid="head" runat="Server">
+    <title>ログイン画面</title>
+</asp:content>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head runat="server">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title></title>
-</head>
-<body>
-    <form id="form1" runat="server">
-    <div>
-        <table>
+<asp:content id="Content3" contentplaceholderid="script" runat="Server">
+</asp:content>
+
+<asp:content id="Content5" contentplaceholderid="Main" runat="Server">
+
             
         <y:YList ID="ユーザーID" Rows="11" Width="170" runat="server" DataSourceID="mainDataSource" Label="ユーザー" DataTextField="ユーザー名" DataValueField="ユーザーID"></y:YList>
 
@@ -29,7 +27,4 @@
                 >
             </y:BaseSqlDataSource>
     
-    </div>
-    </form>
-</body>
-</html>
+</asp:content>

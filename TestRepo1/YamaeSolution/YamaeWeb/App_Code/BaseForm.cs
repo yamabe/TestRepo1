@@ -125,18 +125,22 @@ public abstract class BaseForm : System.Web.UI.Page
 
         if (pageSize != null)
         {
-            if (!IsPostBack)
+            if (pageSize.Items.Count <= 0)
             {
-                pageSize.Items.Add("12");
-                pageSize.Items.Add("30");
-                pageSize.Items.Add("60");
-                pageSize.Items.Add("すべて");
-                pageSize.Items[0].Selected = true;
+                if (!IsPostBack)
+                {
+                    pageSize.Items.Add("12");
+                    pageSize.Items.Add("30");
+                    pageSize.Items.Add("60");
+                    pageSize.Items.Add("すべて");
+                    pageSize.Items[3].Selected = true;
 
-                MainBaseGridView.PageSize = 12;
+                    //MainBaseGridView.PageSize = 12;
+                    MainBaseGridView.AllowPaging = false;
 
-                pageSize.AutoPostBack = true;
-                pageSize.SelectedIndexChanged += pageSize_SelectedIndexChanged;
+                    pageSize.AutoPostBack = true;
+                    pageSize.SelectedIndexChanged += pageSize_SelectedIndexChanged;
+                }
             }
 
         }

@@ -1300,19 +1300,15 @@
             });
 
             var element = $("#popupPriceChart");
+            var title = 部品名称.val() + "    材料・加工費";
             element.dialog({
-                position: ["right", "bottom"],
-                title: "材料費・加工費",
+                appendTo:"#dialog_parent",
+                //position: ["right", "bottom"],
+                position: [900, 1900],
+                title: title,
                 width: 457,
                 height: 310,
                 open: function (event, ui) {
-                    //var refleshButtn = $("<input type='button' value='reflesh' />");
-                    //refleshButtn.click(function () {
-                    //    initPriceChart();
-                    //});
-                    //$(this).parent().children().children(".ui-dialog-titlebar-close").parent().before().before().append(refleshButtn);
-
-                    console.log($(this).parent().children(".ui-dialog-titlebar"));
                     $(this).parent().children(".ui-dialog-titlebar").css("height", "20px");
                 }
             });
@@ -1368,6 +1364,7 @@
 </asp:Content>
 
 <asp:Content ID="Content5" ContentPlaceHolderID="Main" runat="Server">
+
 
     <y:YTextBox ID="検索部品コード" DefaultValue="" Label="部品コード【-】" IsGrid="false" ValidationGroup="Search" runat="server" />
     <y:YTextBox ID="検索部品名称" DefaultValue="" Label="部品名称【-】" IsGrid="false" ValidationGroup="Search" runat="server" />
@@ -2530,7 +2527,7 @@
     <y:BaseSqlDataSource runat="server" ID="材料DataSource"
         ConnectionString="<%$ ConnectionStrings:mysqlConLocal %>"
         ProviderName="<%$ ConnectionStrings:mysqlConLocal.ProviderName %>"
-        SelectCommand="SELECT concat(材料名称,'_', 厚み, 't*', 定尺寸法縦, 'mm*', 定尺寸法横, 'mm', '_', 定尺仕入金額, '円') AS 材料名称識別テキスト,t1.材料ID,  t1.材料名称,t3.名称, t1.定尺寸法縦,t1.定尺寸法横,t1.厚み,t1.定尺仕入金額,t1.定尺売り金額, t2.名称 as 材質大分類, t3.名称 as 材質 FROM `M材料価格` as t1 left outer join Mコード as t2 on t1.材質大分類 = t2.コードID left outer join Mコード as t3 on t1.材質 = t3.コードID WHERE (t1.削除フラグ is null or t1.削除フラグ !=  'true')">
+        SelectCommand="SELECT concat(材料名称,'_', 厚み, 't*', 定尺寸法縦, 'mm*', 定尺寸法横, 'mm', '_', 定尺仕入金額, '円') AS 材料名称識別テキスト,t1.材料ID,  t1.材料名称,t3.名称, t1.定尺寸法縦,t1.定尺寸法横,t1.厚み,t1.定尺仕入金額,t1.定尺売り金額, t2.名称 as 材質大分類, t3.名称 as 材質 FROM `M材料価格` as t1 left outer join Mコード as t2 on t1.材質大分類 = t2.コードID left outer join Mコード as t3 on t1.材質 = t3.コードID WHERE (t1.削除フラグ is null or t1.削除フラグ !=  'true')  order by 材料名称識別テキスト">
     </y:BaseSqlDataSource>
 
 

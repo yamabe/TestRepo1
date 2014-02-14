@@ -9,7 +9,7 @@ using uc;
 
 public class ZairyoManager
 {
-    public static DataTable Read(BaseForm form)
+    public static DataTable Read(BaseForm form, Dictionary<String,String> where, String order)
     {
         ConnectionStringSettings connString = ConfigurationManager.ConnectionStrings["mysqlConLocal"];
 
@@ -27,11 +27,13 @@ t1.定尺寸法横     as  定尺寸法横,
 t1.厚み           as  厚み,
 t1.定尺仕入金額   as  定尺仕入金額,
 t1.m2あたり材料費 as  m2あたり材料費,
+t1.定尺売り金額 as  定尺売り金額,
+t1.利益率 as 利益率,
 t1.密度           as  密度,
 t1.有効フラグ     as  有効フラグ,
 t2.耐寒           as  耐寒,
 t2.耐熱           as  耐熱,
-t2.難燃性         as  難燃性,
+t6.名称         as  難燃性,
 t3.会社名称 as 材料メーカー,
 t4.名称     as  材質大分類,
 t5.名称           as  材質
@@ -42,9 +44,20 @@ LEFT OUTER JOIN m材料属性 AS t2 ON t1.材料属性ID = t2.材料属性ID
 left outer join m会社 as t3 on t1.材料メーカー = t3.会社ID
 left outer join mコード as t4 on t1.材質大分類 = t4.コードID
 left outer join mコード as t5 on t1.材質 = t5.コードID
+left outer join mコード as t6 on t2.難燃性 = t6.コードID
 
-where t1.削除フラグ != 'True' and t1.材料ID != 0 order by t1.材料メーカー,t1.材料名称";
 
+where t1.削除フラグ != 'True' and t1.材料ID != 0 ";
+
+        foreach (String key in where.Keys)
+        {
+            String val = where[key];
+
+            ds.SelectCommand += " and " + key + " = " + val + " ";
+        }
+
+        ds.SelectCommand += "order by " + order;
+        
         DataSourceSelectArguments arg = new DataSourceSelectArguments();
         DataView view = (DataView)ds.Select(arg);
         //DataTable table = view.ToTable();
@@ -68,6 +81,8 @@ where t1.削除フラグ != 'True' and t1.材料ID != 0 order by t1.材料メー
             //nt.Columns.Add("厚み", typeof(Decimal));
             nt.Columns.Add(t + "(入)", typeof(Decimal));
             nt.Columns.Add(t + "(㎡)", typeof(Decimal));
+            nt.Columns.Add(t + "(売)", typeof(Decimal));
+            nt.Columns.Add(t + "(利)", typeof(Decimal));
         }
 
         nt.Columns.Add("密度", typeof(Decimal));
@@ -78,7 +93,7 @@ where t1.削除フラグ != 'True' and t1.材料ID != 0 order by t1.材料メー
 
         nt.Columns.Add("耐寒", typeof(Decimal));
         nt.Columns.Add("耐熱", typeof(Decimal));
-        nt.Columns.Add("難燃性", typeof(Int32));
+        nt.Columns.Add("難燃性", typeof(String));
 
         nt.Columns.Add("有効フラグ", typeof(String));
 
@@ -99,6 +114,8 @@ where t1.削除フラグ != 'True' and t1.材料ID != 0 order by t1.材料メー
             newRow["定尺寸法横"] = curRow["定尺寸法横"];
             newRow[curRow["厚み"] + "(入)"] = curRow["定尺仕入金額"];
             newRow[curRow["厚み"] + "(㎡)"] = curRow["m2あたり材料費"];
+            newRow[curRow["厚み"] + "(売)"] = curRow["定尺売り金額"];
+            newRow[curRow["厚み"] + "(利)"] = curRow["利益率"];
             newRow["密度"] = curRow["密度"];
             newRow["有効フラグ"] = curRow["有効フラグ"];
             newRow["耐寒"] = curRow["耐寒"];
@@ -114,10 +131,12 @@ where t1.削除フラグ != 'True' and t1.材料ID != 0 order by t1.材料メー
         {
             DataRowView curRow = view[i];
 
-            if (curRow["材料名称"] == prevRow["材料名称"])
+            if (GetValue(curRow, "材料名称") == GetValue(prevRow, "材料名称"))
             {
                 newRow[curRow["厚み"] + "(入)"] = curRow["定尺仕入金額"];
                 newRow[curRow["厚み"] + "(㎡)"] = curRow["m2あたり材料費"];
+                newRow[curRow["厚み"] + "(売)"] = curRow["定尺売り金額"];
+                newRow[curRow["厚み"] + "(利)"] = curRow["利益率"];
             }
             else
             {
@@ -135,6 +154,8 @@ where t1.削除フラグ != 'True' and t1.材料ID != 0 order by t1.材料メー
                 newRow["定尺寸法横"] = curRow["定尺寸法横"];
                 newRow[curRow["厚み"] + "(入)"] = curRow["定尺仕入金額"];
                 newRow[curRow["厚み"] + "(㎡)"] = curRow["m2あたり材料費"];
+                newRow[curRow["厚み"] + "(売)"] = curRow["定尺売り金額"];
+                newRow[curRow["厚み"] + "(利)"] = curRow["利益率"];
                 newRow["密度"] = curRow["密度"];
                 newRow["有効フラグ"] = curRow["有効フラグ"];
                 newRow["耐寒"] = curRow["耐寒"];
@@ -181,6 +202,17 @@ FROM  `m材料価格`";
 
         thicknessList.Sort();
         return thicknessList;
+
+    }
+
+    private static String GetValue(DataRowView row, String name)
+    {
+        if (row[name] == null)
+        {
+            return string.Empty;
+        }
+
+        return row[name].ToString();
 
     }
 

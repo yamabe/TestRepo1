@@ -83,6 +83,8 @@ public partial class MZairyoKikaku : BaseForm
             command.Append(StringUtils.Join(where, " and "));
         }
 
+        this.mainDataSource.OrderBy = 順序.GetInternalValue();
+
         this.mainDataSource.SelectCommand = command.ToString();
         this.mainDataSource.Select(arg);
         this.mainDataSource.DataBind();

@@ -6,9 +6,13 @@ using System.Web.UI.WebControls;
 
 public partial class Login : BaseForm
 {
+    public Login()
+    {
+    }
     protected void Page_Load(object sender, EventArgs e)
     {
 
+        ((YMasterPage)this.Master).IsDisplayMenu = false;
     }
     protected void Unnamed_Click(object sender, EventArgs e)
     {

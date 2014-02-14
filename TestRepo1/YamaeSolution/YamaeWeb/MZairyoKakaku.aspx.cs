@@ -32,6 +32,14 @@ public partial class MZairyo : BaseForm
         // 更新前処理。自動で値を設定するなどはここ。
         //Parameter status = this.mainDataSource.UpdateParameters["ステータス"];
         //e.Command.Parameters["ステータス"].Value = new RyousanSireiStatusChecker().Get(e);
+
+        int v材料メーカー = (int)e.Command.Parameters["材料メーカー"].Value;
+        int v材質大分類 = int.Parse( e.Command.Parameters["材質大分類"].Value.ToString());
+        int v材質 = int.Parse(e.Command.Parameters["材質"].Value.ToString());
+        string v材料名称 = (string)e.Command.Parameters["original_材料名称"].Value;
+        string v材料名称New = (string)e.Command.Parameters["材料名称"].Value;
+        ZairyoUpdater.Update材料属性(this, v材料メーカー, v材質大分類, v材質, v材料名称, v材料名称New);
+
     }
     protected void mainDataSource_Inserting(object sender, SqlDataSourceCommandEventArgs e)
     {
@@ -50,6 +58,7 @@ public partial class MZairyo : BaseForm
         List<String> where = new List<String>();
 
         this.mainDataSource.AddSelectParameterLike(where, "材料名称", 検索材料名称.Text);
+        this.mainDataSource.AddSelectParameter(where, "材料属性ID", 検索材料属性ID.GetInternalValue());
         this.mainDataSource.AddSelectParameter(where, "材料メーカー", 検索材料メーカー.GetInternalValue());
         this.mainDataSource.AddSelectParameter(where, "材質大分類", 検索材質大分類.GetInternalValue());
         this.mainDataSource.AddSelectParameter(where, "材質", 検索材質.GetInternalValue());
@@ -81,6 +90,8 @@ public partial class MZairyo : BaseForm
             command.Append(" where ");
             command.Append(StringUtils.Join(where, " and "));
         }
+
+        this.mainDataSource.OrderBy = 順序.GetInternalValue();
 
         this.mainDataSource.SelectCommand = command.ToString();
         this.mainDataSource.Select(arg);
@@ -151,15 +162,13 @@ public partial class MZairyo : BaseForm
             ds.Insert();
             材料属性DataSource.EnableCaching = false;
             材料属性DataSource.CacheDuration = 0;
-            DataView v2 = (DataView)材料属性DataSource.Select(arg);
             材料属性DataSource.EnableViewState = false;
 
-            材料属性DataSource.DataBind();
+            DataView v2 = (DataView)材料属性DataSource.Select(arg);
+
+            //材料属性DataSource.DataBind();
             ((YDropDownList)mainFormView.FindControl("材料属性ID")).DataBind();
 
-            String s = string.Empty;
-
-            //材料属性DataSource.EnableCaching = true;
 
         }
 

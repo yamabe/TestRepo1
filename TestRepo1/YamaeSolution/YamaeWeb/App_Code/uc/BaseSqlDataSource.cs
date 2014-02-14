@@ -11,6 +11,17 @@ namespace uc
     /// </summary>
     public class BaseSqlDataSource : SqlDataSource
     {
+        public string OrderBy
+        {
+            get
+            {
+                object o = ViewState["OrderBy"];
+                return (o == null) ? string.Empty : o.ToString();
+            }
+            set { ViewState["OrderBy"] = value; }
+        }
+
+
         public BaseForm BaseForm
         {
             get { return (BaseForm)this.Page; }
@@ -54,25 +65,52 @@ namespace uc
 
             if (BaseForm.MainBaseGridView != null)
             {
-
                 if (!String.IsNullOrEmpty(BaseForm.MainBaseGridView.SortExpression))
                 {
-                    command.CommandText += " order by 作成日時" + BaseForm.MainBaseGridView.SortExpression + " ";
-
-                    if (BaseForm.MainBaseGridView.SortDirection == SortDirection.Ascending)
+                    if (!commandText.Contains("order by"))
                     {
-                        command.CommandText += " asc";
-                    }
-                    else
-                    {
-                        command.CommandText += " desc";
+                        command.CommandText += " order by 作成日時" + BaseForm.MainBaseGridView.SortExpression + " ";
 
+                        if (BaseForm.MainBaseGridView.SortDirection == SortDirection.Ascending)
+                        {
+                            command.CommandText += " asc";
+                        }
+                        else
+                        {
+                            command.CommandText += " desc";
+
+                        }
                     }
 
                 }
             }
 
-            String s = string.Empty;
+
+            if (command.CommandText.ToLower().Contains(" mコード ") || command.CommandText.ToLower().Contains("`mコード`"))
+            {
+                if (!command.CommandText.ToLower().Contains("order by"))
+                {
+                    if (String.IsNullOrEmpty(OrderBy))
+                    {
+                        command.CommandText += " order by 順序";
+                    }
+                    else
+                    {
+                        command.CommandText += " order by " + OrderBy + ", 順序";
+                    }
+                }
+            }
+            else
+            {
+                if (!command.CommandText.ToLower().Contains("order by"))
+                {
+                    if (!String.IsNullOrEmpty(OrderBy))
+                    {
+                        command.CommandText += " order by " + OrderBy + " ";
+                    }
+                }
+            }
+
             
         }
 

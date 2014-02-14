@@ -35,8 +35,6 @@ namespace uc
             //
             // TODO: コンストラクター ロジックをここに追加します
             //
-
-
         }
 
         protected override void CreateChildControls()
@@ -52,7 +50,13 @@ namespace uc
 
             if (AllowRowClick)
             {
-                e.Row.Attributes.Add("onclick", "(__doPostBack('mainGridView','ShowDetailUpdate$" + e.Row.RowIndex + "'))");
+                if (e.Row.RowType == DataControlRowType.DataRow)
+                {
+                    if (e.Row.RowState == DataControlRowState.Normal || e.Row.RowState == DataControlRowState.Alternate)
+                    {
+                        e.Row.Attributes.Add("onclick", "__doPostBack('" + this.ClientID.Replace(this.ClientIDSeparator, '$') + "','ShowDetailUpdate$" + e.Row.RowIndex + "')");
+                    }
+                }
             }
         }
 

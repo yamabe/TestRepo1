@@ -39,8 +39,11 @@
 <body>
     <form id="form1" runat="server">
 
+        <% if (IsDisplayMenu) { %>
+
         <asp:LinkButton ID="LinkButton2" runat="server" PostBackUrl="~/Menu.aspx" Text="メニュー画面へ" />
         <br />
+        <% } %>
 
         <ajaxToolkit:ToolkitScriptManager runat="Server" EnableScriptGlobalization="true"
             EnableScriptLocalization="true" ID="mainScriptManager" />
@@ -53,6 +56,8 @@
             <asp:ContentPlaceHolder ID="Chart" runat="server">
             </asp:ContentPlaceHolder>
 
+
+             <div id="dialog_parent" style="position:relative"></div> 
 
         </div>
     </form>
