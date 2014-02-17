@@ -1312,7 +1312,7 @@
                     $(this).parent().children(".ui-dialog-titlebar").css("height", "20px");
                 }
             });
-
+            element.dialog("close");
 
 
             $("#openPriceChart").click(function () {
@@ -1322,7 +1322,8 @@
                 });
             });
 
-            $("#mainDiv").click(function () {
+
+            $("#<%=mainFormView.ClientID%>").click(function () {
                 var element = $("#popupPriceChart");
                 element.dialog({
                     position: ["right", "bottom"],
@@ -1436,6 +1437,12 @@
         CellSpacing="2" GridLines="Both"
         AllowPaging="true">
         <EditItemTemplate>
+
+                        <asp:ValidationSummary ID="ValidationSummary3" runat="server" EnableClientScript="true" ValidationGroup="DetailUpdate" />
+            <asp:LinkButton ID="LinkButton2" runat="server" CausesValidation="True"
+                CommandName="Update" Text="更新" ValidationGroup="DetailUpdate" OnClientClick="return UpdateDetail()" />
+            &nbsp;<asp:LinkButton ID="LinkButton3" runat="server"
+                CausesValidation="False" CommandName="Cancel" Text="キャンセル" />
 
             <table>
                 <tr>
@@ -1670,6 +1677,11 @@
                                         <y:YTextBox ID="ロット" Label="ロット【ヶ】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("ロット", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
                                         <y:YTextBox ID="丸め数" Label="丸め数【ヶ】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("丸め数", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
                                         <y:YTextBox ID="商品重量" Label="商品重量【g】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("商品重量", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
+                                      
+                                        <y:YFileUpload runat="server" Label="図面ファイル" ID="図面ファイル"  />
+                                        <y:YFileUpload runat="server" Label="参考資料" ID="参考資料"  />
+<y:YTextBox   id="備考"  Label="備考"   IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Text='<%# Bind("備考", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="false" runat="server" CssClass="Input"   TextMode="MultiLine" Rows="5"  Width="100"/>
+
                                         <y:YCheckBox ID="削除フラグ" Label="削除フラグ" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailUpdate" Checked='<%# ConvertToBoolean(Eval("削除フラグ")) %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="false" runat="server" CssClass="Input" Width="40" />
                                         <y:YDropDownList ID="作成ユーザー" Label="作成ユーザー" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" SelectedValue='<%# Bind("作成ユーザー") %>' IsRequired="FALSE" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" DataSourceID="ユーザーDataSource" DataTextField="ユーザー名" DataValueField="ユーザーId" AppendDataBoundItems="true" Width="100" />
                                         <y:YDropDownList ID="最終更新ユーザー" Label="最終更新ユーザー" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailUpdate" SelectedValue='<%# Bind("最終更新ユーザー") %>' IsRequired="FALSE" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" DataSourceID="ユーザーDataSource" DataTextField="ユーザー名" DataValueField="ユーザーId" AppendDataBoundItems="true" Width="100" />
@@ -1929,7 +1941,12 @@
                                         <y:YTextBox ID="ロット" DefaultValue="" Label="ロット【ヶ】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("ロット", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
                                         <y:YTextBox ID="丸め数" DefaultValue="" Label="丸め数【ヶ】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("丸め数", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
                                         <y:YTextBox ID="商品重量" DefaultValue="" Label="商品重量【g】" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Text='<%# Bind("商品重量", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
-                                        <y:YCheckBox ID="削除フラグ" DefaultValue="" Label="削除フラグ" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Checked='<%# ConvertToBoolean(Eval("削除フラグ")) %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="false" runat="server" CssClass="Input" Width="40" />
+                                      
+                                        <asp:FileUpload runat="server" />
+                                         <y:YTextBox   id="図面ファイル" DefaultValue=""  Label="図面ファイル"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("図面ファイル", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="false" runat="server" CssClass="Input"   Width="100" />
+<y:YTextBox   id="備考" DefaultValue=""  Label="備考"  IsGrid="false"  ReadOnly="FALSE"  ValidationGroup="DetailInsert" Text='<%# Bind("備考", "") %>'     IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="false" runat="server" CssClass="Input"   TextMode="MultiLine" Rows="5"  Width="100" />
+
+                                         <y:YCheckBox ID="削除フラグ" DefaultValue="" Label="削除フラグ" IsGrid="false" ReadOnly="FALSE" ValidationGroup="DetailInsert" Checked='<%# ConvertToBoolean(Eval("削除フラグ")) %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="false" runat="server" CssClass="Input" Width="40" />
                                         <y:YDropDownList ID="作成ユーザー" DefaultValue="" Label="作成ユーザー" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" SelectedValue='<%# Bind("作成ユーザー") %>' IsRequired="FALSE" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" DataSourceID="ユーザーDataSource" DataTextField="ユーザー名" DataValueField="ユーザーId" AppendDataBoundItems="true" Width="100" />
                                         <y:YDropDownList ID="最終更新ユーザー" DefaultValue="" Label="最終更新ユーザー" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" SelectedValue='<%# Bind("最終更新ユーザー") %>' IsRequired="FALSE" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" DataSourceID="ユーザーDataSource" DataTextField="ユーザー名" DataValueField="ユーザーId" AppendDataBoundItems="true" Width="100" />
                                         <y:YTextBox ID="作成日時" DefaultValue="" Label="作成日時" IsGrid="false" ReadOnly="TRUE" ValidationGroup="DetailInsert" Text='<%# Bind("作成日時", "{0:yyyy/MM/dd hh:mm:ss}") %>' IsRequired="FALSE" IsDate="true" DataFormatString="{0:yyyy/MM/dd hh:mm:ss}" IsInteger="false" runat="server" CssClass="Input" Width="100" />
@@ -2184,7 +2201,9 @@
                                         <y:YTextBox ID="ロット" Label="ロット【ヶ】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("ロット", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
                                         <y:YTextBox ID="丸め数" Label="丸め数【ヶ】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("丸め数", "") %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" Width="65" />
                                         <y:YTextBox ID="商品重量" Label="商品重量【g】" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("商品重量", "{0:f2}") %>' IsRequired="false" IsDate="false" DataFormatString="{0:f2}" IsInteger="true" runat="server" CssClass="Input" Width="65" />
-                                        <y:YCheckBox ID="削除フラグ" Label="削除フラグ" IsGrid="false" ReadOnly="TRUE" Checked='<%# ConvertToBoolean(Eval("削除フラグ")) %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="false" runat="server" CssClass="Input" Width="40" />
+                                        <y:YTextBox   id="図面ファイル"  Label="図面ファイル"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("図面ファイル", "") %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="false" runat="server" CssClass="Input"   Width="100"/>
+<y:YTextBox   id="備考"  Label="備考"  IsGrid="false"  ReadOnly="TRUE" Text='<%# Bind("備考", "") %>'    IsRequired="false" IsDate="false"  DataFormatString="" IsInteger="false" runat="server" CssClass="Input"   TextMode="MultiLine" Rows="5"  Width="100"/>
+<y:YCheckBox ID="削除フラグ" Label="削除フラグ" IsGrid="false" ReadOnly="TRUE" Checked='<%# ConvertToBoolean(Eval("削除フラグ")) %>' IsRequired="false" IsDate="false" DataFormatString="" IsInteger="false" runat="server" CssClass="Input" Width="40" />
                                         <y:YDropDownList ID="作成ユーザー" Label="作成ユーザー" IsGrid="false" ReadOnly="TRUE" SelectedValue='<%# Bind("作成ユーザー") %>' IsRequired="FALSE" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" DataSourceID="ユーザーDataSource" DataTextField="ユーザー名" DataValueField="ユーザーId" AppendDataBoundItems="true" Width="100" />
                                         <y:YDropDownList ID="最終更新ユーザー" Label="最終更新ユーザー" IsGrid="false" ReadOnly="TRUE" SelectedValue='<%# Bind("最終更新ユーザー") %>' IsRequired="FALSE" IsDate="false" DataFormatString="" IsInteger="true" runat="server" CssClass="Input" DataSourceID="ユーザーDataSource" DataTextField="ユーザー名" DataValueField="ユーザーId" AppendDataBoundItems="true" Width="100" />
                                         <y:YTextBox ID="作成日時" Label="作成日時" IsGrid="false" ReadOnly="TRUE" Text='<%# Bind("作成日時", "{0:yyyy/MM/dd hh:mm:ss}") %>' IsRequired="FALSE" IsDate="true" DataFormatString="{0:yyyy/MM/dd hh:mm:ss}" IsInteger="false" runat="server" CssClass="Input" Width="100" />
@@ -2216,11 +2235,11 @@
     <y:BaseSqlDataSource ID="mainDataSource" runat="server"
         SelectCommand="select * from T単価"
         UpdateCommand=" update T単価 set 
-                部品コード = @部品コード,部品名称 = @部品名称,材料ID = @材料ID,材料名称 = @材料名称,材質大分類 = @材質大分類,材質 = @材質,定尺寸法縦_original = @定尺寸法縦_original,定尺寸法横_original = @定尺寸法横_original,定尺仕入金額_original = @定尺仕入金額_original,定尺寸法縦 = @定尺寸法縦,定尺寸法横 = @定尺寸法横,厚み = @厚み,定尺仕入金額 = @定尺仕入金額,定尺仕入自動計算フラグ = @定尺仕入自動計算フラグ,定尺売り金額 = @定尺売り金額,時間単価 = @時間単価,分単価 = @分単価,秒単価 = @秒単価,m2あたりの材料費 = @m2あたりの材料費,m2あたりの取数たて = @m2あたりの取数たて,m2あたりの取数よこ = @m2あたりの取数よこ,m2あたりの取数 = @m2あたりの取数,仕入れ単価 = @仕入れ単価,商品たて = @商品たて,商品よこ = @商品よこ,たてしろ = @たてしろ,よこしろ = @よこしろ,取り数 = @取り数,見積_材料費 = @見積_材料費,見積_裁断 = @見積_裁断,見積_打抜 = @見積_打抜,見積_貼り = @見積_貼り,見積_曲げ = @見積_曲げ,見積_仕上げ = @見積_仕上げ,見積_ロス管理 = @見積_ロス管理,見積_材料費比 = @見積_材料費比,見積_加工費小計 = @見積_加工費小計,見積_加工費比 = @見積_加工費比,見積_単価 = @見積_単価,見積_m2あたり材料費 = @見積_m2あたり材料費,たて_しろあり = @たて_しろあり,よこ_しろあり = @よこ_しろあり,縦取り数 = @縦取り数,横取り数 = @横取り数,たて余 = @たて余,よこ余 = @よこ余,計算_取り数 = @計算_取り数,計算_材料費T = @計算_材料費T,計算_材料費 = @計算_材料費,計算_裁断 = @計算_裁断,計算_打抜 = @計算_打抜,計算_貼り = @計算_貼り,計算_曲げ = @計算_曲げ,計算_仕上げ = @計算_仕上げ,計算_ロス管理 = @計算_ロス管理,計算_材料費比 = @計算_材料費比,計算_加工費小計 = @計算_加工費小計,計算_加工費比 = @計算_加工費比,計算_単価 = @計算_単価,定尺裁断_数 = @定尺裁断_数,定尺裁断_所要時間 = @定尺裁断_所要時間,定尺裁断_割数 = @定尺裁断_割数,寸法カット_数 = @寸法カット_数,寸法カット_所要時間 = @寸法カット_所要時間,寸法カット_割数 = @寸法カット_割数,打抜_型取数 = @打抜_型取数,打抜_プレス回数 = @打抜_プレス回数,曲げ_数 = @曲げ_数,曲げ_秒数 = @曲げ_秒数,曲げ_同時加工 = @曲げ_同時加工,仕上げ_数 = @仕上げ_数,仕上げ_秒数 = @仕上げ_秒数,仕上げ_同時加工 = @仕上げ_同時加工,ロス管理_材比 = @ロス管理_材比,ロス管理_加工比 = @ロス管理_加工比,定尺裁断_時間 = @定尺裁断_時間,定尺裁断_作業費 = @定尺裁断_作業費,定尺裁断_単価当り = @定尺裁断_単価当り,寸法カット_時間 = @寸法カット_時間,寸法カット_作業費 = @寸法カット_作業費,寸法カット_単価当り = @寸法カット_単価当り,打抜_時間当たりの加工数 = @打抜_時間当たりの加工数,打抜_単価当り = @打抜_単価当り,曲げ_時間 = @曲げ_時間,曲げ_作業費 = @曲げ_作業費,曲げ_単価当り = @曲げ_単価当り,仕上げ_時間 = @仕上げ_時間,仕上げ_作業費 = @仕上げ_作業費,仕上げ_単価当り = @仕上げ_単価当り,ロス管理_材_費用 = @ロス管理_材_費用,ロス管理_加工_費用 = @ロス管理_加工_費用,見積_定尺裁断費比 = @見積_定尺裁断費比,計算_定尺裁断費比 = @計算_定尺裁断費比,計算_寸法カット費比 = @計算_寸法カット費比,見積_打抜費比 = @見積_打抜費比,計算_打抜費比 = @計算_打抜費比,見積_貼り費比 = @見積_貼り費比,計算_貼り費比 = @計算_貼り費比,見積_曲げ費比 = @見積_曲げ費比,計算_曲げ費比 = @計算_曲げ費比,見積_仕上げ費比 = @見積_仕上げ費比,計算_仕上げ費比 = @計算_仕上げ費比,見積_ロス管理費比 = @見積_ロス管理費比,計算_ロス管理費比 = @計算_ロス管理費比,ロット = @ロット,丸め数 = @丸め数,商品重量 = @商品重量,削除フラグ = @削除フラグ,最終更新ユーザー = @最終更新ユーザー, 最終更新日時 = @最終更新日時
+                部品コード = @部品コード,部品名称 = @部品名称,材料ID = @材料ID,材料名称 = @材料名称,材質大分類 = @材質大分類,材質 = @材質,定尺寸法縦_original = @定尺寸法縦_original,定尺寸法横_original = @定尺寸法横_original,定尺仕入金額_original = @定尺仕入金額_original,定尺寸法縦 = @定尺寸法縦,定尺寸法横 = @定尺寸法横,厚み = @厚み,定尺仕入金額 = @定尺仕入金額,定尺仕入自動計算フラグ = @定尺仕入自動計算フラグ,定尺売り金額 = @定尺売り金額,時間単価 = @時間単価,分単価 = @分単価,秒単価 = @秒単価,m2あたりの材料費 = @m2あたりの材料費,m2あたりの取数たて = @m2あたりの取数たて,m2あたりの取数よこ = @m2あたりの取数よこ,m2あたりの取数 = @m2あたりの取数,仕入れ単価 = @仕入れ単価,商品たて = @商品たて,商品よこ = @商品よこ,たてしろ = @たてしろ,よこしろ = @よこしろ,取り数 = @取り数,見積_材料費 = @見積_材料費,見積_裁断 = @見積_裁断,見積_打抜 = @見積_打抜,見積_貼り = @見積_貼り,見積_曲げ = @見積_曲げ,見積_仕上げ = @見積_仕上げ,見積_ロス管理 = @見積_ロス管理,見積_材料費比 = @見積_材料費比,見積_加工費小計 = @見積_加工費小計,見積_加工費比 = @見積_加工費比,見積_単価 = @見積_単価,見積_m2あたり材料費 = @見積_m2あたり材料費,たて_しろあり = @たて_しろあり,よこ_しろあり = @よこ_しろあり,縦取り数 = @縦取り数,横取り数 = @横取り数,たて余 = @たて余,よこ余 = @よこ余,計算_取り数 = @計算_取り数,計算_材料費T = @計算_材料費T,計算_材料費 = @計算_材料費,計算_裁断 = @計算_裁断,計算_打抜 = @計算_打抜,計算_貼り = @計算_貼り,計算_曲げ = @計算_曲げ,計算_仕上げ = @計算_仕上げ,計算_ロス管理 = @計算_ロス管理,計算_材料費比 = @計算_材料費比,計算_加工費小計 = @計算_加工費小計,計算_加工費比 = @計算_加工費比,計算_単価 = @計算_単価,定尺裁断_数 = @定尺裁断_数,定尺裁断_所要時間 = @定尺裁断_所要時間,定尺裁断_割数 = @定尺裁断_割数,寸法カット_数 = @寸法カット_数,寸法カット_所要時間 = @寸法カット_所要時間,寸法カット_割数 = @寸法カット_割数,打抜_型取数 = @打抜_型取数,打抜_プレス回数 = @打抜_プレス回数,曲げ_数 = @曲げ_数,曲げ_秒数 = @曲げ_秒数,曲げ_同時加工 = @曲げ_同時加工,仕上げ_数 = @仕上げ_数,仕上げ_秒数 = @仕上げ_秒数,仕上げ_同時加工 = @仕上げ_同時加工,ロス管理_材比 = @ロス管理_材比,ロス管理_加工比 = @ロス管理_加工比,定尺裁断_時間 = @定尺裁断_時間,定尺裁断_作業費 = @定尺裁断_作業費,定尺裁断_単価当り = @定尺裁断_単価当り,寸法カット_時間 = @寸法カット_時間,寸法カット_作業費 = @寸法カット_作業費,寸法カット_単価当り = @寸法カット_単価当り,打抜_時間当たりの加工数 = @打抜_時間当たりの加工数,打抜_単価当り = @打抜_単価当り,曲げ_時間 = @曲げ_時間,曲げ_作業費 = @曲げ_作業費,曲げ_単価当り = @曲げ_単価当り,仕上げ_時間 = @仕上げ_時間,仕上げ_作業費 = @仕上げ_作業費,仕上げ_単価当り = @仕上げ_単価当り,ロス管理_材_費用 = @ロス管理_材_費用,ロス管理_加工_費用 = @ロス管理_加工_費用,見積_定尺裁断費比 = @見積_定尺裁断費比,計算_定尺裁断費比 = @計算_定尺裁断費比,計算_寸法カット費比 = @計算_寸法カット費比,見積_打抜費比 = @見積_打抜費比,計算_打抜費比 = @計算_打抜費比,見積_貼り費比 = @見積_貼り費比,計算_貼り費比 = @計算_貼り費比,見積_曲げ費比 = @見積_曲げ費比,計算_曲げ費比 = @計算_曲げ費比,見積_仕上げ費比 = @見積_仕上げ費比,計算_仕上げ費比 = @計算_仕上げ費比,見積_ロス管理費比 = @見積_ロス管理費比,計算_ロス管理費比 = @計算_ロス管理費比,ロット = @ロット,丸め数 = @丸め数,商品重量 = @商品重量,図面ファイル = @図面ファイル,備考 = @備考,削除フラグ = @削除フラグ,最終更新ユーザー = @最終更新ユーザー, 最終更新日時 = @最終更新日時
                 where 単価ID = @original_単価ID and 最終更新日時 = @original_最終更新日時"
         InsertCommand=" insert into T単価 
-                (部品コード,部品名称,材料ID,材料名称,材質大分類,材質,定尺寸法縦_original,定尺寸法横_original,定尺仕入金額_original,定尺寸法縦,定尺寸法横,厚み,定尺仕入金額,定尺仕入自動計算フラグ,定尺売り金額,時間単価,分単価,秒単価,m2あたりの材料費,m2あたりの取数たて,m2あたりの取数よこ,m2あたりの取数,仕入れ単価,商品たて,商品よこ,たてしろ,よこしろ,取り数,見積_材料費,見積_裁断,見積_打抜,見積_貼り,見積_曲げ,見積_仕上げ,見積_ロス管理,見積_材料費比,見積_加工費小計,見積_加工費比,見積_単価,見積_m2あたり材料費,たて_しろあり,よこ_しろあり,縦取り数,横取り数,たて余,よこ余,計算_取り数,計算_材料費T,計算_材料費,計算_裁断,計算_打抜,計算_貼り,計算_曲げ,計算_仕上げ,計算_ロス管理,計算_材料費比,計算_加工費小計,計算_加工費比,計算_単価,定尺裁断_数,定尺裁断_所要時間,定尺裁断_割数,寸法カット_数,寸法カット_所要時間,寸法カット_割数,打抜_型取数,打抜_プレス回数,曲げ_数,曲げ_秒数,曲げ_同時加工,仕上げ_数,仕上げ_秒数,仕上げ_同時加工,ロス管理_材比,ロス管理_加工比,定尺裁断_時間,定尺裁断_作業費,定尺裁断_単価当り,寸法カット_時間,寸法カット_作業費,寸法カット_単価当り,打抜_時間当たりの加工数,打抜_単価当り,曲げ_時間,曲げ_作業費,曲げ_単価当り,仕上げ_時間,仕上げ_作業費,仕上げ_単価当り,ロス管理_材_費用,ロス管理_加工_費用,見積_定尺裁断費比,計算_定尺裁断費比,計算_寸法カット費比,見積_打抜費比,計算_打抜費比,見積_貼り費比,計算_貼り費比,見積_曲げ費比,計算_曲げ費比,見積_仕上げ費比,計算_仕上げ費比,見積_ロス管理費比,計算_ロス管理費比,ロット,丸め数,商品重量,削除フラグ,作成ユーザー,最終更新ユーザー,作成日時,最終更新日時) 
-                values (@部品コード,@部品名称,@材料ID,@材料名称,@材質大分類,@材質,@定尺寸法縦_original,@定尺寸法横_original,@定尺仕入金額_original,@定尺寸法縦,@定尺寸法横,@厚み,@定尺仕入金額,@定尺仕入自動計算フラグ,@定尺売り金額,@時間単価,@分単価,@秒単価,@m2あたりの材料費,@m2あたりの取数たて,@m2あたりの取数よこ,@m2あたりの取数,@仕入れ単価,@商品たて,@商品よこ,@たてしろ,@よこしろ,@取り数,@見積_材料費,@見積_裁断,@見積_打抜,@見積_貼り,@見積_曲げ,@見積_仕上げ,@見積_ロス管理,@見積_材料費比,@見積_加工費小計,@見積_加工費比,@見積_単価,@見積_m2あたり材料費,@たて_しろあり,@よこ_しろあり,@縦取り数,@横取り数,@たて余,@よこ余,@計算_取り数,@計算_材料費T,@計算_材料費,@計算_裁断,@計算_打抜,@計算_貼り,@計算_曲げ,@計算_仕上げ,@計算_ロス管理,@計算_材料費比,@計算_加工費小計,@計算_加工費比,@計算_単価,@定尺裁断_数,@定尺裁断_所要時間,@定尺裁断_割数,@寸法カット_数,@寸法カット_所要時間,@寸法カット_割数,@打抜_型取数,@打抜_プレス回数,@曲げ_数,@曲げ_秒数,@曲げ_同時加工,@仕上げ_数,@仕上げ_秒数,@仕上げ_同時加工,@ロス管理_材比,@ロス管理_加工比,@定尺裁断_時間,@定尺裁断_作業費,@定尺裁断_単価当り,@寸法カット_時間,@寸法カット_作業費,@寸法カット_単価当り,@打抜_時間当たりの加工数,@打抜_単価当り,@曲げ_時間,@曲げ_作業費,@曲げ_単価当り,@仕上げ_時間,@仕上げ_作業費,@仕上げ_単価当り,@ロス管理_材_費用,@ロス管理_加工_費用,@見積_定尺裁断費比,@計算_定尺裁断費比,@計算_寸法カット費比,@見積_打抜費比,@計算_打抜費比,@見積_貼り費比,@計算_貼り費比,@見積_曲げ費比,@計算_曲げ費比,@見積_仕上げ費比,@計算_仕上げ費比,@見積_ロス管理費比,@計算_ロス管理費比,@ロット,@丸め数,@商品重量,@削除フラグ,@作成ユーザー,@最終更新ユーザー,@作成日時,@最終更新日時)
+                (部品コード,部品名称,材料ID,材料名称,材質大分類,材質,定尺寸法縦_original,定尺寸法横_original,定尺仕入金額_original,定尺寸法縦,定尺寸法横,厚み,定尺仕入金額,定尺仕入自動計算フラグ,定尺売り金額,時間単価,分単価,秒単価,m2あたりの材料費,m2あたりの取数たて,m2あたりの取数よこ,m2あたりの取数,仕入れ単価,商品たて,商品よこ,たてしろ,よこしろ,取り数,見積_材料費,見積_裁断,見積_打抜,見積_貼り,見積_曲げ,見積_仕上げ,見積_ロス管理,見積_材料費比,見積_加工費小計,見積_加工費比,見積_単価,見積_m2あたり材料費,たて_しろあり,よこ_しろあり,縦取り数,横取り数,たて余,よこ余,計算_取り数,計算_材料費T,計算_材料費,計算_裁断,計算_打抜,計算_貼り,計算_曲げ,計算_仕上げ,計算_ロス管理,計算_材料費比,計算_加工費小計,計算_加工費比,計算_単価,定尺裁断_数,定尺裁断_所要時間,定尺裁断_割数,寸法カット_数,寸法カット_所要時間,寸法カット_割数,打抜_型取数,打抜_プレス回数,曲げ_数,曲げ_秒数,曲げ_同時加工,仕上げ_数,仕上げ_秒数,仕上げ_同時加工,ロス管理_材比,ロス管理_加工比,定尺裁断_時間,定尺裁断_作業費,定尺裁断_単価当り,寸法カット_時間,寸法カット_作業費,寸法カット_単価当り,打抜_時間当たりの加工数,打抜_単価当り,曲げ_時間,曲げ_作業費,曲げ_単価当り,仕上げ_時間,仕上げ_作業費,仕上げ_単価当り,ロス管理_材_費用,ロス管理_加工_費用,見積_定尺裁断費比,計算_定尺裁断費比,計算_寸法カット費比,見積_打抜費比,計算_打抜費比,見積_貼り費比,計算_貼り費比,見積_曲げ費比,計算_曲げ費比,見積_仕上げ費比,計算_仕上げ費比,見積_ロス管理費比,計算_ロス管理費比,ロット,丸め数,商品重量,図面ファイル,備考,削除フラグ,作成ユーザー,最終更新ユーザー,作成日時,最終更新日時) 
+                values (@部品コード,@部品名称,@材料ID,@材料名称,@材質大分類,@材質,@定尺寸法縦_original,@定尺寸法横_original,@定尺仕入金額_original,@定尺寸法縦,@定尺寸法横,@厚み,@定尺仕入金額,@定尺仕入自動計算フラグ,@定尺売り金額,@時間単価,@分単価,@秒単価,@m2あたりの材料費,@m2あたりの取数たて,@m2あたりの取数よこ,@m2あたりの取数,@仕入れ単価,@商品たて,@商品よこ,@たてしろ,@よこしろ,@取り数,@見積_材料費,@見積_裁断,@見積_打抜,@見積_貼り,@見積_曲げ,@見積_仕上げ,@見積_ロス管理,@見積_材料費比,@見積_加工費小計,@見積_加工費比,@見積_単価,@見積_m2あたり材料費,@たて_しろあり,@よこ_しろあり,@縦取り数,@横取り数,@たて余,@よこ余,@計算_取り数,@計算_材料費T,@計算_材料費,@計算_裁断,@計算_打抜,@計算_貼り,@計算_曲げ,@計算_仕上げ,@計算_ロス管理,@計算_材料費比,@計算_加工費小計,@計算_加工費比,@計算_単価,@定尺裁断_数,@定尺裁断_所要時間,@定尺裁断_割数,@寸法カット_数,@寸法カット_所要時間,@寸法カット_割数,@打抜_型取数,@打抜_プレス回数,@曲げ_数,@曲げ_秒数,@曲げ_同時加工,@仕上げ_数,@仕上げ_秒数,@仕上げ_同時加工,@ロス管理_材比,@ロス管理_加工比,@定尺裁断_時間,@定尺裁断_作業費,@定尺裁断_単価当り,@寸法カット_時間,@寸法カット_作業費,@寸法カット_単価当り,@打抜_時間当たりの加工数,@打抜_単価当り,@曲げ_時間,@曲げ_作業費,@曲げ_単価当り,@仕上げ_時間,@仕上げ_作業費,@仕上げ_単価当り,@ロス管理_材_費用,@ロス管理_加工_費用,@見積_定尺裁断費比,@計算_定尺裁断費比,@計算_寸法カット費比,@見積_打抜費比,@計算_打抜費比,@見積_貼り費比,@計算_貼り費比,@見積_曲げ費比,@計算_曲げ費比,@見積_仕上げ費比,@計算_仕上げ費比,@見積_ロス管理費比,@計算_ロス管理費比,@ロット,@丸め数,@商品重量,@図面ファイル,@備考,@削除フラグ,@作成ユーザー,@最終更新ユーザー,@作成日時,@最終更新日時)
                 ; SET @NewParameter=LAST_INSERT_ID(); "
         DeleteCommand="update T単価    set 削除フラグ = 'True'  where 単価ID = @original_単価ID  and 最終更新日時 = @original_最終更新日時"
         ConflictDetection="CompareAllValues"
@@ -2365,6 +2384,10 @@
             <asp:FormParameter Name="ロット" FormField="ロット" ConvertEmptyStringToNull="true" Type="Int32" />
             <asp:FormParameter Name="丸め数" FormField="丸め数" ConvertEmptyStringToNull="true" Type="Int32" />
             <asp:FormParameter Name="商品重量" FormField="商品重量" ConvertEmptyStringToNull="true" Type="Decimal" />
+
+            <asp:formparameter  name="図面ファイル" formfield="図面ファイル"   ConvertEmptyStringToNull="true"  　Type="String" />
+            <asp:formparameter  name="備考" formfield="備考"   ConvertEmptyStringToNull="true"  　Type="String" />
+
             <asp:FormParameter Name="削除フラグ" FormField="削除フラグ" ConvertEmptyStringToNull="true" Type="String" />
             <asp:FormParameter Name="作成ユーザー" FormField="作成ユーザー" ConvertEmptyStringToNull="true" Type="String" />
             <asp:FormParameter Name="最終更新ユーザー" FormField="最終更新ユーザー" ConvertEmptyStringToNull="true" Type="String" />
@@ -2508,6 +2531,9 @@
             <asp:FormParameter Name="ロット" FormField="ロット" ConvertEmptyStringToNull="true" Type="Int32" />
             <asp:FormParameter Name="丸め数" FormField="丸め数" ConvertEmptyStringToNull="true" Type="Int32" />
             <asp:FormParameter Name="商品重量" FormField="商品重量" ConvertEmptyStringToNull="true" Type="Decimal" />
+            <asp:formparameter  name="図面ファイル" formfield="図面ファイル"   ConvertEmptyStringToNull="true"  　Type="String" />
+            <asp:formparameter  name="備考" formfield="備考"   ConvertEmptyStringToNull="true"  　Type="String" />
+
             <asp:FormParameter Name="削除フラグ" FormField="削除フラグ" ConvertEmptyStringToNull="true" Type="String" />
             <asp:FormParameter Name="作成ユーザー" FormField="作成ユーザー" ConvertEmptyStringToNull="true" Type="String" />
             <asp:FormParameter Name="最終更新ユーザー" FormField="最終更新ユーザー" ConvertEmptyStringToNull="true" Type="String" />
@@ -2527,7 +2553,10 @@
     <y:BaseSqlDataSource runat="server" ID="材料DataSource"
         ConnectionString="<%$ ConnectionStrings:mysqlConLocal %>"
         ProviderName="<%$ ConnectionStrings:mysqlConLocal.ProviderName %>"
-        SelectCommand="SELECT concat(材料名称,'_', 厚み, 't*', 定尺寸法縦, 'mm*', 定尺寸法横, 'mm', '_', 定尺仕入金額, '円') AS 材料名称識別テキスト,t1.材料ID,  t1.材料名称,t3.名称, t1.定尺寸法縦,t1.定尺寸法横,t1.厚み,t1.定尺仕入金額,t1.定尺売り金額, t2.名称 as 材質大分類, t3.名称 as 材質 FROM `M材料価格` as t1 left outer join Mコード as t2 on t1.材質大分類 = t2.コードID left outer join Mコード as t3 on t1.材質 = t3.コードID WHERE (t1.削除フラグ is null or t1.削除フラグ !=  'true')  order by 材料名称識別テキスト">
+        SelectCommand="SELECT concat(材料名称,'_', 厚み, 't*', 定尺寸法縦, 'mm*', 定尺寸法横, 'mm', '_', 定尺仕入金額, '円') AS 材料名称識別テキスト,t1.材料ID,  t1.材料名称, t1.材料メーカー,t3.名称, t1.定尺寸法縦,t1.定尺寸法横,t1.厚み,t1.定尺仕入金額,t1.定尺売り金額, t2.名称 as 材質大分類, t3.名称 as 材質 FROM `M材料価格` as t1 left outer join Mコード as t2 on t1.材質大分類 = t2.コードID left outer join Mコード as t3 on t1.材質 = t3.コードID WHERE (t1.削除フラグ is null or t1.削除フラグ !=  'true') "
+        
+        OrderBy="材料名称識別テキスト">
+
     </y:BaseSqlDataSource>
 
 

@@ -86,8 +86,9 @@ namespace uc
             }
 
 
-            if (command.CommandText.ToLower().Contains(" mコード ") || command.CommandText.ToLower().Contains("`mコード`"))
+            if ((command.CommandText.ToLower().Contains(" mコード ") || command.CommandText.ToLower().Contains("`mコード`")) && !command.CommandText.ToLower().Contains("join"))
             {
+               
                 if (!command.CommandText.ToLower().Contains("order by"))
                 {
                     if (String.IsNullOrEmpty(OrderBy))
