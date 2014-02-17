@@ -28,7 +28,7 @@ public partial class Login : BaseForm
         }
 
         String password = this.パスワード.Text;
-        String hostname = Environment.MachineName;
+        String hostname = this.Hostname;
 
         // パスワードのチェック必要
         DataRowView row = GetHostName();

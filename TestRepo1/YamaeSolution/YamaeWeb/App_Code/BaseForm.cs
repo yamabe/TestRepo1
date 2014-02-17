@@ -26,6 +26,11 @@ public abstract class BaseForm : System.Web.UI.Page
 
     }
 
+    public String Hostname
+    {
+        get { return Environment.MachineName.ToLower(); }
+    }
+
     public int UserId
     {
         set { Session["UserID"] = value; }
@@ -227,7 +232,7 @@ public abstract class BaseForm : System.Web.UI.Page
 
         ds.SelectCommand = @"SELECT * FROM `mユーザー` WHERE ホスト名 = @ホスト名";
 
-        ds.SelectParameters.Add("ホスト名", Environment.MachineName);
+        ds.SelectParameters.Add("ホスト名", this.Hostname);
 
         DataSourceSelectArguments arg = new DataSourceSelectArguments();
         DataView view = (DataView)ds.Select(arg);
