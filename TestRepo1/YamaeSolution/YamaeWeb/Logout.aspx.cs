@@ -4,13 +4,15 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-public partial class Menu : BaseForm
+public partial class Logout : BaseForm
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        ((YMasterPage)this.Master).IsDisplayMenu = false;
-    }
+        this.UserId = -1;
+        this.UserName = null;
 
+        Response.Redirect("Login.aspx");
+    }
 
 
     protected override void Search()

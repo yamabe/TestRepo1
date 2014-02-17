@@ -33,6 +33,8 @@
 
         <br />
         <br />
+        <asp:LinkButton ID="LinkButton9" runat="server" PostBackUrl="~/Logout.aspx" Text="ログアウト" />
+        <br />
         <br />
         <br />
         <br />

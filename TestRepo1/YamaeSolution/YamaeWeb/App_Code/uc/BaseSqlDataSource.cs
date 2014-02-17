@@ -88,7 +88,7 @@ namespace uc
 
             if ((command.CommandText.ToLower().Contains(" mコード ") || command.CommandText.ToLower().Contains("`mコード`")) && !command.CommandText.ToLower().Contains("join"))
             {
-               
+
                 if (!command.CommandText.ToLower().Contains("order by"))
                 {
                     if (String.IsNullOrEmpty(OrderBy))
@@ -112,7 +112,7 @@ namespace uc
                 }
             }
 
-            
+
         }
 
 
@@ -187,7 +187,7 @@ namespace uc
             else if (!String.IsNullOrEmpty(value2))
             {
                 AddSelectParameter(where, name, value2, " <= ");
-            } 
+            }
         }
 
         public void AddSelectParameterLike(List<String> where, String name, String value)
@@ -243,6 +243,25 @@ namespace uc
 
         void BaseSqlDataSource_Updating(object sender, SqlDataSourceCommandEventArgs e)
         {
+            if (!e.Command.Parameters.Contains("最終更新ユーザー"))
+            {
+
+                DbParameter p = e.Command.CreateParameter();
+                p.DbType = System.Data.DbType.String;
+                p.ParameterName = "最終更新ユーザー";
+                e.Command.Parameters.Add(p);
+
+            }
+
+            if (!e.Command.Parameters.Contains("最終更新日時"))
+            {
+
+                DbParameter p = e.Command.CreateParameter();
+                p.DbType = System.Data.DbType.DateTime;
+                p.ParameterName = "最終更新日時";
+                e.Command.Parameters.Add(p);
+
+            }
 
             e.Command.Parameters["最終更新ユーザー"].Value = BaseForm.UserId;
             e.Command.Parameters["最終更新日時"].Value = DateTime.Now;

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
 using System.Web;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 using uc;
 
@@ -11,6 +14,17 @@ public abstract class BaseForm : System.Web.UI.Page
 {
     protected String _originalSelectCommand = string.Empty;
     protected ParameterCollection _selectCollection;
+
+    private bool _isCheckAuth = true;
+    public bool IsCheckAuth
+    {
+        set { _isCheckAuth = value; }
+        get
+        {
+            return _isCheckAuth;
+        }
+
+    }
 
     public int UserId
     {
@@ -96,12 +110,16 @@ public abstract class BaseForm : System.Web.UI.Page
         //
 
         MaintainScrollPositionOnPostBack = true;
+
         
-        
+
+
+
+
     }
 
+
    
-  
 
     protected override void OnLoadComplete(EventArgs e)
     {
@@ -118,10 +136,7 @@ public abstract class BaseForm : System.Web.UI.Page
             clear.Click += Clear_Click;
         }
 
-
-
         YDropDownList pageSize = this.Master.FindControl("Main").FindControl("ページサイズ") as YDropDownList;
-
 
         if (pageSize != null)
         {
@@ -183,10 +198,6 @@ public abstract class BaseForm : System.Web.UI.Page
         this.MainBaseGridView.PageIndex = 0;
     }
 
-
-
-
-
     public bool ConvertToBoolean(object myValue)
     {
         if (myValue == null)
@@ -204,9 +215,57 @@ public abstract class BaseForm : System.Web.UI.Page
         return ret;
     }
 
+    protected DataRowView GetHostName()
+    {
+        // 未認証 Sessionが動いていないぞ。
+        ConnectionStringSettings connString = ConfigurationManager.ConnectionStrings["mysqlConLocal"];
+
+        BaseSqlDataSource ds = new BaseSqlDataSource();
+        ds.Page = this;
+        ds.ConnectionString = connString.ConnectionString;
+        ds.ProviderName = connString.ProviderName;
+
+        ds.SelectCommand = @"SELECT * FROM `mユーザー` WHERE ホスト名 = @ホスト名";
+
+        ds.SelectParameters.Add("ホスト名", Environment.MachineName);
+
+        DataSourceSelectArguments arg = new DataSourceSelectArguments();
+        DataView view = (DataView)ds.Select(arg);
+
+        if (view.Count > 0)
+        {
+            DataRowView row = view[0];
+            return row; 
+        }
+
+        return null;
+
+    }
+
     protected override void OnLoad(EventArgs e)
     {
+
+        if (this._isCheckAuth)
+        {
+            if (this.UserId == -1)
+            {
+                DataRowView row = GetHostName();
+
+                if (row != null)
+                {
+                    this.UserId = int.Parse(row["ユーザーID"].ToString());
+                    this.UserName = row["ユーザー名"].ToString();
+                }
+                else
+                {
+                    // データなし。Login.aspxへ遷移。
+                    Response.Redirect("Login.aspx");
+                }
+            }
+        }
+
         base.OnLoad(e);
+
 
         Search();
     }

@@ -15,9 +15,8 @@
             
         <y:YList ID="ユーザーID" Rows="11" Width="170" runat="server" DataSourceID="mainDataSource" Label="ユーザー" DataTextField="ユーザー名" DataValueField="ユーザーID"></y:YList>
 
-        <y:YTextBox id="パスワード" runat="server" TextMode="Password" Label="パスワード" />
-        </table>
-
+        <y:YTextBox Visible="false" id="パスワード" runat="server" TextMode="Password" Label="パスワード" />
+        
         <asp:Button runat="server" Text="ログイン" OnClick="Unnamed_Click" />
 
         <y:BaseSqlDataSource ID="mainDataSource" runat="server"

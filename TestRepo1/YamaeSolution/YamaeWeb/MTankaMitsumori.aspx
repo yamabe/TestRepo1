@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/YMasterPage.master" AutoEventWireup="true" CodeFile="MTankaMitsumori.aspx.cs" Inherits="MTankaMitsumori" %>
+﻿<%@ Page Title="" EnableSessionState="True" Language="C#" MasterPageFile="~/YMasterPage.master" AutoEventWireup="true" CodeFile="MTankaMitsumori.aspx.cs" Inherits="MTankaMitsumori" %>
 
 <%@ Register TagPrefix="y" Namespace="uc" %>
 
