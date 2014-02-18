@@ -98,13 +98,16 @@ namespace uc
             if (AddEmptyItem)
             {
                 DropDownList ddl = this;
-                ListItem li;
 
-                //ここにはデータがないとき表示させる文字を適当に入れておく
-                li = new ListItem("(選択)", String.Empty);
+                if (ddl.Items.Count <= 0)
+                {
+                    ListItem li;
 
-                ddl.Items.Insert(0, li);
+                    //ここにはデータがないとき表示させる文字を適当に入れておく
+                    li = new ListItem("(選択)", String.Empty);
 
+                    ddl.Items.Insert(0, li);
+                }
             }
             if (AppendDataBoundItems)
             {

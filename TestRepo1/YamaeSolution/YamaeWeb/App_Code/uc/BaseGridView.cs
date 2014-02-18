@@ -189,9 +189,7 @@ namespace uc
 
             if (ret >= 0)
             {
-                // TODO これでは、同時処理時に正しく処理されないよ。
-
-                mainFormView.PageIndex = mainFormView.PageCount;
+                mainFormView.PageIndex = mainDataSource.LastInsertId;
                 mainFormView.ChangeMode(FormViewMode.Edit);
             }
         }

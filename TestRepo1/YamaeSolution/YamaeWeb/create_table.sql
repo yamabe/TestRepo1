@@ -217,6 +217,7 @@ CREATE TABLE Mコード (
     コードID INTEGER AUTO_INCREMENT NOT NULL -- コードID
   , グループ VARCHAR(100) -- グループ
   , 名称 VARCHAR(100) -- 名称
+  , 順序 INTEGER -- 順序
   , 備考 TEXT -- 備考
   , 削除フラグ VARCHAR(5) -- 削除フラグ
   , 作成ユーザー INTEGER -- 作成ユーザー

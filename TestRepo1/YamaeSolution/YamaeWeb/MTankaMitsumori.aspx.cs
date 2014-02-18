@@ -42,12 +42,12 @@ public partial class MTankaMitsumori : BaseForm
         }
 
 
-       YFileUpload file2 = ((YFileUpload)mainFormView.FindControl("参考資料"));
-       if (file2.HasFile)
-       {
-           String path = FileUtils.GetTankaData参考資料FileFullPath(e.Command.Parameters["original_単価ID"].Value.ToString(), file2.FileName, true);
-           file2.SaveAs(path);
-       }
+        YFileUpload file2 = ((YFileUpload)mainFormView.FindControl("参考資料"));
+        if (file2.HasFile)
+        {
+            String path = FileUtils.GetTankaData参考資料FileFullPath(e.Command.Parameters["original_単価ID"].Value.ToString(), file2.FileName, true);
+            file2.SaveAs(path);
+        }
 
     }
     protected void mainDataSource_Inserting(object sender, SqlDataSourceCommandEventArgs e)
@@ -77,6 +77,9 @@ public partial class MTankaMitsumori : BaseForm
         List<String> where = new List<String>();
 
         this.mainDataSource.AddSelectParameterLike(where, "部品コード", 検索部品コード.Text);
+        this.mainDataSource.AddSelectParameter(where, "材料名称", 検索材料名称.GetInternalValue());
+        this.mainDataSource.AddSelectParameter(where, "材質大分類", 検索材質大分類.GetInternalValue());
+        this.mainDataSource.AddSelectParameter(where, "材質", 検索材質.GetInternalValue());
         this.mainDataSource.AddSelectParameterLike(where, "部品名称", 検索部品名称.Text);
 
         this.mainDataSource.AddSelectParameter(where, "作成日時", "作成日時開始", "作成日時終了", 検索作成日時開始.Text, 検索作成日時終了.Text);
@@ -101,11 +104,24 @@ public partial class MTankaMitsumori : BaseForm
             command.Append(StringUtils.Join(where, " and "));
         }
 
+        this.mainDataSource.OrderBy = this.順序.GetInternalValue();
+
         this.mainDataSource.SelectCommand = command.ToString();
 
         DataSourceSelectArguments arg = new DataSourceSelectArguments();
-        this.mainDataSource.Select(arg);
+        DataView view = (DataView)this.mainDataSource.Select(arg);
 
+        this.MainBaseGridView.DataBind();
+        this.mainFormView.DataBind();
+
+        if (view.Count <= 0)
+        {
+            this.mainFormView.PageIndex = 0;
+        }
+        else
+        {
+            this.mainFormView.PageIndex = 0;
+        }
 
     }
 

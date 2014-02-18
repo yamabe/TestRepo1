@@ -48,7 +48,7 @@ left outer join mコード as t6 on t2.難燃性 = t6.コードID
 
 
 where t1.削除フラグ != 'True' and t1.材料ID != 0 ";
-
+        ds.OrderBy = "材料名称, 定尺寸法縦, 定尺寸法横";
         foreach (String key in where.Keys)
         {
             String val = where[key];
@@ -131,7 +131,10 @@ where t1.削除フラグ != 'True' and t1.材料ID != 0 ";
         {
             DataRowView curRow = view[i];
 
-            if (GetValue(curRow, "材料名称") == GetValue(prevRow, "材料名称"))
+            String curRowKey = GetValue(curRow, "定尺寸法縦") + "_" + GetValue(curRow, "定尺寸法横") + "_" + GetValue(curRow, "材料名称");
+            String prevRowKey = GetValue(prevRow, "定尺寸法縦") + "_" + GetValue(prevRow, "定尺寸法横") + "_" + GetValue(prevRow, "材料名称");
+
+            if (curRowKey == prevRowKey)
             {
                 newRow[curRow["厚み"] + "(入)"] = curRow["定尺仕入金額"];
                 newRow[curRow["厚み"] + "(㎡)"] = curRow["m2あたり材料費"];
@@ -195,7 +198,13 @@ FROM  `m材料価格`";
             DataRowView row = view[i];
             if (row[0] != null && row[0] != DBNull.Value)
             {
-                thicknessList.Add(decimal.Parse(row[0].ToString()));
+                decimal v = decimal.Parse(row[0].ToString());
+
+                if (v == 0)
+                {
+                    continue;
+                }
+                thicknessList.Add(v);
             }
 
         }

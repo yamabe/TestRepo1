@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Text;
 using System.Web;
@@ -9,11 +10,16 @@ using System.Web;
 /// </summary>
 public class FileUtils
 {
-    private static string BASE_DIR = @"C:\Users\孝治\Documents\git\TestRepo1\TestRepo1\YamaeSolution\YamaeWeb\files";
+    //private static string BASE_DIR = @"C:\Users\孝治\Documents\git\TestRepo1\TestRepo1\YamaeSolution\YamaeWeb\files";
+
+    private static String GetBaseDir()
+    {
+        return ConfigurationManager.AppSettings.Get("BASE_DIR");
+    }
 
     public static String GetZumenFileFullPath(String id, String v部品コード, String originalFileName, bool isCreateDir)
     {
-        String path = BASE_DIR;
+        String path = GetBaseDir();
         String key = "tanka";
         path = Path.Combine(path, key);
         path = Path.Combine(path, id);
@@ -27,7 +33,7 @@ public class FileUtils
 
     public static String GetTankaData参考資料FileFullPath(String id, String originalFileName, bool isCreateDir)
     {
-        String path = BASE_DIR;
+        String path = GetBaseDir();
         String key = "tanka";
         path = Path.Combine(path, key);
         path = Path.Combine(path, id);

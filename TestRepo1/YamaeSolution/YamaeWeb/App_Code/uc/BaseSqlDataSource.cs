@@ -1,8 +1,11 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Diagnostics;
 using System.Text;
 using System.Web;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 namespace uc
 {
@@ -11,6 +14,14 @@ namespace uc
     /// </summary>
     public class BaseSqlDataSource : SqlDataSource
     {
+
+        private int _lastInsertId;
+
+        public int LastInsertId
+        {
+            get { return _lastInsertId; }
+        }
+
         public string OrderBy
         {
             get
@@ -228,11 +239,18 @@ namespace uc
 
         void BaseSqlDataSource_Inserted(object sender, SqlDataSourceStatusEventArgs e)
         {
-            if (e.Command.Parameters.IndexOf("@NewParameter") >= 0)
-            {
+            long newID = ((MySqlCommand)e.Command).LastInsertedId;
 
-                int ret = Convert.ToInt32(e.Command.Parameters["@NewParameter"].Value);
-                string s = string.Empty;
+            MySqlCommand cmd2 = new MySqlCommand("SELECT LAST_INSERT_ID()", (MySqlConnection)e.Command.Connection);
+
+            object id = cmd2.ExecuteScalar();
+
+            if (id != null)
+            {
+                if (int.TryParse(id.ToString(), out _lastInsertId))
+                {
+
+                }
             }
         }
 
@@ -243,6 +261,14 @@ namespace uc
 
         void BaseSqlDataSource_Updating(object sender, SqlDataSourceCommandEventArgs e)
         {
+            Debug.WriteLine(e.Command.Parameters["売単価"].Value);
+            Debug.WriteLine(e.Command.Parameters["利益率"].Value);
+            //Debug.WriteLine(e.Command.Parameters["利益率2"].Value);
+            
+            Debug.WriteLine("-------");
+            YTextBox c = this.BaseForm.MainBaseFormView.FindControl("利益率") as YTextBox;
+            YTextBox c2 = this.BaseForm.MainBaseFormView.FindControl("利益率2") as YTextBox;
+
             if (!e.Command.Parameters.Contains("最終更新ユーザー"))
             {
 
