@@ -131,6 +131,11 @@ where t1.削除フラグ != 'True' and t1.材料ID != 0 ";
         {
             DataRowView curRow = view[i];
 
+            if (curRow["厚み"] != null && ((double)curRow["厚み"]) == 0)
+            {
+                continue;
+            }
+
             String curRowKey = GetValue(curRow, "定尺寸法縦") + "_" + GetValue(curRow, "定尺寸法横") + "_" + GetValue(curRow, "材料名称");
             String prevRowKey = GetValue(prevRow, "定尺寸法縦") + "_" + GetValue(prevRow, "定尺寸法横") + "_" + GetValue(prevRow, "材料名称");
 
