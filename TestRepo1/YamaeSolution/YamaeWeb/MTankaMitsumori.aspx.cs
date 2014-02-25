@@ -17,10 +17,37 @@ public partial class MTankaMitsumori : BaseForm
         this.MainBaseGridView = mainGridView;
         this.MainBaseSqlDataSource = mainDataSource;
 
+        this.MainBaseFormView.DataBound += MainBaseFormView_DataBound;
+
         _originalSelectCommand = this.MainBaseSqlDataSource.SelectCommand;
         _selectCollection = this.MainBaseSqlDataSource.SelectParameters;
 
+        Button search = this.Master.FindControl("Main").FindControl("検索") as Button;
+        Button clear = this.Master.FindControl("Main").FindControl("Clear") as Button;
 
+        search.Click += 検索_Click;
+        clear.Click += Clear_Click;
+    }
+
+    void MainBaseFormView_DataBound(object sender, EventArgs e)
+    {
+        if (this.MainBaseFormView.CurrentMode == FormViewMode.Insert)
+        {
+            YDropDownList ddl = (YDropDownList)MainBaseFormView.FindControl("担当者");
+
+            if (this.UserId > 0)
+            {
+                ddl.SelectedValue = this.UserId.ToString();
+            }
+
+            YTextBox txt = (YTextBox)MainBaseFormView.FindControl("見積日");
+
+            //txt.CalenderEx.SelectedDate = DateTime.Now;
+            txt.Text = DateTime.Now.ToString("yyyy/MM/dd");
+
+            YTextBox txt2 = (YTextBox)MainBaseFormView.FindControl("時間単価");
+            txt2.Text = "4000";
+        }
     }
 
 
@@ -68,7 +95,7 @@ public partial class MTankaMitsumori : BaseForm
         String s = string.Empty;
     }
 
-    protected override void Search()
+    protected override DataView Search()
     {
 
         StringBuilder command = new StringBuilder(_originalSelectCommand);
@@ -76,13 +103,14 @@ public partial class MTankaMitsumori : BaseForm
 
         List<String> where = new List<String>();
 
+        this.mainDataSource.AddSelectParameter(where, "担当者", 検索担当者.GetInternalValue());
         this.mainDataSource.AddSelectParameterLike(where, "部品コード", 検索部品コード.Text);
         this.mainDataSource.AddSelectParameter(where, "材料名称", 検索材料名称.GetInternalValue());
         this.mainDataSource.AddSelectParameter(where, "材質大分類", 検索材質大分類.GetInternalValue());
         this.mainDataSource.AddSelectParameter(where, "材質", 検索材質.GetInternalValue());
         this.mainDataSource.AddSelectParameterLike(where, "部品名称", 検索部品名称.Text);
 
-        this.mainDataSource.AddSelectParameter(where, "作成日時", "作成日時開始", "作成日時終了", 検索作成日時開始.Text, 検索作成日時終了.Text);
+        this.mainDataSource.AddSelectParameter(where, "見積日", "見積日開始", "見積日終了", 検索作成日時開始.Text, 検索作成日時終了.Text);
 
         if (検索削除フラグ.Checked)
         {
@@ -110,25 +138,31 @@ public partial class MTankaMitsumori : BaseForm
 
         DataSourceSelectArguments arg = new DataSourceSelectArguments();
         DataView view = (DataView)this.mainDataSource.Select(arg);
+        mainDataSource.DataBind();
 
         this.MainBaseGridView.DataBind();
-        this.mainFormView.DataBind();
+        //this.mainFormView.DataBind();
 
-        if (view.Count <= 0)
-        {
-            this.mainFormView.PageIndex = 0;
-        }
-        else
-        {
-            this.mainFormView.PageIndex = 0;
-        }
+        //if (view.Count <= 0)
+        //{
+        //    this.mainFormView.PageIndex = 0;
+        //}
+        //else
+        //{
+        //    this.mainFormView.PageIndex = 0;
+        //}
+
+        return view;
 
     }
 
     protected override void ConditionClear()
     {
+        検索担当者.SelectedIndex = 0;
         検索部品コード.Text = string.Empty;
         検索部品名称.Text = string.Empty;
+        検索作成日時開始.CalenderEx.SelectedDate = null;
+        検索作成日時終了.CalenderEx.SelectedDate = null;
         検索作成日時開始.Text = string.Empty;
         検索作成日時終了.Text = string.Empty;
 
@@ -208,7 +242,7 @@ public partial class MTankaMitsumori : BaseForm
             if (StringUtils.IsEmptyOrZero(t.Text) && StringUtils.IsEmptyOrZero(t2.Text))
             {
                 t.Text = row["定尺寸法縦"].ToString();
-                t.Text = row["定尺寸法横"].ToString();
+                t2.Text = row["定尺寸法横"].ToString();
             }
 
             t = (YTextBox)mainFormView.FindControl("厚み");

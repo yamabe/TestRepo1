@@ -65,6 +65,11 @@ namespace uc
             get { return this._labelText; }
         }
 
+        public CalendarExtender CalenderEx
+        {
+            get { return this._calendar; }
+        }
+
         public string DataFormatString
         {
             set { this._dataFormatString = value; }

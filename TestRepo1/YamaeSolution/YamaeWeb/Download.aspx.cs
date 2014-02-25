@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Net;
 using System.Web;
@@ -44,8 +45,9 @@ public partial class Download : BaseForm
 
     }
 
-    protected override void Search()
+    protected override DataView Search()
     {
+        return null;
     }
 
     protected override void ConditionClear()

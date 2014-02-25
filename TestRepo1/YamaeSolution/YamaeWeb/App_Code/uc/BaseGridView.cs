@@ -12,6 +12,18 @@ namespace uc
     /// </summary>
     public class BaseGridView : GridView
     {
+
+        public int ScrollHeight
+        {
+            get
+            {
+                object o = ViewState["ScrollHeight"];
+                return (o == null) ? 0 : (int)o;
+            }
+            set { ViewState["ScrollHeight"] = value; }
+        }
+
+
         public bool AllowRowClick
         {
             get
@@ -42,6 +54,19 @@ namespace uc
             AllowSorting = false;
 
             base.CreateChildControls();
+        }
+
+        protected override void Render(HtmlTextWriter writer)
+        {
+            //ScrollHeight<div id="freezingDiv" style="OVERFLOW: auto; HEIGHT: 250px"> </div>
+            writer.AddAttribute("id", "freezingDiv");
+            writer.AddStyleAttribute(HtmlTextWriterStyle.Overflow, "auto");
+            writer.AddStyleAttribute(HtmlTextWriterStyle.Height, "420px");
+            writer.RenderBeginTag(HtmlTextWriterTag.Div);
+           
+            base.Render(writer);
+
+            writer.RenderEndTag();
         }
 
         protected override void OnRowDataBound(GridViewRowEventArgs e)
@@ -76,12 +101,14 @@ namespace uc
                 {
                     if (this.PageIndex == 0)
                     {
+                        BaseForm.MainBaseFormView.DataBind();
                         GridViewRow row = this.Rows[rowIndex];
 
                         BaseForm.MainBaseFormView.ChangeModeToEdit(row.DataItemIndex);
                     }
                     else
                     {
+                        BaseForm.MainBaseFormView.DataBind();
                         GridViewRow row = this.Rows[rowIndex];
 
                         BaseForm.MainBaseFormView.ChangeModeToEdit(row.DataItemIndex);
@@ -119,9 +146,20 @@ namespace uc
         {
             GridViewRow row = this.Rows[rowIndex];
 
+            DataView view = mainDataSource.Select(DataSourceSelectArguments.Empty) as DataView;
+
+            DataRowView rowView = view[rowIndex];
+
+
+
+            row.DataBind();
             object o = row.DataItem;
             foreach (Parameter p in mainDataSource.InsertParameters)
             {
+                if (p.Direction == ParameterDirection.Output || p.Direction == ParameterDirection.ReturnValue)
+                {
+                    continue;
+                }
                 Boolean isPrimaryKey = false;
                 foreach (string k in this.DataKeyNames)
                 {
@@ -134,30 +172,31 @@ namespace uc
 
                 if (isPrimaryKey) continue;
 
-                Control c = row.FindControl(p.Name);
+                object value = rowView[p.Name];
+                //Control c = row.FindControl(p.Name);
 
 
-                object value = String.Empty;
-                if (c is Label)
-                {
-                    value = ((Label)c).Text;
-                }
-                else if (c is DataControlFieldCell)
-                {
-                    value = ((DataControlFieldCell)c).Text;
+                //object value = String.Empty;
+                //if (c is Label)
+                //{
+                //    value = ((Label)c).Text;
+                //}
+                //else if (c is DataControlFieldCell)
+                //{
+                //    value = ((DataControlFieldCell)c).Text;
 
-                }
-                else if (c is YDropDownList)
-                {
-                    YDropDownList ddl = c as YDropDownList;
-                    value = ddl.GetInternalValue();
-                }
-                else if (c is YCheckBox)
-                {
-                    YCheckBox check = c as YCheckBox;
+                //}
+                //else if (c is YDropDownList)
+                //{
+                //    YDropDownList ddl = c as YDropDownList;
+                //    value = ddl.GetInternalValue();
+                //}
+                //else if (c is YCheckBox)
+                //{
+                //    YCheckBox check = c as YCheckBox;
 
-                    value = check.Checked.ToString();
-                }
+                //    value = check.Checked.ToString();
+                //}
 
                 if (p.Type == TypeCode.Int32)
                 {
@@ -189,7 +228,7 @@ namespace uc
 
             if (ret >= 0)
             {
-                mainFormView.PageIndex = mainDataSource.LastInsertId;
+                mainFormView.PageIndex = 0;
                 mainFormView.ChangeMode(FormViewMode.Edit);
             }
         }

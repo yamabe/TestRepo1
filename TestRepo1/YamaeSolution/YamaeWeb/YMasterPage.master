@@ -1,4 +1,5 @@
 ﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="YMasterPage.master.cs" Inherits="YMasterPage" %>
+
 <%@ Register TagPrefix="y" Namespace="uc" %>
 
 
@@ -11,6 +12,8 @@
     <link href="css/style.css" rel="stylesheet" />
 
     <script type="text/javascript" src="js/lib/jquery-1.11.0.js"></script>
+    <script src="js/utils/ScrollableGrid.js"></script>
+
     <script src="js/ui/jquery.ui.core.js"></script>
     <script src="js/ui/jquery.ui.widget.js"></script>
     <script src="js/ui/jquery.ui.mouse.js"></script>
@@ -35,11 +38,27 @@
     <asp:ContentPlaceHolder ID="script" runat="server">
     </asp:ContentPlaceHolder>
 
+
+
 </head>
 <body>
+    <script type="text/javascript">
+        
+  <% if (this.FindControl("Main").FindControl("mainGridView") != null)
+     { %>
+
+        $(document).ready(function () {
+            $('#<%=this.FindControl("Main").FindControl("mainGridView").ClientID %>');//.Scrollable();
+        }
+        )
+
+
+        <% } %>
+    </script>
     <form id="form1" runat="server">
 
-        <% if (IsDisplayMenu) { %>
+        <% if (IsDisplayMenu)
+           { %>
 
         <asp:LinkButton ID="LinkButton2" runat="server" PostBackUrl="~/Menu.aspx" Text="メニュー画面へ" />
         <br />
@@ -57,7 +76,7 @@
             </asp:ContentPlaceHolder>
 
 
-             <div id="dialog_parent" style="position:relative"></div> 
+            <div id="dialog_parent" style="position: relative"></div>
 
         </div>
     </form>

@@ -56,10 +56,12 @@ where t1.削除フラグ != 'True' and t1.材料ID != 0 ";
             ds.SelectCommand += " and " + key + " = " + val + " ";
         }
 
-        ds.SelectCommand += "order by " + order;
+        //ds.SelectCommand += "order by " + order;
         
         DataSourceSelectArguments arg = new DataSourceSelectArguments();
         DataView view = (DataView)ds.Select(arg);
+
+        
         //DataTable table = view.ToTable();
         //DataRow row = table.Rows[0];
 
@@ -169,6 +171,8 @@ where t1.削除フラグ != 'True' and t1.材料ID != 0 ";
 
             prevRow = curRow;
         }
+
+        
 
         return nt;
 

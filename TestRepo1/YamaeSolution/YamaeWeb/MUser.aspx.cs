@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Text;
 using System.Web;
 using System.Web.UI;
@@ -30,7 +31,7 @@ public partial class MUser : BaseForm
 
     }
 
-    protected override void Search()
+    protected override DataView Search()
     {
         DataSourceSelectArguments arg = new DataSourceSelectArguments();
         StringBuilder command = new StringBuilder(_originalSelectCommand);
@@ -74,26 +75,26 @@ public partial class MUser : BaseForm
         }
 
         this.mainDataSource.SelectCommand = command.ToString();
-        this.mainDataSource.Select(arg);
+        DataView view = this.mainDataSource.Select(arg) as DataView;
         this.mainDataSource.DataBind();
-
+        return view;
     }
 
     protected override void ConditionClear()
     {
-    //    検索ステータス.Text = String.Empty;
-    //    検索得意先.SelectedIndex = 0;
-    //    検索規格番号.Text = String.Empty;
-    //    検索材料名.Text = String.Empty;
-    //    検索No.Text = String.Empty;
-    //    検索山恵フラグ.Checked = false;
-    //    検索仕入れ先.SelectedIndex = 0;
-    //    検索材料メーカー.SelectedIndex = 0;
-    //    検索材質.SelectedIndex = 0;
-    //    検索M材料_材料ID.SelectedIndex = 0;
+        //    検索ステータス.Text = String.Empty;
+        //    検索得意先.SelectedIndex = 0;
+        //    検索規格番号.Text = String.Empty;
+        //    検索材料名.Text = String.Empty;
+        //    検索No.Text = String.Empty;
+        //    検索山恵フラグ.Checked = false;
+        //    検索仕入れ先.SelectedIndex = 0;
+        //    検索材料メーカー.SelectedIndex = 0;
+        //    検索材質.SelectedIndex = 0;
+        //    検索M材料_材料ID.SelectedIndex = 0;
         検索削除フラグ.Checked = false;
-    //    検索作成ユーザー.SelectedIndex = 0;
-    //    検索最終更新ユーザー.SelectedIndex = 0;
+        //    検索作成ユーザー.SelectedIndex = 0;
+        //    検索最終更新ユーザー.SelectedIndex = 0;
     }
 
 }

@@ -47,7 +47,7 @@ public partial class Default5 : BaseForm
         String s = string.Empty;
     }
 
-    protected override void Search()
+    protected override DataView Search()
     {
 
         StringBuilder command = new StringBuilder(_originalSelectCommand);
@@ -83,9 +83,8 @@ public partial class Default5 : BaseForm
         this.mainDataSource.SelectCommand = command.ToString();
 
         DataSourceSelectArguments arg = new DataSourceSelectArguments();
-        this.mainDataSource.Select(arg);
-
-
+        DataView view = this.mainDataSource.Select(arg) as DataView;
+        return view;
     }
 
     protected override void ConditionClear()

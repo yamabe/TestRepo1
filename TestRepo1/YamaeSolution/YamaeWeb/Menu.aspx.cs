@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -13,11 +14,9 @@ public partial class Menu : BaseForm
 
 
 
-    protected override void Search()
+    protected override DataView Search()
     {
-
-
-
+        return null;
     }
 
     protected override void ConditionClear()

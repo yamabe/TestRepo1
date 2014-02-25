@@ -18,13 +18,13 @@
                { %>
 
 
-            var 材料名称 = $('#<%=  mainFormView.FindControl("材料名称").ClientID%>'); 材料名称.css({ 'text-align': 'right', 'margin-right': '25px' }); 材料名称.next().css({ 'left': '72px' }); 材料名称.next().next().css({ 'left': '72px' });
-            var 材料メーカー = $('#<%=  mainFormView.FindControl("材料メーカー").ClientID%>'); 材料メーカー.css({ 'text-align': 'right', 'margin-right': '25px' }); 材料メーカー.next().css({ 'left': '72px' }); 材料メーカー.next().next().css({ 'left': '72px' });
-            var 材質大分類 = $('#<%=  mainFormView.FindControl("材質大分類").ClientID%>'); 材質大分類.css({ 'text-align': 'right', 'margin-right': '25px' }); 材質大分類.next().css({ 'left': '72px' }); 材質大分類.next().next().css({ 'left': '72px' });
+            var 材料名称 = $('#<%=  mainFormView.FindControl("材料名称").ClientID%>'); 
+            var 材料メーカー = $('#<%=  mainFormView.FindControl("材料メーカー").ClientID%>'); 
+            var 材質大分類 = $('#<%=  mainFormView.FindControl("材質大分類").ClientID%>'); 
             var 材質 = $('#<%=  mainFormView.FindControl("材質").ClientID%>'); 材質.css({ 'text-align': 'right', 'margin-right': '25px' }); 材質.next().css({ 'left': '72px' }); 材質.next().next().css({ 'left': '72px' });
             var 耐寒 = $('#<%=  mainFormView.FindControl("耐寒").ClientID%>'); 耐寒.css({ 'text-align': 'right', 'margin-right': '25px' }); 耐寒.next().css({ 'left': '72px' }); 耐寒.next().next().css({ 'left': '72px' });
             var 耐熱 = $('#<%=  mainFormView.FindControl("耐熱").ClientID%>'); 耐熱.css({ 'text-align': 'right', 'margin-right': '25px' }); 耐熱.next().css({ 'left': '72px' }); 耐熱.next().next().css({ 'left': '72px' });
-            var 難燃性 = $('#<%=  mainFormView.FindControl("難燃性").ClientID%>'); 難燃性.css({ 'text-align': 'right', 'margin-right': '25px' }); 難燃性.next().css({ 'left': '72px' }); 難燃性.next().next().css({ 'left': '72px' });
+            var 難燃性 = $('#<%=  mainFormView.FindControl("難燃性").ClientID%>'); 
             var 削除フラグ = $('#<%=  mainFormView.FindControl("削除フラグ").ClientID%>'); 削除フラグ.css({ 'text-align': 'right', 'margin-right': '25px' }); 削除フラグ.next().css({ 'left': '72px' }); 削除フラグ.next().next().css({ 'left': '72px' });
             var 作成ユーザー = $('#<%=  mainFormView.FindControl("作成ユーザー").ClientID%>'); 作成ユーザー.css({ 'text-align': 'right', 'margin-right': '25px' }); 作成ユーザー.next().css({ 'left': '72px' }); 作成ユーザー.next().next().css({ 'left': '72px' });
             var 最終更新ユーザー = $('#<%=  mainFormView.FindControl("最終更新ユーザー").ClientID%>'); 最終更新ユーザー.css({ 'text-align': 'right', 'margin-right': '25px' }); 最終更新ユーザー.next().css({ 'left': '72px' }); 最終更新ユーザー.next().next().css({ 'left': '72px' });
@@ -139,7 +139,14 @@
         CellSpacing="2" GridLines="Both"
         AllowPaging="true">
         <EditItemTemplate>
-            <table>
+  <asp:LinkButton ID="LinkButton2" runat="server" CausesValidation="True"
+                CommandName="Update" Text="更新" ValidationGroup="DetailUpdate" />
+            &nbsp;<asp:LinkButton ID="LinkButton3" runat="server"
+                CausesValidation="False" CommandName="Cancel" Text="キャンセル" />   
+            
+            &nbsp;<asp:LinkButton ID="LinkButton6" runat="server" CausesValidation="False"
+                CommandName="New" Text="新規作成" />
+                     <table>
                 <tr>
                     <td>
                         <table>
@@ -167,6 +174,9 @@
                 CommandName="Update" Text="更新" ValidationGroup="DetailUpdate" />
             &nbsp;<asp:LinkButton ID="UpdateCancelButton" runat="server"
                 CausesValidation="False" CommandName="Cancel" Text="キャンセル" />
+            
+            &nbsp;<asp:LinkButton ID="LinkButton7" runat="server" CausesValidation="False"
+                CommandName="New" Text="新規作成" />
         </EditItemTemplate>
         <EditRowStyle BackColor="pink" Font-Bold="True" ForeColor="black" />
         <FooterStyle BackColor="#F7DFB5" ForeColor="#8C4510" />
@@ -201,7 +211,13 @@
                 CausesValidation="False" CommandName="Cancel" Text="キャンセル" />
         </InsertItemTemplate>
         <ItemTemplate>
-            <table>
+
+            <asp:LinkButton ID="LinkButton4" runat="server" CausesValidation="False"
+                CommandName="Edit" Text="編集" />
+            &nbsp;<asp:LinkButton ID="LinkButton5" runat="server" CausesValidation="False"
+                CommandName="Delete" Text="削除" />
+            &nbsp;<asp:LinkButton ID="LinkButton6" runat="server" CausesValidation="False"
+                CommandName="New" Text="新規作成" />            <table>
                 <tr>
                     <td>
                         <table>

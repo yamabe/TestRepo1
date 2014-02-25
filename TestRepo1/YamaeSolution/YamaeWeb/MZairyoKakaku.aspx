@@ -219,7 +219,9 @@
  <asp:LinkButton ID="LinkButton2" runat="server" CausesValidation="True"
                 CommandName="Update" Text="更新" ValidationGroup="DetailUpdate" />
             &nbsp;<asp:LinkButton ID="LinkButton3" runat="server"
-                CausesValidation="False" CommandName="Cancel" Text="キャンセル" />            <table>
+                CausesValidation="False" CommandName="Cancel" Text="キャンセル" />   
+            <asp:LinkButton ID="LinkButton1" CommandName="New" runat="server" Text="新規追加" />
+                     <table>
                 <tr>
                     <td>
                         <table>
@@ -254,6 +256,8 @@
                 CommandName="Update" Text="更新" ValidationGroup="DetailUpdate" />
             &nbsp;<asp:LinkButton ID="UpdateCancelButton" runat="server"
                 CausesValidation="False" CommandName="Cancel" Text="キャンセル" />
+            <asp:LinkButton ID="LinkButton4" CommandName="New" runat="server" Text="新規追加" />
+
         </EditItemTemplate>
         <EditRowStyle BackColor="pink" Font-Bold="True" ForeColor="black" />
         <FooterStyle BackColor="#F7DFB5" ForeColor="#8C4510" />
@@ -295,7 +299,13 @@
                 CausesValidation="False" CommandName="Cancel" Text="キャンセル" />
         </InsertItemTemplate>
         <ItemTemplate>
-            <table>
+
+            <asp:LinkButton ID="LinkButton5" runat="server" CausesValidation="False"
+                CommandName="Edit" Text="編集" />
+            &nbsp;<asp:LinkButton ID="LinkButton6" runat="server" CausesValidation="False"
+                CommandName="Delete" Text="削除" />
+            &nbsp;<asp:LinkButton ID="LinkButton7" runat="server" CausesValidation="False"
+                CommandName="New" Text="新規作成" />            <table>
                 <tr>
                     <td>
                         <table>
@@ -431,6 +441,7 @@
     </y:BaseSqlDataSource>
 
     <y:BaseSqlDataSource runat="server" ID="材料属性DataSource"
+        EnableViewState ="false"
         ConnectionString="<%$ ConnectionStrings:mysqlConLocal %>"
         ProviderName="<%$ ConnectionStrings:mysqlConLocal.ProviderName %>"
         SelectCommand="SELECT  `材料属性ID` ,  `材料名称`  

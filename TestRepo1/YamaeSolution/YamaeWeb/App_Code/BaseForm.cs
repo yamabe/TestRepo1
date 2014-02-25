@@ -105,32 +105,17 @@ public abstract class BaseForm : System.Web.UI.Page
             return _mainBaseFormView;
         }
     }
-
-
-
     public BaseForm()
     {
-        //
-        // TODO: コンストラクター ロジックをここに追加します
-        //
-
         MaintainScrollPositionOnPostBack = true;
 
-        
-
-
-
-
     }
-
-
-   
 
     protected override void OnLoadComplete(EventArgs e)
     {
 
-        Button search = this.FindControl("検索") as Button;
-        Button clear = this.FindControl("Clear") as Button;
+        Button search = this.Master.FindControl("Main").FindControl("検索") as Button;
+        Button clear = this.Master.FindControl("Main").FindControl("Clear") as Button;
 
         if (search != null)
         {
@@ -191,7 +176,22 @@ public abstract class BaseForm : System.Web.UI.Page
 
     protected void 検索_Click(object sender, EventArgs e)
     {
-        Search();
+        DataView view = Search();
+
+        //this.MainBaseGridView.DataBind();
+        this.MainBaseFormView.DataBind();
+
+        if (view != null && this.MainBaseFormView != null)
+        {
+            if (view.Count <= 0)
+            {
+                this.MainBaseFormView.PageIndex = 0;
+            }
+            else
+            {
+                this.MainBaseFormView.PageIndex = 0;
+            }
+        }
     }
 
 
@@ -222,26 +222,26 @@ public abstract class BaseForm : System.Web.UI.Page
 
     protected DataRowView GetHostName()
     {
-        // 未認証 Sessionが動いていないぞ。
-        ConnectionStringSettings connString = ConfigurationManager.ConnectionStrings["mysqlConLocal"];
+        //// 未認証 Sessionが動いていないぞ。
+        //ConnectionStringSettings connString = ConfigurationManager.ConnectionStrings["mysqlConLocal"];
 
-        BaseSqlDataSource ds = new BaseSqlDataSource();
-        ds.Page = this;
-        ds.ConnectionString = connString.ConnectionString;
-        ds.ProviderName = connString.ProviderName;
+        //BaseSqlDataSource ds = new BaseSqlDataSource();
+        //ds.Page = this;
+        //ds.ConnectionString = connString.ConnectionString;
+        //ds.ProviderName = connString.ProviderName;
 
-        ds.SelectCommand = @"SELECT * FROM `mユーザー` WHERE ホスト名 = @ホスト名";
+        //ds.SelectCommand = @"SELECT * FROM `mユーザー` WHERE ホスト名 = @ホスト名";
 
-        ds.SelectParameters.Add("ホスト名", this.Hostname);
+        //ds.SelectParameters.Add("ホスト名", this.Hostname);
 
-        DataSourceSelectArguments arg = new DataSourceSelectArguments();
-        DataView view = (DataView)ds.Select(arg);
+        //DataSourceSelectArguments arg = new DataSourceSelectArguments();
+        //DataView view = (DataView)ds.Select(arg);
 
-        if (view.Count > 0)
-        {
-            DataRowView row = view[0];
-            return row; 
-        }
+        //if (view.Count > 0)
+        //{
+        //    DataRowView row = view[0];
+        //    return row; 
+        //}
 
         return null;
 
@@ -271,10 +271,12 @@ public abstract class BaseForm : System.Web.UI.Page
 
         base.OnLoad(e);
 
-
-        Search();
+        //if (!IsPostBack)
+        //{
+            Search();
+        //}
     }
 
-    protected abstract void Search();
+    protected abstract DataView Search();
     protected abstract void ConditionClear();
 }

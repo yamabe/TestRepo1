@@ -34,10 +34,21 @@ public partial class MZairyo : BaseForm
         //e.Command.Parameters["ステータス"].Value = new RyousanSireiStatusChecker().Get(e);
 
         int v材料メーカー = (int)e.Command.Parameters["材料メーカー"].Value;
-        int v材質大分類 = int.Parse( e.Command.Parameters["材質大分類"].Value.ToString());
+        int v材質大分類 = int.Parse(e.Command.Parameters["材質大分類"].Value.ToString());
         int v材質 = int.Parse(e.Command.Parameters["材質"].Value.ToString());
         string v材料名称 = (string)e.Command.Parameters["original_材料名称"].Value;
         string v材料名称New = (string)e.Command.Parameters["材料名称"].Value;
+
+        DsWrapper wrapper = new DsWrapper(this);
+        Dictionary<String, String> param = new Dictionary<string, string>();
+        param.Add("材料名称", v材料名称);
+        DataView view = wrapper.Select("select * from m材料価格 where 材料名称 = @材料名称", string.Empty, param);
+
+        if (view.Count > 1)
+        {
+            v材料名称New = v材料名称;
+        }
+
         ZairyoUpdater.Update材料属性(this, v材料メーカー, v材質大分類, v材質, v材料名称, v材料名称New);
 
     }
@@ -49,7 +60,7 @@ public partial class MZairyo : BaseForm
 
     }
 
-    protected override void Search()
+    protected override DataView Search()
     {
         DataSourceSelectArguments arg = new DataSourceSelectArguments();
         StringBuilder command = new StringBuilder(_originalSelectCommand);
@@ -94,8 +105,10 @@ public partial class MZairyo : BaseForm
         this.mainDataSource.OrderBy = 順序.GetInternalValue();
 
         this.mainDataSource.SelectCommand = command.ToString();
-        this.mainDataSource.Select(arg);
+        DataView view = this.mainDataSource.Select(arg) as DataView;
         this.mainDataSource.DataBind();
+
+        return view;
     }
 
     protected override void ConditionClear()
@@ -160,14 +173,25 @@ public partial class MZairyo : BaseForm
             ds.InsertParameters.Add("最終更新日時", ((YTextBox)mainFormView.FindControl("最終更新日時")).Text);
 
             ds.Insert();
-            材料属性DataSource.EnableCaching = false;
-            材料属性DataSource.CacheDuration = 0;
-            材料属性DataSource.EnableViewState = false;
+            int lastInsertId = ds.LastInsertId;
 
-            DataView v2 = (DataView)材料属性DataSource.Select(arg);
-
+            //材料属性DataSource.EnableCaching = false;
+            //材料属性DataSource.CacheDuration = 0;
+            //材料属性DataSource.EnableViewState = false;
+            //DataView v2 = (DataView)材料属性DataSource.Select(arg);
             //材料属性DataSource.DataBind();
-            ((YDropDownList)mainFormView.FindControl("材料属性ID")).DataBind();
+
+
+            YDropDownList ddl属性ID = ((YDropDownList)mainFormView.FindControl("材料属性ID"));
+            ListItem item = new ListItem();
+            item.Value = lastInsertId.ToString();
+            item.Text = ((YTextBox)mainFormView.FindControl("材料名称")).Text;
+            ddl属性ID.Items.Add(item);
+            //ddl属性ID.DataSourceID = null;
+            //ddl属性ID.DataSource = v2;
+            //ddl属性ID.DataBind();
+            //object o = ddl属性ID.Items;
+            //((YDropDownList)mainFormView.FindControl("材料属性ID")).DataBind();
 
 
         }

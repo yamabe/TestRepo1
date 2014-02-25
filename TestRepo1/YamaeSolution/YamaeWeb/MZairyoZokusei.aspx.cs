@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Text;
 using System.Web;
 using System.Web.UI;
@@ -32,6 +33,18 @@ public partial class MZairyoZokusei : BaseForm
         int v材質 = (int)e.Command.Parameters["材質"].Value;
         string v材料名称 = (string)e.Command.Parameters["original_材料名称"].Value;
         string v材料名称New = (string)e.Command.Parameters["材料名称"].Value;
+
+        DsWrapper wrapper = new DsWrapper(this);
+        Dictionary<String, String> param = new Dictionary<string, string>();
+        param.Add("材料名称", v材料名称);
+        DataView view = wrapper.Select("select * from m材料属性 where 材料名称 = @材料名称", string.Empty, param);
+
+        if (view.Count > 1)
+        {
+            v材料名称New = v材料名称;   
+        }
+
+        // 属性テーブルに旧名称が存在しなければ、Newを更新する
         ZairyoUpdater.Update材料価格(this, v材料メーカー, v材質大分類, v材質, v材料名称, v材料名称New);
 
 
@@ -44,7 +57,7 @@ public partial class MZairyoZokusei : BaseForm
 
     }
 
-    protected override void Search()
+    protected override DataView Search()
     {
         DataSourceSelectArguments arg = new DataSourceSelectArguments();
         StringBuilder command = new StringBuilder(_originalSelectCommand);
@@ -76,8 +89,9 @@ public partial class MZairyoZokusei : BaseForm
         this.mainDataSource.OrderBy = 順序.GetInternalValue();
 
         this.mainDataSource.SelectCommand = command.ToString();
-        this.mainDataSource.Select(arg);
+        DataView view = this.mainDataSource.Select(arg) as DataView;
         this.mainDataSource.DataBind();
+        return view;
     }
 
     protected override void ConditionClear()

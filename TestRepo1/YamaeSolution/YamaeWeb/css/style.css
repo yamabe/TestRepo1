@@ -166,3 +166,14 @@ tr {
     border: 1px solid #03476F;
     color: #000000;
 }
+
+
+.Freezing
+{
+  color:red;
+  font-weight:bold;
+  text-align:left;
+  position: relative;
+  border-width:0;
+  z-index: 10;
+}

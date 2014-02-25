@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Text;
 using System.Web;
 using System.Web.UI;
@@ -33,7 +34,7 @@ public partial class MCompany : BaseForm
 
     }
 
-    protected override void Search()
+    protected override DataView Search()
     {
         DataSourceSelectArguments arg = new DataSourceSelectArguments();
         StringBuilder command = new StringBuilder(_originalSelectCommand);
@@ -77,10 +78,10 @@ public partial class MCompany : BaseForm
         }
 
         this.mainDataSource.SelectCommand = command.ToString();
-        this.mainDataSource.Select(arg);
+        DataView view = this.mainDataSource.Select(arg) as DataView;
         this.mainDataSource.DataBind();
 
-
+        return view;
     }
 
     protected override void ConditionClear()

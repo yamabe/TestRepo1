@@ -58,10 +58,10 @@ public partial class Login : BaseForm
     }
 
     
-    protected override void Search()
+    protected override DataView Search()
     {
-      
 
+        return null;
 
     }
 

@@ -233,7 +233,7 @@ namespace uc
 
         void BaseSqlDataSource_Updated(object sender, SqlDataSourceStatusEventArgs e)
         {
-
+            String s = string.Empty;
             //throw new NotImplementedException();
         }
 
@@ -261,14 +261,6 @@ namespace uc
 
         void BaseSqlDataSource_Updating(object sender, SqlDataSourceCommandEventArgs e)
         {
-            Debug.WriteLine(e.Command.Parameters["売単価"].Value);
-            Debug.WriteLine(e.Command.Parameters["利益率"].Value);
-            //Debug.WriteLine(e.Command.Parameters["利益率2"].Value);
-            
-            Debug.WriteLine("-------");
-            YTextBox c = this.BaseForm.MainBaseFormView.FindControl("利益率") as YTextBox;
-            YTextBox c2 = this.BaseForm.MainBaseFormView.FindControl("利益率2") as YTextBox;
-
             if (!e.Command.Parameters.Contains("最終更新ユーザー"))
             {
 
@@ -303,7 +295,6 @@ namespace uc
             {
                 e.Command.Parameters["作成ユーザー"].Value = BaseForm.UserId;
             }
-            //
             e.Command.Parameters["作成日時"].Value = DateTime.Now;
 
             if (e.Command.Parameters["最終更新ユーザー"].Value != null && String.IsNullOrEmpty(e.Command.Parameters["最終更新ユーザー"].Value.ToString()))

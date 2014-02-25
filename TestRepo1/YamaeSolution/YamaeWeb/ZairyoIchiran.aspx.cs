@@ -93,7 +93,7 @@ public partial class ZairyoIchiran : BaseForm
         this.MainBaseGridView.DataBind();
     }
 
-    protected override void Search()
+    protected override DataView Search()
     {
         //StringBuilder command = new StringBuilder(_originalSelectCommand);
         //this.mainDataSource.SelectParameters.Clear();
@@ -129,6 +129,8 @@ public partial class ZairyoIchiran : BaseForm
 
         //DataSourceSelectArguments arg = new DataSourceSelectArguments();
         //this.mainDataSource.Select(arg);
+
+        return null;
     }
 
     protected override void ConditionClear()

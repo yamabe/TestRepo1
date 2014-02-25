@@ -69,6 +69,12 @@
         CellSpacing="2" GridLines="Both"
         AllowPaging="true">
         <EditItemTemplate>
+            <asp:LinkButton ID="LinkButton2" runat="server" CausesValidation="True"
+                CommandName="Update" Text="更新" ValidationGroup="DetailUpdate" />
+            &nbsp;<asp:LinkButton ID="LinkButton3" runat="server"
+                CausesValidation="False" CommandName="Cancel" Text="キャンセル" />
+
+            <asp:LinkButton ID="LinkButton4" CommandName="New" runat="server" Text="新規追加" />
             <table>
                 <tr>
                     <td>
@@ -93,11 +99,18 @@
                 CommandName="Update" Text="更新" ValidationGroup="DetailUpdate" />
             &nbsp;<asp:LinkButton ID="UpdateCancelButton" runat="server"
                 CausesValidation="False" CommandName="Cancel" Text="キャンセル" />
+
+            <asp:LinkButton ID="LinkButton1" CommandName="New" runat="server" Text="新規追加" />
+
         </EditItemTemplate>
         <EditRowStyle BackColor="pink" Font-Bold="True" ForeColor="black" />
         <FooterStyle BackColor="#F7DFB5" ForeColor="#8C4510" />
         <HeaderStyle BackColor="#A55129" Font-Bold="True" ForeColor="White" />
         <InsertItemTemplate>
+            <asp:LinkButton ID="LinkButton8" runat="server" CausesValidation="True"
+                CommandName="Insert" Text="挿入" ValidationGroup="DetailInsert" />
+            &nbsp;<asp:LinkButton ID="LinkButton9" runat="server"
+                CausesValidation="False" CommandName="Cancel" Text="キャンセル" />
             <table>
                 <tr>
                     <td>
@@ -123,6 +136,12 @@
                 CausesValidation="False" CommandName="Cancel" Text="キャンセル" />
         </InsertItemTemplate>
         <ItemTemplate>
+            <asp:LinkButton ID="LinkButton5" runat="server" CausesValidation="False"
+                CommandName="Edit" Text="編集" />
+            &nbsp;<asp:LinkButton ID="LinkButton6" runat="server" CausesValidation="False"
+                CommandName="Delete" Text="削除" />
+            &nbsp;<asp:LinkButton ID="LinkButton7" runat="server" CausesValidation="False"
+                CommandName="New" Text="新規作成" />
             <table>
                 <tr>
                     <td>
