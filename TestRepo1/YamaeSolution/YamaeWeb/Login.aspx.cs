@@ -28,28 +28,28 @@ public partial class Login : BaseForm
         }
 
         String password = this.パスワード.Text;
-        String hostname = this.Hostname;
+        //String hostname = this.Hostname;
 
         // パスワードのチェック必要
-        DataRowView row = GetHostName();
+        //DataRowView row = GetHostName();
 
-        if (row == null)
-        {
-            ConnectionStringSettings connString = ConfigurationManager.ConnectionStrings["mysqlConLocal"];
+        //if (row == null)
+        //{
+        //    ConnectionStringSettings connString = ConfigurationManager.ConnectionStrings["mysqlConLocal"];
 
-            BaseSqlDataSource ds = new BaseSqlDataSource();
-            ds.Page = this;
-            ds.ConnectionString = connString.ConnectionString;
-            ds.ProviderName = connString.ProviderName;
+        //    BaseSqlDataSource ds = new BaseSqlDataSource();
+        //    ds.Page = this;
+        //    ds.ConnectionString = connString.ConnectionString;
+        //    ds.ProviderName = connString.ProviderName;
 
-            ds.UpdateCommand = @"update `mユーザー` set ホスト名 = @ホスト名 WHERE ユーザーID = @ユーザーID";
+        //    ds.UpdateCommand = @"update `mユーザー` set ホスト名 = @ホスト名 WHERE ユーザーID = @ユーザーID";
 
 
-            ds.UpdateParameters.Add("ホスト名", hostname);
-            ds.UpdateParameters.Add("ユーザーID", userId);
+        //    ds.UpdateParameters.Add("ホスト名", hostname);
+        //    ds.UpdateParameters.Add("ユーザーID", userId);
 
-            ds.Update();
-        }
+        //    ds.Update();
+        //}
 
         base.UserId = Int32.Parse(userId);
         base.UserName = this.ユーザーID.GetDisplayText();
