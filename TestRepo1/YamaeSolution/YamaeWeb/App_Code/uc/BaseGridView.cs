@@ -25,6 +25,18 @@ namespace uc
         }
 
 
+        //public string RowClickClientFunction
+        //{
+        //    get
+        //    {
+        //        object o = ViewState["RowClickClientFunction"];
+        //        return (o == null) ? string.Empty : o.ToString();
+        //    }
+        //    set { ViewState["RowClickClientFunction"] = value; }
+        //}
+
+
+
         public bool AllowRowClick
         {
             get
@@ -34,6 +46,8 @@ namespace uc
             }
             set { ViewState["AllowRowClick"] = value; }
         }
+
+
 
 
 
@@ -65,7 +79,7 @@ namespace uc
             writer.AddStyleAttribute(HtmlTextWriterStyle.Overflow, "auto");
             writer.AddStyleAttribute(HtmlTextWriterStyle.Height, ScrollHeight + "px");
             writer.RenderBeginTag(HtmlTextWriterTag.Div);
-           
+
             base.Render(writer);
 
             writer.RenderEndTag();
@@ -82,6 +96,7 @@ namespace uc
                     if (e.Row.RowState == DataControlRowState.Normal || e.Row.RowState == DataControlRowState.Alternate)
                     {
                         e.Row.Attributes.Add("onclick", "__doPostBack('" + this.ClientID.Replace(this.ClientIDSeparator, '$') + "','ShowDetailUpdate$" + e.Row.RowIndex + "')");
+
                     }
                 }
             }
@@ -90,7 +105,7 @@ namespace uc
         protected override void OnRowCommand(GridViewCommandEventArgs e)
         {
             base.OnRowCommand(e);
-            
+
             int rowIndex = -1;
             if (Int32.TryParse((String)e.CommandArgument, out rowIndex))
             {
@@ -134,7 +149,7 @@ namespace uc
 
             //BaseForm.MainBaseSqlDataSource.DataBind();
             //BaseForm.MainBaseFormView.DataBind();
-           
+
 
         }
         protected override void OnRowEditing(GridViewEditEventArgs e)

@@ -162,8 +162,6 @@
             var 最終更新日時 = $('#<%=  mainFormView.FindControl("最終更新日時").ClientID%>'); 最終更新日時.css({ 'text-align': 'right', 'margin-right': '25px' }); 最終更新日時.next().css({ 'left': '72px' }); 最終更新日時.next().next().css({ 'left': '72px' });
 
 
-
-
             たて_しろあり.val("NaN");
             よこ_しろあり.val("NaN");
             縦取り数.val("NaN");
@@ -224,7 +222,6 @@
             見積_ロス管理費比.val("NaN");
             計算_ロス管理費比.val("NaN");
             利益率.val("NaN");
-
 
             var 分単価計算 = function (event, ele) {
                 try {
@@ -466,8 +463,6 @@
             autoCalculateControl = autoCalculateControl.concat(eleList);
 
 
-            
-
 
             var 見積_加工費小計計算 = function (event, ele) {
                 try {
@@ -526,8 +521,6 @@
             BindEvent(eleList, 見積_m2あたり材料費計算);
 
             autoCalculateControl = autoCalculateControl.concat(eleList);
-
-
 
 
             var 見積_材料費比計算 = function (event, ele) {

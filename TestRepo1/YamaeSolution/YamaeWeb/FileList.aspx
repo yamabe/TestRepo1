@@ -1,6 +1,8 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/YMasterPage.master" AutoEventWireup="true" CodeFile="FileList.aspx.cs" Inherits="FileList" %>
 
 
+<%@ Register Assembly="System.Web.Extensions, Version=1.0.61025.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"
+Namespace="System.Web.UI" TagPrefix="asp" %>
 <%@ Register TagPrefix="y" Namespace="uc" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
@@ -11,6 +13,61 @@
 
 
     <script type="text/javascript">
+
+
+        function rowClick(dataKey) {
+            console.log(dataKey);
+
+            var element = $("#popupPriceChart");
+            //element.dialog("close");
+
+            //data: { dataKey: dataKey },
+
+            $.ajax({
+                type: "Post",
+                contentType: "application/json; charset=utf-8",
+                datatype: "json",
+                url: "WebService.asmx/Get",
+                data: JSON.stringify({ dataKey: dataKey }),
+                
+                //                    beforeSend: function (xhr) {
+                //                        xhr.setRequestHeader("Accept", "application/json")
+                //                    },
+                success: function (data, textStatus, xhr) {
+                    console.log(data);
+                    console.log(JSON.parse(data));
+
+
+                    // ajaxでコール後
+                    element.dialog({
+                        position: ["center", "middle"]
+                    });
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    alert(xhr.responseText);
+                }
+            });
+
+
+
+        }
+
+        var element = $("#popupPriceChart");
+        var title = "タグ編集";
+        element.dialog({
+            appendTo: "#dialog_parent",
+            position: ["center", "middle"],
+            title: title,
+            width: 457,
+            height: 310,
+            open: function (event, ui) {
+                $(this).parent().children(".ui-dialog-titlebar").css("height", "20px");
+            }
+        });
+        element.dialog("close");
+
+
+
     </script>
 
 
@@ -58,7 +115,7 @@
         DataKeyNames="ファイルID,最終更新日時" DataSourceID="mainDataSource" BackColor="#DEBA84"
         BorderColor="#DEBA84" BorderStyle="None" BorderWidth="1px" CellPadding="3"
         CellSpacing="2" GridLines="Both"
-        AllowPaging="true">
+        AllowPaging="false">
         <EditItemTemplate>
 
         </EditItemTemplate>
@@ -107,5 +164,14 @@
         SelectCommand="SELECT ユーザーId, ユーザー名 FROM `Mユーザー` ">
     </y:BaseSqlDataSource>
 
+
+</asp:Content>
+
+<asp:Content ID="Content8" ContentPlaceHolderID="Chart" runat="Server">
+    <div id="popupPriceChart" style="display:none">
+        ファイル名：<input type="text" /> </br>
+
+
+    </div>
 
 </asp:Content>

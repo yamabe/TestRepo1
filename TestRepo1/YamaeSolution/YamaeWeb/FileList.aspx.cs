@@ -15,7 +15,26 @@ public partial class FileList : BaseForm
         this.MainBaseGridView = mainGridView;
         this.MainBaseSqlDataSource = mainDataSource;
 
+        this.MainBaseGridView.RowDataBound += MainBaseGridView_RowDataBound;
 
+
+    }
+
+    void MainBaseGridView_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            DataRowView o = e.Row.DataItem as DataRowView;
+            String func = string.Format(
+                    "rowClick({0});return false;", o["ファイルID"]);
+            e.Row.Attributes.Add("OnClick", func);
+
+
+            // reference the Delete LinkButton
+            LinkButton db = (LinkButton)e.Row.Cells[0].Controls[0];
+
+            db.OnClientClick = func;
+        }
     }
 
     protected void mainDataSource_Updating(object sender, SqlDataSourceCommandEventArgs e)

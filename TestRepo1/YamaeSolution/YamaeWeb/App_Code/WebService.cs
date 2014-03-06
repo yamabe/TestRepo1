@@ -9,6 +9,7 @@ using System.Web.Services;
 /// </summary>
 [WebService(Namespace = "http://tempuri.org/")]
 [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
+[System.Web.Script.Services.ScriptService]
 public class WebService : System.Web.Services.WebService {
 
     public WebService () {
@@ -18,12 +19,36 @@ public class WebService : System.Web.Services.WebService {
     }
 
     [WebMethod]
-    public string GetList() {
+    public  string GetList() {
         JavaScriptSerializer s = new JavaScriptSerializer();
 
-        object o = null;
+        Dictionary<String, String> o = new Dictionary<String, String>();
+        o.Add("aa", "bb");
+        o.Add("cc", "dd");
 
         return s.Serialize(o);
     }
-    
+
+    [WebMethod]
+    public string Get(int dataKey)
+    {
+        JavaScriptSerializer s = new JavaScriptSerializer();
+
+        DsWrapperLight ds = new DsWrapperLight(new SessionManager(this.Context));
+        Dictionary<String, String> param = new Dictionary<String, String>();
+
+        ds.Select("select * from 未実装このあたりから", "", param);
+
+        Dictionary<String, String> o = new Dictionary<String, String>();
+        o.Add("aa", "bb");
+        o.Add("cc", "dd");
+
+        return s.Serialize(o);
+    }
+
+    [WebMethod]
+    public string Hello()
+    {
+        return "test";
+    }
 }
