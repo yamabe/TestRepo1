@@ -58,7 +58,7 @@ public partial class Default5 : BaseForm
         this.mainDataSource.AddSelectParameterLike(where, "部品コード", 検索部品コード.Text);
         this.mainDataSource.AddSelectParameterLike(where, "部品名称", 検索部品名称.Text);
 
-        this.mainDataSource.AddSelectParameter(where, "作成日時", "作成日時開始", "作成日時終了", 検索作成日時開始.Text, 検索作成日時終了.Text);
+        this.mainDataSource.AddSelectParameterBetween(where, "作成日時",  検索作成日時開始.Text, 検索作成日時終了.Text);
 
         if (検索削除フラグ.Checked)
         {

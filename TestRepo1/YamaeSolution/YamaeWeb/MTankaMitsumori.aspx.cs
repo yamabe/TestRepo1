@@ -110,7 +110,7 @@ public partial class MTankaMitsumori : BaseForm
         this.mainDataSource.AddSelectParameter(where, "材質", 検索材質.GetInternalValue());
         this.mainDataSource.AddSelectParameterLike(where, "部品名称", 検索部品名称.Text);
 
-        this.mainDataSource.AddSelectParameter(where, "見積日", "見積日開始", "見積日終了", 検索作成日時開始.Text, 検索作成日時終了.Text);
+        this.mainDataSource.AddSelectParameterBetween(where, "見積日", 検索作成日時開始.Text, 検索作成日時終了.Text);
 
         if (検索削除フラグ.Checked)
         {

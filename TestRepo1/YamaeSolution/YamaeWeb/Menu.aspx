@@ -33,6 +33,10 @@
 
         <br />
         <br />
+        <asp:LinkButton ID="LinkButton10" runat="server" PostBackUrl="~/MGomuTokusei.aspx" Text="ゴム特性一覧" />
+
+        <br />
+        <br />
         <asp:LinkButton ID="LinkButton9" runat="server" PostBackUrl="~/Logout.aspx" Text="ログアウト" />
         <br />
         <br />

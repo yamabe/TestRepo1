@@ -220,64 +220,29 @@ public abstract class BaseForm : System.Web.UI.Page
         return ret;
     }
 
-<<<<<<< HEAD
-    protected DataRowView GetHostName()
-    {
-        //// 未認証 Sessionが動いていないぞ。
-        //ConnectionStringSettings connString = ConfigurationManager.ConnectionStrings["mysqlConLocal"];
-=======
     //protected DataRowView GetHostName()
     //{
     //    // 未認証 Sessionが動いていないぞ。
     //    ConnectionStringSettings connString = ConfigurationManager.ConnectionStrings["mysqlConLocal"];
->>>>>>> branch 'master' of https://github.com/yamabe/TestRepo1.git
-
-<<<<<<< HEAD
-        //BaseSqlDataSource ds = new BaseSqlDataSource();
-        //ds.Page = this;
-        //ds.ConnectionString = connString.ConnectionString;
-        //ds.ProviderName = connString.ProviderName;
-=======
+    //BaseSqlDataSource ds = new BaseSqlDataSource();
+    //ds.Page = this;
+    //ds.ConnectionString = connString.ConnectionString;
+    //ds.ProviderName = connString.ProviderName;
     //    BaseSqlDataSource ds = new BaseSqlDataSource();
     //    ds.Page = this;
     //    ds.ConnectionString = connString.ConnectionString;
     //    ds.ProviderName = connString.ProviderName;
->>>>>>> branch 'master' of https://github.com/yamabe/TestRepo1.git
-
-<<<<<<< HEAD
-        //ds.SelectCommand = @"SELECT * FROM `mユーザー` WHERE ホスト名 = @ホスト名";
-=======
+    //ds.SelectCommand = @"SELECT * FROM `mユーザー` WHERE ホスト名 = @ホスト名";
     //    ds.SelectCommand = @"SELECT * FROM `mユーザー` WHERE ホスト名 = @ホスト名";
->>>>>>> branch 'master' of https://github.com/yamabe/TestRepo1.git
 
-<<<<<<< HEAD
-        //ds.SelectParameters.Add("ホスト名", this.Hostname);
-=======
-    //    ds.SelectParameters.Add("ホスト名", this.Hostname);
->>>>>>> branch 'master' of https://github.com/yamabe/TestRepo1.git
-
-<<<<<<< HEAD
-        //DataSourceSelectArguments arg = new DataSourceSelectArguments();
-        //DataView view = (DataView)ds.Select(arg);
-=======
-    //    DataSourceSelectArguments arg = new DataSourceSelectArguments();
-    //    DataView view = (DataView)ds.Select(arg);
->>>>>>> branch 'master' of https://github.com/yamabe/TestRepo1.git
-
-<<<<<<< HEAD
-        //if (view.Count > 0)
-        //{
-        //    DataRowView row = view[0];
-        //    return row; 
-        //}
-=======
-    //    if (view.Count > 0)
-    //    {
-    //        DataRowView row = view[0];
-    //        return row; 
-    //    }
->>>>>>> branch 'master' of https://github.com/yamabe/TestRepo1.git
-
+    //ds.SelectParameters.Add("ホスト名", this.Hostname);
+    //DataSourceSelectArguments arg = new DataSourceSelectArguments();
+    //DataView view = (DataView)ds.Select(arg);
+    //if (view.Count > 0)
+    //{
+    //    DataRowView row = view[0];
+    //    return row; 
+    //}
     //    return null;
 
     //}
@@ -298,8 +263,8 @@ public abstract class BaseForm : System.Web.UI.Page
                 //}
                 //else
                 //{
-                    // データなし。Login.aspxへ遷移。
-                    Response.Redirect("Login.aspx");
+                // データなし。Login.aspxへ遷移。
+                Response.Redirect("Login.aspx");
                 //}
             }
         }
@@ -308,10 +273,13 @@ public abstract class BaseForm : System.Web.UI.Page
 
         //if (!IsPostBack)
         //{
-            Search();
+        Search();
         //}
     }
 
     protected abstract DataView Search();
     protected abstract void ConditionClear();
+    protected virtual void SetVisibleHiddenField()
+    {
+    }
 }

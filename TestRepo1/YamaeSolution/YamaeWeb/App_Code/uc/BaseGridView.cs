@@ -13,6 +13,7 @@ namespace uc
     public class BaseGridView : GridView
     {
 
+
         public int ScrollHeight
         {
             get
@@ -44,9 +45,10 @@ namespace uc
         public BaseGridView()
         {
             AllowRowClick = true;
-            //
-            // TODO: コンストラクター ロジックをここに追加します
-            //
+            if (ScrollHeight == 0)
+            {
+                ScrollHeight = 420;
+            }
         }
 
         protected override void CreateChildControls()
@@ -61,7 +63,7 @@ namespace uc
             //ScrollHeight<div id="freezingDiv" style="OVERFLOW: auto; HEIGHT: 250px"> </div>
             writer.AddAttribute("id", "freezingDiv");
             writer.AddStyleAttribute(HtmlTextWriterStyle.Overflow, "auto");
-            writer.AddStyleAttribute(HtmlTextWriterStyle.Height, "420px");
+            writer.AddStyleAttribute(HtmlTextWriterStyle.Height, ScrollHeight + "px");
             writer.RenderBeginTag(HtmlTextWriterTag.Div);
            
             base.Render(writer);

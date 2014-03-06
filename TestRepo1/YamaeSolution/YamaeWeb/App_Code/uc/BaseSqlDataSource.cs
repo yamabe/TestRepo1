@@ -168,7 +168,39 @@ namespace uc
             }
         }
 
-        public void AddSelectParameter(List<String> where, String name, String name1, String name2, String value1, String value2)
+        public void AddSelectParameterOr(List<String> where, List<String> names, String value, String ope)
+        {
+            if (!String.IsNullOrEmpty(value))
+            {
+                List<String> orCondition = new List<String>();
+
+                foreach (String n in names)
+                {
+                    StringBuilder sb = new StringBuilder();
+                    sb.Append(n);
+                    sb.Append(" ");
+                    sb.Append(ope);
+                    sb.Append(" ");
+                    sb.Append("@");
+                    sb.Append(n);
+                    this.SelectParameters.Add(n, value);
+
+                    orCondition.Add(sb.ToString());
+                }
+
+                String s = StringUtils.Join(orCondition, " or ");
+
+                if (!String.IsNullOrEmpty(s))
+                {
+                    where.Add(" ( " + s + " ) ");
+                }
+
+
+            }
+        }
+
+
+        public void AddSelectParameterBetween(List<String> where, String name, String value1, String value2)
         {
             if (!String.IsNullOrEmpty(value1) && !String.IsNullOrEmpty(value2))
             {
@@ -179,17 +211,17 @@ namespace uc
                 sb.Append(" between ");
 
                 sb.Append("@");
-                sb.Append(name1);
+                sb.Append(name + "_開始");
                 sb.Append(" and ");
 
                 sb.Append("@");
-                sb.Append(name2);
+                sb.Append(name + "_終了");
                 sb.Append(" ");
 
                 where.Add(sb.ToString());
 
-                this.SelectParameters.Add(name1, value1);
-                this.SelectParameters.Add(name2, value2);
+                this.SelectParameters.Add(name + "_開始", value1);
+                this.SelectParameters.Add(name + "_終了", value2);
             }
             else if (!String.IsNullOrEmpty(value1))
             {
@@ -200,6 +232,50 @@ namespace uc
                 AddSelectParameter(where, name, value2, " <= ");
             }
         }
+
+        //public void AddSelectParameterBetweenOr(List<String> where, List<String> names, String value1, String value2)
+        //{
+        //    if (!String.IsNullOrEmpty(value1) && !String.IsNullOrEmpty(value2))
+        //    {
+
+        //        List<String> orCondition = new List<String>();
+
+        //        foreach (String n in names)
+        //        {
+        //            StringBuilder sb = new StringBuilder();
+
+
+        //            sb.Append(" ");
+        //            sb.Append(n);
+        //            sb.Append(" between ");
+
+        //            sb.Append("@");
+        //            sb.Append(n + "_開始");
+        //            sb.Append(" and ");
+
+        //            sb.Append("@");
+        //            sb.Append(n + "_終了");
+        //            sb.Append(" ");
+
+
+        //            this.SelectParameters.Add(n + "_開始", value1);
+        //            this.SelectParameters.Add(n + "_終了", value2);
+
+        //            orCondition.Add(sb.ToString());
+        //        }
+
+        //        where.Add( " ( " + StringUtils.Join(orCondition, " or ") + " ) ");
+
+        //    }
+        //    else if (!String.IsNullOrEmpty(value1))
+        //    {
+        //        AddSelectParameter(where, name, value1, " >= ");
+        //    }
+        //    else if (!String.IsNullOrEmpty(value2))
+        //    {
+        //        AddSelectParameter(where, name, value2, " <= ");
+        //    }
+        //}
 
         public void AddSelectParameterLike(List<String> where, String name, String value)
         {
@@ -216,6 +292,70 @@ namespace uc
                 where.Add(sb.ToString());
 
                 this.SelectParameters.Add(name, "%" + value + "%");
+            }
+        }
+
+        public void AddSelectParameterLikeOr(List<String> where, List<String> names, String value)
+        {
+            if (!String.IsNullOrEmpty(value))
+            {
+                List<String> orCondition = new List<String>();
+
+                foreach (String n in names)
+                {
+                    StringBuilder sb = new StringBuilder();
+                    sb.Append(n);
+                    sb.Append(" like ");
+                    sb.Append("@");
+                    sb.Append(n);
+                    this.SelectParameters.Add(n, "%" + value + "%");
+
+                    orCondition.Add(sb.ToString());
+                }
+                String s = StringUtils.Join(orCondition, " or ");
+
+                if (!String.IsNullOrEmpty(s))
+                {
+                    where.Add(" ( " + s + " ) ");
+                }
+
+            }
+        }
+
+        public void AddSelectParameterLikeOr(List<String> where, List<String> names, List<String> values)
+        {
+            if (values.Count > 0)
+            {
+                List<String> orCondition = new List<String>();
+
+                foreach (String n in names)
+                {
+                    for (int i = 0; i < values.Count; i++) {
+                        String v = values[i];
+
+                        if (String.IsNullOrEmpty(v))
+                        {
+                            continue;
+                        }
+
+                        StringBuilder sb = new StringBuilder();
+                        sb.Append(n);
+                        sb.Append(" like ");
+                        sb.Append("@");
+                        sb.Append(n + "_" + i);
+                        this.SelectParameters.Add(n + "_" + i, "%" + v + "%");
+
+                        orCondition.Add(sb.ToString());
+                    }
+                }
+
+                String s = StringUtils.Join(orCondition, " or ");
+
+                if (!String.IsNullOrEmpty(s))
+                {
+                    where.Add(" ( " + s + " ) ");
+                }
+
             }
         }
 
