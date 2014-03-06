@@ -15,6 +15,8 @@ public abstract class BaseForm : System.Web.UI.Page
     protected String _originalSelectCommand = string.Empty;
     protected ParameterCollection _selectCollection;
 
+    private SessionManager _session;
+
     private bool _isCheckAuth = true;
     public bool IsCheckAuth
     {
@@ -26,6 +28,13 @@ public abstract class BaseForm : System.Web.UI.Page
 
     }
 
+    public BaseForm()
+    {
+        MaintainScrollPositionOnPostBack = true;
+
+        _session = new SessionManager(this);
+    }
+
     //public String Hostname
     //{
     //    get { return Environment.MachineName.ToLower(); }
@@ -33,16 +42,16 @@ public abstract class BaseForm : System.Web.UI.Page
 
     public int UserId
     {
-        set { Session["UserID"] = value; }
+        set { _session.UserId = value; }
         get
         {
-            if (Session["UserID"] == null)
+            if (_session.UserId == null)
             {
                 return -1;
             }
             else
             {
-                return Int32.Parse(Session["UserID"].ToString());
+                return _session.UserId;
             }
         }
 
@@ -50,16 +59,16 @@ public abstract class BaseForm : System.Web.UI.Page
 
     public String UserName
     {
-        set { Session["UserName"] = value; }
+        set { _session.UserName = value; }
         get
         {
-            if (Session["UserName"] == null)
+            if (_session.UserName == null)
             {
                 return "{none user}";
             }
             else
             {
-                return Session["UserName"].ToString();
+                return _session.UserName;
             }
         }
     }
@@ -104,11 +113,6 @@ public abstract class BaseForm : System.Web.UI.Page
         {
             return _mainBaseFormView;
         }
-    }
-    public BaseForm()
-    {
-        MaintainScrollPositionOnPostBack = true;
-
     }
 
     protected override void OnLoadComplete(EventArgs e)
