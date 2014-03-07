@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Collections;
 using System.Threading;
+using System.Configuration;
+using MySql.Data.MySqlClient;
 
 namespace FileUploaderV1
 {
@@ -39,13 +41,13 @@ namespace FileUploaderV1
             InitializeComponent();
 
             //list.CollectionChanged += (sender, e) => {
-                
+
 
             //};
-                
+
 
             FileSystemWatcher watcher = new FileSystemWatcher();
-            watcher.Path = Resources.WATCHER_DIR;
+            watcher.Path = ConfigurationManager.AppSettings["WATCHER_DIR"];
 
             watcher.IncludeSubdirectories = true;
             watcher.Created += watcher_Created;
@@ -53,10 +55,10 @@ namespace FileUploaderV1
 
 
             watcher.EnableRaisingEvents = true;
-            
-            addMessage("監視開始" + watcher.Path + " → " + Resources.UPLOAD_DIR); 
 
-           // this.WindowState = FormWindowState.Minimized;
+            addMessage("監視開始" + watcher.Path + " → " + ConfigurationManager.AppSettings["UPLOAD_DIR"]);
+
+            // this.WindowState = FormWindowState.Minimized;
         }
 
         void addMessage(String mes)
@@ -73,6 +75,7 @@ namespace FileUploaderV1
 
         void watcher_Created(object sender, FileSystemEventArgs e)
         {
+            addMessage("info:" + e.Name);
             try
             {
                 bool isSuccess = false;
@@ -84,24 +87,57 @@ namespace FileUploaderV1
                         {
                             FileInfo fi = new FileInfo(e.FullPath);
 
-                            var userName = Resources.USER_NAME;
+                            var userName = ConfigurationManager.AppSettings["USER_NAME"];
                             var newName = string.Format(DateTime.Now.ToString("yyyyMMdd_hhMMsss_{0}_{1}"), userName, fi.Name);
 
-                            var fullPath = Path.Combine(Resources.UPLOAD_DIR, newName);
+                            var fullPath = Path.Combine(ConfigurationManager.AppSettings["UPLOAD_DIR"], newName);
 
                             fi.CopyTo(fullPath, true);
 
                             addMessage("Copy:" + fi.Name + "→" + newName);
                             isSuccess = true;
-                            break;
+
+                            var conStr = ConfigurationManager.ConnectionStrings["mysqlConLocal"].ConnectionString;
+                            MySqlCommand cmd = new MySqlCommand();
+                            using (MySqlConnection con = new MySqlConnection(conStr))
+                            {
+                                con.Open();
+
+                                cmd.Connection = con;
+
+
+
+                                cmd.CommandText = @"insert into tファイル
+                            (ファイルパス, 拡張子, ファイルサイズ, ファイル作成日時, ファイル更新日時, ファイルアクセス日時, ファイル属性, 担当者, 備考, 削除フラグ, 作成ユーザー, 最終更新ユーザー, 作成日時, 最終更新日時)
+                            values
+                            (@ファイルパス,@拡張子,@ファイルサイズ,@ファイル作成日時,@ファイル更新日時,@ファイルアクセス日時,@ファイル属性,@担当者,@備考,@削除フラグ,@作成ユーザー,@最終更新ユーザー,@作成日時,@最終更新日時)";
+                                cmd.Parameters.AddWithValue("ファイルパス", fullPath);
+                                cmd.Parameters.AddWithValue("拡張子", fi.Extension);
+                                cmd.Parameters.AddWithValue("ファイルサイズ", fi.Length * 0.001);
+                                cmd.Parameters.AddWithValue("ファイル作成日時", fi.CreationTime);
+                                cmd.Parameters.AddWithValue("ファイル更新日時", fi.LastWriteTime);
+                                cmd.Parameters.AddWithValue("ファイルアクセス日時", fi.LastAccessTime);
+                                cmd.Parameters.AddWithValue("ファイル属性", fi.Attributes.ToString());
+                                cmd.Parameters.AddWithValue("担当者", ConfigurationManager.AppSettings["USER_ID"]);
+                                cmd.Parameters.AddWithValue("備考", "");
+                                cmd.Parameters.AddWithValue("削除フラグ", "False");
+                                cmd.Parameters.AddWithValue("作成ユーザー", ConfigurationManager.AppSettings["USER_ID"]);
+                                cmd.Parameters.AddWithValue("最終更新ユーザー", ConfigurationManager.AppSettings["USER_ID"]);
+                                cmd.Parameters.AddWithValue("作成日時", DateTime.Now);
+                                cmd.Parameters.AddWithValue("最終更新日時", DateTime.Now);
+
+                                int ret = cmd.ExecuteNonQuery();
+                            }
+
                             // ＤＢに登録する
+                            break;
                         }
                         else
                         {
                             isSuccess = true;
                         }
                     }
-                    catch 
+                    catch
                     {
                         addMessage(String.Format("Retry{0}回目:", i) + e.FullPath);
                         Thread.Sleep(500);

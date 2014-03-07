@@ -117,13 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="UPLOAD_DIR" xml:space="preserve">
-    <value>C:\YamaeWeb\uploads</value>
-  </data>
-  <data name="USER_NAME" xml:space="preserve">
-    <value>山辺</value>
-  </data>
-  <data name="WATCHER_DIR" xml:space="preserve">
-    <value>C:\Users\孝治\Documents\temp</value>
-  </data>
 </root>

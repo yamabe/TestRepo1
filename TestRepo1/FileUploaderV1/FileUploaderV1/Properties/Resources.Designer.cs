@@ -59,32 +59,5 @@ namespace FileUploaderV1.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   C:\YamaeWeb\uploads に類似しているローカライズされた文字列を検索します。
-        /// </summary>
-        internal static string UPLOAD_DIR {
-            get {
-                return ResourceManager.GetString("UPLOAD_DIR", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   山辺 に類似しているローカライズされた文字列を検索します。
-        /// </summary>
-        internal static string USER_NAME {
-            get {
-                return ResourceManager.GetString("USER_NAME", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   C:\Users\孝治\Documents\temp に類似しているローカライズされた文字列を検索します。
-        /// </summary>
-        internal static string WATCHER_DIR {
-            get {
-                return ResourceManager.GetString("WATCHER_DIR", resourceCulture);
-            }
-        }
     }
 }
