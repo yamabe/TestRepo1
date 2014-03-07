@@ -33,7 +33,7 @@ public class Upload : IHttpHandler
                             values
                             (@ファイルパス,@拡張子,@ファイルサイズ,@ファイル作成日時,@ファイル更新日時,@ファイルアクセス日時,@ファイル属性,@担当者,@備考,@削除フラグ,@作成ユーザー,@最終更新ユーザー,@作成日時,@最終更新日時);";
 
-            System.Collections.Generic.Dictionary<String, String> param = new System.Collections.Generic.Dictionary<string, String>();
+            System.Collections.Generic.Dictionary<String, object> param = new System.Collections.Generic.Dictionary<string, object>();
 
             FileInfo fi = new FileInfo(fullPath);
 

@@ -256,6 +256,11 @@ public abstract class BaseForm : System.Web.UI.Page
 
         if (this._isCheckAuth)
         {
+            if (Request.Url.Port != 80) {
+                this.UserId = 0;
+            }
+
+
             if (this.UserId == -1)
             {
                 //DataRowView row = GetHostName();

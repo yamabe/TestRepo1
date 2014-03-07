@@ -27,6 +27,7 @@ public class DsWrapperLight
 
     public DataView Select(String commandText, String orderBy, Dictionary<String, String> param)
     {
+        this._ds.SelectParameters.Clear();
         this._ds.SelectCommand = commandText;
         this._ds.OrderBy = orderBy;
         
@@ -40,14 +41,27 @@ public class DsWrapperLight
         return view;
     }
 
-    public int Insert(String commandText, Dictionary<String, String> param)
+    public int Insert(String commandText, Dictionary<String, object> param)
     {
         this._ds.InsertCommand = commandText;
         
         foreach (String key in param.Keys)
         {
-            this._ds.InsertParameters.Add(key, param[key]);
+            object o = param[key];
+
+            if (o == null)
+            {
+                this._ds.InsertParameters.Add(key, null);
+
+            }
+            else
+            {
+                this._ds.InsertParameters.Add(key, param[key].ToString());
+
+            }
+
         }
+
 
         DataSourceSelectArguments arg = new DataSourceSelectArguments();
         int ret = _ds.Insert();

@@ -28,6 +28,7 @@
     <script type="text/javascript" src="js/utils/SpecialGlobal.js"></script>
     <script type="text/javascript" src="js/utils/NumberUtils.js"></script>
     <script type="text/javascript" src="js/utils/StringUtils.js"></script>
+    <script type="text/javascript" src="js/utils/Request.js"></script>
 
     <link rel="stylesheet" type="text/css" href="themes/base/jquery.ui.all.css" />
     <asp:ContentPlaceHolder ID="head" runat="server">

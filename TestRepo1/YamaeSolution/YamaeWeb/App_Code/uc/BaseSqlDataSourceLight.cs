@@ -469,7 +469,7 @@ namespace uc
             {
 
                 DbParameter p = e.Command.CreateParameter();
-                p.DbType = System.Data.DbType.Boolean;
+                p.DbType = System.Data.DbType.String;
                 p.ParameterName = "削除フラグ";
                 e.Command.Parameters.Add(p);
 
@@ -479,17 +479,17 @@ namespace uc
 
 
 
-            if (e.Command.Parameters["削除フラグ"].Value != null && String.IsNullOrEmpty(e.Command.Parameters["削除フラグ"].Value.ToString()))
+            if (e.Command.Parameters["削除フラグ"].Value == null || String.IsNullOrEmpty(e.Command.Parameters["削除フラグ"].Value.ToString()))
             {
                 e.Command.Parameters["削除フラグ"].Value = Boolean.FalseString;
             }
-            if (e.Command.Parameters["作成ユーザー"].Value != null && String.IsNullOrEmpty(e.Command.Parameters["作成ユーザー"].Value.ToString()))
+            if (e.Command.Parameters["作成ユーザー"].Value == null || String.IsNullOrEmpty(e.Command.Parameters["作成ユーザー"].Value.ToString()))
             {
                 e.Command.Parameters["作成ユーザー"].Value =  _userId;
             }
             e.Command.Parameters["作成日時"].Value = DateTime.Now;
 
-            if (e.Command.Parameters["最終更新ユーザー"].Value != null && String.IsNullOrEmpty(e.Command.Parameters["最終更新ユーザー"].Value.ToString()))
+            if (e.Command.Parameters["最終更新ユーザー"].Value == null || String.IsNullOrEmpty(e.Command.Parameters["最終更新ユーザー"].Value.ToString()))
             {
                 e.Command.Parameters["最終更新ユーザー"].Value = _userId;
             }
