@@ -57,7 +57,6 @@ namespace FileUploaderV1
                 }
             };
           
-
             // this.WindowState = FormWindowState.Minimized;
         }
 
@@ -171,7 +170,11 @@ namespace FileUploaderV1
 
         private void button3_Click(object sender, EventArgs e)
         {
-            _watcher.Dispose();
+            if (_watcher != null)
+            {
+                _watcher.Dispose();
+                _watcher = null;
+            }
         }
 
 
@@ -184,8 +187,11 @@ namespace FileUploaderV1
 
         private void button5_Click(object sender, EventArgs e)
         {
-            _watcher2.Dispose();
-
+            if (_watcher2 != null)
+            {
+                _watcher2.Dispose();
+                _watcher2 = null;
+            }
         }
 
         
