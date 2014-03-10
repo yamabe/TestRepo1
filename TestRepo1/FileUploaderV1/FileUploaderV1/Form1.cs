@@ -56,13 +56,36 @@ namespace FileUploaderV1
                     _watcher2.Dispose();
                 }
             };
+
+            this.Load += (s, o) =>
+            {
+                String flag = ConfigurationManager.AppSettings["AUTO_START_ARRANGE_FOLDER"];
+
+                Boolean b = false;
+
+                if (Boolean.TryParse(flag, out b))
+                {
+                    if (b)
+                    {
+                        this.button4_Click(null, null);
+                    }
+                }
+            };
           
             // this.WindowState = FormWindowState.Minimized;
         }
 
        public void addMessage(String mes)
         {
-            sb.AppendLine(mes);
+            sb.Insert(0, DateTime.Now.ToString("HH:mm ss.fff   ") + mes + "\r\n");
+
+            if (sb.Length > 50000)
+            {
+                sb.Remove(10000, sb.Length - 10000);
+                sb.Append(DateTime.Now.ToString("HH:mm ss.fff   "));
+                sb.AppendLine("----------------------一部消去-----------------------");
+            }
+
             updateUI();
 
         }
@@ -166,6 +189,10 @@ namespace FileUploaderV1
 
            _watcher=  svc.Execute();
 
+           this.button2.Enabled = false;
+           this.button3.Enabled = !this.button2.Enabled;
+
+
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -174,7 +201,12 @@ namespace FileUploaderV1
             {
                 _watcher.Dispose();
                 _watcher = null;
+            
             }
+
+            this.button3.Enabled = false;
+            this.button2.Enabled = !this.button3.Enabled;
+            addMessage("監視終了(自動アップロード)");
         }
 
 
@@ -183,6 +215,9 @@ namespace FileUploaderV1
         {
             var svc = new AutoUnzipServie(this);
             this._watcher2 = svc.Execute();
+            this.button4.Enabled = false;
+            this.button5.Enabled = !this.button4.Enabled;
+            this.textBox1.Select(0, 0);
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -192,6 +227,11 @@ namespace FileUploaderV1
                 _watcher2.Dispose();
                 _watcher2 = null;
             }
+
+            this.button5.Enabled = false;
+            this.button4.Enabled = !this.button5.Enabled;
+            addMessage("監視終了(自動解凍)");
+
         }
 
         
