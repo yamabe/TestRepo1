@@ -14,10 +14,11 @@ namespace FileUploaderV1
         {
             FileInfo fi = new FileInfo(fullPath);
 
-            for (int i = 0; i < 200; i++)
+            for (int i = 0; i < 10; i++)
             {
-                if (IsFileLocked(fi))
+                if (IsFileLocked(fi, false))
                 {
+                    Thread.Sleep(1000);
                     continue;
                 }
                 else
@@ -26,11 +27,12 @@ namespace FileUploaderV1
                 } 
             }
 
+            IsFileLocked(fi, true);
             return false;
 
         }
 
-        public static  bool IsFileLocked(FileInfo file)
+        public static  bool IsFileLocked(FileInfo file, bool isThrow)
         {
             FileStream stream = null;
 
@@ -44,6 +46,11 @@ namespace FileUploaderV1
                 //still being written to
                 //or being processed by another thread
                 //or does not exist (has already been processed)
+
+                if (isThrow)
+                {
+                    throw;
+                }
                 return true;
             }
             finally

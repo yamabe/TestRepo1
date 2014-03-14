@@ -33,7 +33,7 @@ namespace FileUploaderV1
             else
             {
              //   String creationTime = fi.CreationTime.ToString("yyyyMMdd_hhmm_ss_");
-                String creationTime =DateTime.Now.ToString("yyyyMMdd_hhmm_ss_");
+                String creationTime =DateTime.Now.ToString("yyyyMMdd_HHmm_ss_");
                 
                 String newName = creationTime + fi.Name;
                 String newFullPath = Path.Combine(fi.DirectoryName, newName);
