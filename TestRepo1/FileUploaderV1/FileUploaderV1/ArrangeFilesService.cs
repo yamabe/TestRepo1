@@ -43,6 +43,10 @@ namespace FileUploaderV1
 
                 foreach (FileInfo fi in di.GetFiles())
                 {
+                    if (fi.Exists)
+                    {
+                        continue;
+                    }
                     var svc = new RenameService(_rootForm);
                     svc.Execute(fi, true);
                 }

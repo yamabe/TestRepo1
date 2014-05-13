@@ -29,7 +29,7 @@ namespace FileUploaderV1
 
             watcher.EnableRaisingEvents = true;
 
-            _rootForm.addMessage("監視開始(自動解凍)" + watcher.Path);
+            _rootForm.addMessage(this.GetType().Name + "    監視開始(自動解凍)" + watcher.Path);
 
             return watcher;
         }
@@ -37,32 +37,40 @@ namespace FileUploaderV1
 
         void watcher_Error(object sender, ErrorEventArgs e)
         {
-            _rootForm.addMessage("ERROR:" + e.ToString());
+            _rootForm.addMessage(this.GetType().Name + "    ERROR:" + e.ToString());
         }
 
         void watcher_Created(object sender, FileSystemEventArgs e)
         {
-            _rootForm.addMessage("info:" + e.Name);
+            _rootForm.addMessage(this.GetType().Name + "    info:" + e.Name);
+
             try
             {
                 if (FileUtils.WaitFileAccess(e.FullPath))
                 {
                     FileInfo fi = new FileInfo(e.FullPath);
 
+                    if (!fi.Exists)
+                    {
+                        // 処理終了
+                        return;
+                    }
+
+                    _rootForm.addMessage(this.GetType().Name + "    info:名称変更・解凍処理開始" + e.Name);
 
                     var svc = new RenameService(_rootForm);
                     svc.Execute(fi, true);
                 }
                 else
                 {
-                    _rootForm.addMessage("処理失敗：" + e.FullPath);
+                    _rootForm.addMessage(this.GetType().Name + "    処理失敗：" + e.FullPath);
                 }
 
             }
             catch (Exception ex)
             {
 
-                _rootForm.addMessage("ERROR:" + ex.ToString());
+                _rootForm.addMessage(this.GetType().Name + "    ERROR:" + ex.ToString());
             }
         }
 

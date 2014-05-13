@@ -34,6 +34,8 @@ namespace FileUploaderV1
 
         public static  bool IsFileLocked(FileInfo file, bool isThrow)
         {
+            if (file.Exists) return false;
+
             FileStream stream = null;
 
             try

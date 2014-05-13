@@ -17,6 +17,12 @@ namespace FileUploaderV1
 
         public void Execute(FileInfo fi, bool unzip)
         {
+            if (!fi.Exists)
+            {
+                _rootForm.addMessage(this.GetType().Name + "    ファイルが存在しません。" + fi.Name);
+                return;
+            }
+
             if (String.IsNullOrEmpty(fi.Extension))
             {
                 return;

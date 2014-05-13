@@ -30,7 +30,7 @@ namespace FileUploaderV1
 
             watcher.EnableRaisingEvents = true;
 
-            _rootForm.addMessage("監視開始" + watcher.Path + " → " + ConfigurationManager.AppSettings["UPLOAD_DIR"]);
+            _rootForm.addMessage(this.GetType().Name + "    監視開始" + watcher.Path + " → " + ConfigurationManager.AppSettings["UPLOAD_DIR"]);
 
             return watcher;
         }
@@ -38,7 +38,7 @@ namespace FileUploaderV1
 
         void watcher_Error(object sender, ErrorEventArgs e)
         {
-            _rootForm.addMessage("ERROR:" + e.ToString());
+            _rootForm.addMessage(this.GetType().Name + "    ERROR:" + e.ToString());
         }
 
         void watcher_Created(object sender, FileSystemEventArgs e)
@@ -60,7 +60,7 @@ namespace FileUploaderV1
 
                     fi.CopyTo(fullPath, true);
 
-                    _rootForm.addMessage("Copy:" + fi.Name + "→" + newName);
+                    _rootForm.addMessage(this.GetType().Name + "    Copy:" + fi.Name + "→" + newName);
 
                     var conStr = ConfigurationManager.ConnectionStrings["mysqlConLocal"].ConnectionString;
                     MySqlCommand cmd = new MySqlCommand();
@@ -95,14 +95,14 @@ namespace FileUploaderV1
                 }
                 else
                 {
-                    _rootForm.addMessage("処理失敗：" + e.FullPath);
+                    _rootForm.addMessage(this.GetType().Name + "    処理失敗：" + e.FullPath);
                 }
 
             }
             catch (Exception ex)
             {
 
-                _rootForm.addMessage("ERROR:" + ex.ToString());
+                _rootForm.addMessage(this.GetType().Name + "    ERROR:" + ex.ToString());
             }
         }
 

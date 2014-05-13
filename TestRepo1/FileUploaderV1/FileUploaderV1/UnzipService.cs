@@ -18,6 +18,13 @@ namespace FileUploaderV1
 
         public void Unzip(String newFullPath, FileInfo fi, String creationTime)
         {
+            if (!fi.Exists)
+            {
+                _rootForm.addMessage(this.GetType().Name + "    ファイルが存在しません。" + fi.Name);
+                return;
+            }
+
+
             if (String.IsNullOrEmpty(fi.Extension))
             {
                 return;
@@ -25,15 +32,15 @@ namespace FileUploaderV1
 
             using (ZipInputStream s = new ZipInputStream(File.OpenRead(newFullPath)))
             {
-                
+
                 Form2 frm2 = new Form2();
                 frm2.FileName = fi.Name;
                 var result = frm2.ShowDialog();
-             
+
 
                 if (result != System.Windows.Forms.DialogResult.OK)
                 {
-                    _rootForm.addMessage("Zipの解凍をキャンセルしました。" + newFullPath);
+                    _rootForm.addMessage(this.GetType().Name + "    Zipの解凍をキャンセルしました。" + newFullPath);
                     return;
                 }
 
