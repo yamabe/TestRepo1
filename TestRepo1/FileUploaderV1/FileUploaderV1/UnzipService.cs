@@ -18,9 +18,14 @@ namespace FileUploaderV1
 
         public void Unzip(String newFullPath, FileInfo fi, String creationTime)
         {
+            if (String.IsNullOrEmpty(fi.Extension))
+            {
+                return;
+            }
 
             using (ZipInputStream s = new ZipInputStream(File.OpenRead(newFullPath)))
             {
+                
                 Form2 frm2 = new Form2();
                 frm2.FileName = fi.Name;
                 var result = frm2.ShowDialog();

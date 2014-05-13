@@ -17,6 +17,11 @@ namespace FileUploaderV1
 
         public void Execute(FileInfo fi, bool unzip)
         {
+            if (String.IsNullOrEmpty(fi.Extension))
+            {
+                return;
+            }
+
             String prefix = string.Empty;
 
             if (fi.Name.Length > 8)
