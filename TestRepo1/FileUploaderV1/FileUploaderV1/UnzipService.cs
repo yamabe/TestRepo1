@@ -23,9 +23,8 @@ namespace FileUploaderV1
                 _rootForm.addMessage(this.GetType().Name + "    ファイルが存在しません。" + fi.Name);
                 return;
             }
-
-
-            if (String.IsNullOrEmpty(fi.Extension))
+            System.IO.FileAttributes uAttribute = System.IO.File.GetAttributes(fi.FullName);
+            if ((uAttribute & System.IO.FileAttributes.Hidden) == System.IO.FileAttributes.Hidden)
             {
                 return;
             }

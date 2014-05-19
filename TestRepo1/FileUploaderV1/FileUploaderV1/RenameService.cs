@@ -23,9 +23,22 @@ namespace FileUploaderV1
                 return;
             }
 
-            if (String.IsNullOrEmpty(fi.Extension))
+            List<String> noneExecute = new List<string>();
+            noneExecute.Add(string.Empty);
+            noneExecute.Add(".tmp");
+
+            System.IO.FileAttributes uAttribute = System.IO.File.GetAttributes(fi.FullName);
+            if ((uAttribute & System.IO.FileAttributes.Hidden) == System.IO.FileAttributes.Hidden)
             {
                 return;
+            }
+
+            foreach (String s in noneExecute)
+            {
+                if (fi.Extension.ToLower() == s)
+                {
+                    return;
+                }
             }
 
             String prefix = string.Empty;
