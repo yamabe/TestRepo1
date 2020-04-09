@@ -91,6 +91,8 @@ namespace FileUploaderV1
                     }
                 }
             }
+
+            System.Diagnostics.Process.Start(fi.DirectoryName);
         }
     }
 }
