@@ -53,15 +53,6 @@ namespace FileUploaderV1
                     Form2 frm2 = new Form2();
                     frm2.ShowDialog();
 
-                    var userName = ConfigurationManager.AppSettings["USER_NAME"];
-                    var newName = string.Format(DateTime.Now.ToString("yyyyMMdd_hhMMsss_{0}_{1}"), userName, fi.Name);
-
-                    var fullPath = Path.Combine(ConfigurationManager.AppSettings["UPLOAD_DIR"], newName);
-
-                    fi.CopyTo(fullPath, true);
-
-                    _rootForm.addMessage(this.GetType().Name + "    Copy:" + fi.Name + "→" + newName);
-
                     var conStr = ConfigurationManager.ConnectionStrings["mysqlConLocal"].ConnectionString;
                     MySqlCommand cmd = new MySqlCommand();
                     using (MySqlConnection con = new MySqlConnection(conStr))
@@ -74,7 +65,7 @@ namespace FileUploaderV1
                             (ファイルパス, 拡張子, ファイルサイズ, ファイル作成日時, ファイル更新日時, ファイルアクセス日時, ファイル属性, 担当者, 備考, 削除フラグ, 作成ユーザー, 最終更新ユーザー, 作成日時, 最終更新日時)
                             values
                             (@ファイルパス,@拡張子,@ファイルサイズ,@ファイル作成日時,@ファイル更新日時,@ファイルアクセス日時,@ファイル属性,@担当者,@備考,@削除フラグ,@作成ユーザー,@最終更新ユーザー,@作成日時,@最終更新日時)";
-                        cmd.Parameters.AddWithValue("ファイルパス", fullPath);
+                        cmd.Parameters.AddWithValue("ファイルパス", fi.FullName);
                         cmd.Parameters.AddWithValue("拡張子", fi.Extension);
                         cmd.Parameters.AddWithValue("ファイルサイズ", fi.Length * 0.001);
                         cmd.Parameters.AddWithValue("ファイル作成日時", fi.CreationTime);

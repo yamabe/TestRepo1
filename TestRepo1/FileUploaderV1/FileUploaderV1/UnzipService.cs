@@ -16,7 +16,7 @@ namespace FileUploaderV1
             _rootForm = rootForm;
         }
 
-        public void Unzip(String newFullPath, FileInfo fi, String creationTime)
+        public void Unzip(String newFullPath, FileInfo fi)
         {
             if (!fi.Exists)
             {
@@ -50,7 +50,7 @@ namespace FileUploaderV1
                 {
                     string fileName = Path.GetFileName(theEntry.Name);
 
-                    String newFileName = creationTime + theEntry.Name;
+                    String newFileName = theEntry.Name;
                     String newFullPathForEntry = Path.Combine(fi.DirectoryName, newFileName);
 
                     if (File.Exists(newFileName))

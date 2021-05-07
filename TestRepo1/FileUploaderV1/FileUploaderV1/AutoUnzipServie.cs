@@ -12,6 +12,8 @@ namespace FileUploaderV1
     {
         private Form1 _rootForm;
 
+        private String _lastFile;
+
         public AutoUnzipServie(Form1 root)
         {
             _rootForm = root;
@@ -26,6 +28,7 @@ namespace FileUploaderV1
             watcher.Created += watcher_Created;
             watcher.Error += watcher_Error;
 
+            watcher.Filter = "*.zip";
 
             watcher.EnableRaisingEvents = true;
 
@@ -42,6 +45,20 @@ namespace FileUploaderV1
 
         void watcher_Created(object sender, FileSystemEventArgs e)
         {
+            if (e.Name == this._lastFile)
+            {
+                return;
+            }
+
+            this._lastFile = e.Name;
+
+            Task.Run(async delegate
+            {
+                await Task.Delay(TimeSpan.FromSeconds(10));
+                this._lastFile = null;
+                return;
+            });
+            
             _rootForm.addMessage(this.GetType().Name + "    info:" + e.Name);
 
             try
@@ -56,7 +73,7 @@ namespace FileUploaderV1
                         return;
                     }
 
-                    _rootForm.addMessage(this.GetType().Name + "    info:名称変更・解凍処理開始" + e.Name);
+                    _rootForm.addMessage(this.GetType().Name + "    info:解凍処理開始" + e.Name);
 
                     var svc = new RenameService(_rootForm);
                     svc.Execute(fi, true);
